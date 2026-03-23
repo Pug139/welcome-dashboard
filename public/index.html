@@ -1,1 +1,874 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WELCOME Projekt-Übersicht</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root{
+  --brand:#0055a5;--brand-dark:#003366;--brand-light:#4a90d9;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--border:#30363d;
+  --text:#e6edf3;--text-muted:#8b949e;--text-sub:#c9d1d9;
+  --hint-bg:#0d1f35;--hint-border:#1a4a7a;--hint-text:#7ab3e0;
+  --drop-bg:#0d1f35;--drop-border:#1a4a7a;--drop-over:#1a3a5c;--drop-loaded:#0d2e1a;
+  --toggle-bg:#0d1f35;--toggle-hover:#1a3a5c;--sdesc-bg:#0d1117;--sdesc-border:#1a4a7a;
+  --stat-bg:#161b22;--proj-bg:#161b22;
+  --on-track-c:#3fb950;--at-risk-c:#f0883e;--off-track-c:#f85149;
+  --tab-active:#0055a5;--tab-inactive:#21262d;
+  --input-bg:#0d1f35;--input-border:#1a4a7a;
+}
+[data-theme="light"]{
+  --bg:#f4f6f9;--bg2:#fff;--bg3:#eef1f5;--border:#d0d7de;
+  --text:#1f2328;--text-muted:#636c76;--text-sub:#444c56;
+  --hint-bg:#e8eef5;--hint-border:#99b3cc;--hint-text:#003366;
+  --drop-bg:#f8fbff;--drop-border:#b0c8e0;--drop-over:#dce8f5;--drop-loaded:#eafaf1;
+  --toggle-bg:#e8eef5;--toggle-hover:#ccd9e8;--sdesc-bg:#f4f7fb;--sdesc-border:#c0d0e0;
+  --stat-bg:#fff;--proj-bg:#fff;
+  --on-track-c:#1d7a45;--at-risk-c:#e67e22;--off-track-c:#c0392b;
+  --tab-active:#003366;--tab-inactive:#e8eef5;
+  --input-bg:#fff;--input-border:#99b3cc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
 
+header{background:var(--brand-dark);color:white;padding:12px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.4);position:sticky;top:0;z-index:200}
+header img{height:38px}
+header .title{flex:1}
+header h1{font-size:1.1rem;font-weight:700}
+header p{font-size:.72rem;opacity:.7}
+.header-actions{display:flex;align-items:center;gap:8px}
+.theme-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;transition:background .2s;white-space:nowrap}
+.theme-toggle:hover{background:rgba(255,255,255,.2)}
+
+.import-dropdown{position:relative}
+.import-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;transition:background .2s;white-space:nowrap}
+.import-trigger:hover{background:rgba(255,255,255,.2)}
+.import-panel{position:absolute;top:calc(100% + 8px);right:0;width:500px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:300;display:none}
+.import-panel.open{display:block}
+.import-panel h3{font-size:.82rem;color:var(--hint-text);margin-bottom:10px;font-weight:600}
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.import-zone{border:1.5px dashed var(--drop-border);border-radius:7px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .2s;background:var(--drop-bg);font-size:.75rem;color:var(--text-muted)}
+.import-zone:hover,.import-zone.over{border-color:var(--brand-light);background:var(--drop-over)}
+.import-zone.loaded{border-color:var(--on-track-c);background:var(--drop-loaded);color:var(--on-track-c);font-weight:600}
+.import-zone input{display:none}
+.import-zone .dz-icon{font-size:1.3rem;margin-bottom:4px}
+.import-both{border:1.5px dashed var(--drop-border);border-radius:7px;padding:10px;text-align:center;cursor:pointer;transition:all .2s;background:var(--drop-bg);font-size:.75rem;color:var(--text-muted);margin-bottom:10px}
+.import-both:hover,.import-both.over{border-color:var(--brand-light);background:var(--drop-over)}
+.import-both.loaded{border-color:var(--on-track-c);background:var(--drop-loaded);color:var(--on-track-c);font-weight:600}
+.import-both input{display:none}
+
+.tab-bar{display:flex;align-items:center;max-width:920px;margin:16px auto 0;padding:0 16px;gap:4px}
+.tab-btn{padding:9px 22px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;color:var(--text-muted);background:var(--tab-inactive)}
+.tab-btn.active{background:var(--tab-active);color:white}
+.tab-btn:hover:not(.active){background:var(--bg3);color:var(--text)}
+.main{max-width:920px;margin:0 auto;padding:16px 16px 24px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:160px}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.85rem;pointer-events:none;opacity:.5}
+.search-input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem}
+.search-input:focus{outline:none;border-color:var(--brand-light)}
+.filter-select{padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;cursor:pointer}
+.filter-select:focus{outline:none;border-color:var(--brand-light)}
+.clear-btn{padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;transition:all .2s}
+.clear-btn:hover{border-color:var(--brand-light);color:var(--brand-light)}
+.filter-count{font-size:.78rem;color:var(--text-muted);white-space:nowrap;align-self:center}
+
+/* Multi-select */
+.ms-wrap{position:relative}
+.ms-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;cursor:pointer;white-space:nowrap;min-width:120px;justify-content:space-between}
+.ms-btn:hover{border-color:var(--brand-light)}
+.ms-btn.has-selection{border-color:var(--brand-light);color:var(--brand-light)}
+.ms-arrow{font-size:.65rem;opacity:.6;transition:transform .2s;margin-left:4px}
+.ms-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:190px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:150;display:none}
+.ms-panel.open{display:block}
+.ms-option{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:.82rem;color:var(--text-sub);transition:background .15s;user-select:none}
+.ms-option:hover{background:var(--bg3)}
+.ms-option input[type=checkbox]{accent-color:var(--brand-light);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.ms-count-badge{margin-left:auto;background:var(--bg3);color:var(--text-muted);border-radius:10px;padding:1px 6px;font-size:.68rem;font-weight:600}
+
+#msg,#msg-wb{padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none}
+.msg-error{background:#2d1117;color:#f85149;border:1px solid #f85149}
+.msg-success{background:#0d2e1a;color:#3fb950;border:1px solid #3fb950}
+[data-theme="light"] .msg-error{background:#fdecea;color:#c0392b;border-color:#e8b4b0}
+[data-theme="light"] .msg-success{background:#eafaf1;color:#1d7a45;border-color:#a9dfc0}
+
+.stats-row,.wb-stats{display:none;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.stat-card{background:var(--stat-bg);border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:120px;text-align:center}
+.stat-card .num{font-size:1.7rem;font-weight:700;color:var(--brand-light)}
+.stat-card .lbl{font-size:.72rem;color:var(--text-muted);margin-top:2px}
+
+.export-bar,.wb-export-bar{display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.btn{padding:9px 18px;border:none;border-radius:7px;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--brand);color:white;width:100%;justify-content:center;margin-top:4px}
+.btn-primary:hover:not(:disabled){background:var(--brand-dark)}
+.btn-excel{background:#1d7a45;color:white}.btn-excel:hover{background:#165e35}
+.btn-pdf{background:#a93226;color:white}.btn-pdf:hover{background:#922b21}
+.btn-csv{background:#555e6a;color:white}.btn-csv:hover{background:#444d58}
+
+.project-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:12px;border-left:5px solid var(--brand);transition:background .3s}
+.project-card.status-on_track{border-left-color:var(--on-track-c)}
+.project-card.status-at_risk{border-left-color:var(--at-risk-c)}
+.project-card.status-off_track{border-left-color:var(--off-track-c)}
+.project-card.hidden{display:none}
+.proj-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
+.proj-name{font-size:1rem;font-weight:700;color:var(--brand-light)}
+.badge{font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.badge-on_track{background:rgba(63,185,80,.15);color:var(--on-track-c)}
+.badge-at_risk{background:rgba(240,136,62,.15);color:var(--at-risk-c)}
+.badge-off_track{background:rgba(248,81,73,.15);color:var(--off-track-c)}
+.badge-default{background:var(--bg3);color:var(--text-muted)}
+.proj-meta{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.meta-item{font-size:.78rem;color:var(--text-sub)}
+.meta-item strong{color:var(--text)}
+.progress-section{margin-top:12px}
+.progress-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted);margin-bottom:4px}
+.progress-track{background:var(--bg3);border-radius:20px;height:12px;overflow:hidden}
+.progress-fill{height:100%;border-radius:20px;transition:width .7s ease}
+.fill-high{background:linear-gradient(90deg,#1d7a45,#3fb950)}
+.fill-medium{background:linear-gradient(90deg,#0055a5,#4a90d9)}
+.fill-low{background:linear-gradient(90deg,#003366,#0055a5)}
+.fill-none{background:var(--border)}
+.feature-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.feature-badge{display:inline-flex;align-items:center;gap:4px;font-size:.77rem;font-weight:600;padding:4px 10px;border-radius:6px}
+.feature-badge.feature-beauftragt{background:rgba(230,126,34,.15);color:var(--at-risk-c);border:1px solid var(--at-risk-c)}
+.feature-badge.feature-gewuenscht{background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light)}
+.feature-name{font-weight:700}
+.status-desc-wrap{margin-top:10px}
+.toggle-btn{background:var(--toggle-bg);border:1px solid var(--hint-border);border-radius:6px;padding:5px 10px;font-size:.77rem;color:var(--hint-text);cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:600;transition:background .2s}
+.toggle-btn:hover{background:var(--toggle-hover)}
+.toggle-btn .arrow{transition:transform .25s;display:inline-block}
+.toggle-btn.open .arrow{transform:rotate(180deg)}
+.status-desc-body{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-size:.8rem;color:var(--text-sub);line-height:1.6;background:var(--sdesc-bg);border:1px solid var(--sdesc-border);border-top:none;border-radius:0 0 6px 6px;padding:0 12px}
+.status-desc-body.open{max-height:300px;padding:10px 12px}
+.no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
+
+.wb-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.wb-table{width:100%;border-collapse:collapse;font-size:.83rem}
+.wb-table th{background:var(--brand-dark);color:white;padding:9px 13px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wb-table td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:middle}
+.wb-table tr:last-child td{border-bottom:none}
+.wb-table tr.wb-row:hover td{background:var(--bg3);cursor:pointer}
+.wb-table tr.wb-hidden{display:none}
+.wb-table .proj-col{color:var(--brand-light);font-weight:600}
+.wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
+.wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
+
+footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 14px}
+
+@media(max-width:640px){
+  header{padding:10px 12px;gap:8px;flex-wrap:wrap}
+  header img{height:28px}
+  header h1{font-size:.9rem}
+  .import-panel{width:calc(100vw - 24px);right:-10px}
+  .import-grid{grid-template-columns:1fr}
+  .tab-bar{padding:0 10px}
+  .tab-btn{padding:7px 14px;font-size:.8rem}
+  .main{padding:10px 10px 20px}
+  .stats-row,.wb-stats{gap:6px}
+  .stat-card{padding:10px 12px;min-width:90px}
+  .stat-card .num{font-size:1.4rem}
+  .project-card{padding:12px 14px}
+  .proj-header,.proj-meta{flex-direction:column;gap:5px}
+  .filter-bar{flex-direction:column;align-items:stretch}
+  .ms-btn,.filter-select,.search-wrap{width:100%}
+  .export-bar,.wb-export-bar{flex-direction:column}
+  .export-bar .btn,.wb-export-bar .btn,.btn-primary{width:100%;justify-content:center}
+  .wb-table{font-size:.73rem}
+  .wb-table th,.wb-table td{padding:7px 9px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp" alt="WELCOME">
+  <div class="title"><h1>Projekt-Übersicht</h1><p>EnterSmart GmbH · CSV-Import</p></div>
+  <div class="header-actions">
+    <div class="import-dropdown" id="importDropdown">
+      <button class="import-trigger" id="importTrigger">📥 Import ▼</button>
+      <div class="import-panel" id="importPanel">
+        <h3>📥 Daten aus OpenProject importieren</h3>
+        <div class="import-grid">
+          <div class="import-zone" id="dz-proj">
+            <div class="dz-icon">📁</div><div>Projekte-CSV</div>
+            <p id="lbl-proj" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p>
+            <input type="file" id="f-proj" accept=".csv,.xlsx">
+          </div>
+          <div class="import-zone" id="dz-wp">
+            <div class="dz-icon">📦</div><div>Arbeitspakete-CSV</div>
+            <p id="lbl-wp" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p>
+            <input type="file" id="f-wp" accept=".csv,.xlsx">
+          </div>
+        </div>
+        <div class="import-both" id="dz-both">
+          <span style="font-size:1.1rem">📂📂</span>&nbsp;
+          <span id="lbl-both">Beide CSVs gleichzeitig ablegen oder klicken</span>
+          <input type="file" id="f-both" accept=".csv,.xlsx" multiple>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+          <h3 style="margin-bottom:8px">🔌 Oder direkt per API laden</h3>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <input type="text" id="api-url" placeholder="https://meine-instanz.openproject.com" style="padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.82rem;width:100%">
+            <input type="password" id="api-key" placeholder="API Key" style="padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.82rem;width:100%">
+            <button class="btn btn-primary" id="api-btn" style="margin-top:0">🔌 Per API laden</button>
+          </div>
+          <p style="font-size:.7rem;color:var(--text-muted);margin-top:6px">🔒 Key wird nur lokal verwendet, nicht gespeichert.</p>
+        </div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+          <h3 style="margin-bottom:8px">📂 Oder per CSV importieren</h3>
+        </div>
+        <button class="btn btn-primary" id="build-btn" disabled>🚀 Dashboard aus CSV erstellen</button>
+      </div>
+    </div>
+    <button class="theme-toggle" id="themeBtn"><span class="theme-icon">☀️</span><span class="theme-label">Light</span></button>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="projekte">📋 Projekte</button>
+  <button class="tab-btn" data-tab="warenbestand">📦 Warenbestand</button>
+</div>
+
+<div class="main">
+  <!-- TAB PROJEKTE -->
+  <div class="tab-panel active" id="tab-projekte">
+    <div id="msg"></div>
+    <div class="stats-row" id="stats-row">
+      <div class="stat-card"><div class="num" id="s-total">–</div><div class="lbl">Projekte</div></div>
+      <div class="stat-card"><div class="num" id="s-wp">–</div><div class="lbl">Arbeitspakete</div></div>
+      <div class="stat-card"><div class="num" id="s-open">–</div><div class="lbl">Offen</div></div>
+      <div class="stat-card"><div class="num" id="s-done">–</div><div class="lbl">Abgeschlossen</div></div>
+    </div>
+    <div class="export-bar" id="export-bar">
+      <button class="btn btn-excel" onclick="exportExcel()">⬇ Excel</button>
+      <button class="btn btn-pdf" onclick="exportPDF()">⬇ PDF</button>
+      <button class="btn btn-csv" onclick="exportCSV()">⬇ CSV</button>
+    </div>
+    <div class="filter-bar" id="proj-filter-bar" style="display:none">
+      <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="proj-search" type="text" placeholder="Projekt suchen…"></div>
+      <div class="ms-wrap" id="proj-status-ms">
+        <button class="ms-btn" id="proj-status-ms-btn">Status <span class="ms-arrow">▼</span></button>
+        <div class="ms-panel" id="proj-status-ms-panel">
+          <label class="ms-option"><input type="checkbox" value="on_track"> Im Plan</label>
+          <label class="ms-option"><input type="checkbox" value="at_risk"> Gefährdet</label>
+          <label class="ms-option"><input type="checkbox" value="off_track"> Kritisch</label>
+          <label class="ms-option"><input type="checkbox" value="default"> Kein Status</label>
+        </div>
+      </div>
+      <select class="filter-select" id="proj-pm-filter"><option value="">Alle Verantwortlichen</option></select>
+      <button class="clear-btn" id="proj-clear-btn">✕ Reset</button>
+      <span class="filter-count" id="proj-filter-count"></span>
+    </div>
+    <div id="no-results" class="no-results">🔍 Keine Projekte gefunden.</div>
+    <div id="cards"></div>
+  </div>
+
+  <!-- TAB WARENBESTAND -->
+  <div class="tab-panel" id="tab-warenbestand">
+    <div id="msg-wb"></div>
+    <div class="wb-stats" id="wb-stats">
+      <div class="stat-card"><div class="num" id="wb-total">–</div><div class="lbl">Einträge gesamt</div></div>
+      <div class="stat-card"><div class="num" id="wb-proj-count">–</div><div class="lbl">Betroffene Projekte</div></div>
+    </div>
+    <div class="wb-export-bar" id="wb-export-bar">
+      <button class="btn btn-excel" onclick="exportWBExcel()">⬇ Excel</button>
+      <button class="btn btn-pdf" onclick="exportWBPDF()">⬇ PDF</button>
+      <button class="btn btn-csv" onclick="exportWBCSV()">⬇ CSV</button>
+    </div>
+    <div class="filter-bar" id="wb-filter-bar" style="display:none">
+      <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen…"></div>
+      <select class="filter-select" id="wb-proj-filter"><option value="">Alle Projekte</option></select>
+      <select class="filter-select" id="wb-type-filter">
+        <option value="">Alle Typen</option>
+        <option value="hardware">Hardware</option>
+        <option value="elo einrichtung">ELO Einrichtung</option>
+      </select>
+      <div class="ms-wrap" id="wb-status-ms">
+        <button class="ms-btn" id="wb-status-ms-btn">Status <span class="ms-arrow">▼</span></button>
+        <div class="ms-panel" id="wb-status-ms-panel"></div>
+      </div>
+      <button class="clear-btn" id="wb-clear-btn">✕ Reset</button>
+      <span class="filter-count" id="wb-filter-count"></span>
+    </div>
+    <div id="wb-content"><div class="wb-empty">📥 Bitte zuerst die CSVs über „Import" laden und Dashboard erstellen.</div></div>
+  </div>
+</div>
+
+<footer>WELCOME Projekt-Dashboard · EnterSmart GmbH · Alle Daten bleiben lokal in eurem Browser</footer>
+
+<div id="wb-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:560px;width:100%;padding:24px;position:relative;max-height:80vh;overflow-y:auto">
+    <button onclick="document.getElementById('wb-modal').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted)">✕</button>
+    <div id="wb-modal-content"></div>
+  </div>
+</div>
+
+<script>
+/* ── State ── */
+const raw={proj:null,wp:null};
+let projectData=[], warenData=[];
+const EXCL_PROJ=['demo project','supportfälle','test portl','dräxlmaier main','wisag main','test portal'];
+const EXCL_WP_TYPES=['phase','meilenstein'];
+const WAREN_TYPES=['hardware','elo einrichtung'];
+
+/* ── Theme ── */
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  document.querySelector('.theme-icon').textContent=dark?'🌙':'☀️';
+  document.querySelector('.theme-label').textContent=dark?'Dark':'Light';
+});
+
+/* ── Import dropdown ── */
+const importTrigger=document.getElementById('importTrigger');
+const importPanel=document.getElementById('importPanel');
+importTrigger.addEventListener('click',e=>{e.stopPropagation();importPanel.classList.toggle('open');});
+document.addEventListener('click',e=>{if(!document.getElementById('importDropdown').contains(e.target))importPanel.classList.remove('open');});
+
+/* ── Tabs ── */
+document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+}));
+
+/* ── Multi-select ── */
+function initMultiSelect(btnId, panelId, onChangeFn){
+  const btn=document.getElementById(btnId);
+  const panel=document.getElementById(panelId);
+  if(!btn||!panel) return;
+
+  btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    // close others
+    document.querySelectorAll('.ms-panel.open').forEach(p=>{if(p!==panel)p.classList.remove('open');});
+    document.querySelectorAll('.ms-btn').forEach(b=>{if(b!==btn)b.querySelector('.ms-arrow').style.transform='';});
+    panel.classList.toggle('open');
+    btn.querySelector('.ms-arrow').style.transform=panel.classList.contains('open')?'rotate(180deg)':'';
+  });
+
+  panel.addEventListener('change',()=>{
+    updateMsBtn(btnId, panelId);
+    onChangeFn();
+  });
+}
+
+function updateMsBtn(btnId, panelId){
+  const btn=document.getElementById(btnId);
+  const panel=document.getElementById(panelId);
+  if(!btn||!panel) return;
+  const n=panel.querySelectorAll('input:checked').length;
+  const baseText=btn.dataset.base||'Status';
+  btn.innerHTML=`${baseText}${n>0?' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">'+n+'</span>':''} <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">▼</span>`;
+  btn.classList.toggle('has-selection',n>0);
+}
+
+function getMsValues(panelId){
+  const panel=document.getElementById(panelId);
+  if(!panel) return [];
+  return [...panel.querySelectorAll('input:checked')].map(i=>i.value);
+}
+
+function resetMs(btnId, panelId){
+  const panel=document.getElementById(panelId);
+  if(panel) panel.querySelectorAll('input').forEach(i=>i.checked=false);
+  updateMsBtn(btnId, panelId);
+}
+
+// Close all ms panels on outside click
+document.addEventListener('click',()=>{
+  document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));
+  document.querySelectorAll('.ms-btn .ms-arrow').forEach(a=>a.style.transform='');
+});
+
+/* ── Drop zones ── */
+function setupZone(zoneId,inputId,key){
+  const zone=document.getElementById(zoneId), inp=document.getElementById(inputId);
+  zone.addEventListener('click',()=>inp.click());
+  inp.addEventListener('change',()=>{if(inp.files[0])parseFile(inp.files[0],key);});
+  ['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();zone.classList.add('over');}));
+  zone.addEventListener('dragleave',e=>{e.preventDefault();e.stopPropagation();zone.classList.remove('over');});
+  zone.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();zone.classList.remove('over');if(e.dataTransfer.files[0])parseFile(e.dataTransfer.files[0],key);});
+}
+setupZone('dz-proj','f-proj','proj');
+setupZone('dz-wp','f-wp','wp');
+
+const dzBoth=document.getElementById('dz-both'), fBoth=document.getElementById('f-both');
+dzBoth.addEventListener('click',()=>fBoth.click());
+fBoth.addEventListener('change',()=>handleMulti(fBoth.files));
+['dragenter','dragover'].forEach(ev=>dzBoth.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.add('over');}));
+dzBoth.addEventListener('dragleave',e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');});
+dzBoth.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');handleMulti(e.dataTransfer.files);});
+
+function handleMulti(files){
+  Array.from(files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      try{
+        const wb=XLSX.read(e.target.result,{type:'binary',raw:false});
+        const data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+        if(!data.length)return;
+        const h=Object.keys(data[0]).map(k=>k.toLowerCase());
+        const isWP=h.some(k=>k.includes('typ')||k.includes('thema')||k.includes('betreff')||k.includes('zugewiesen'));
+        const key=isWP?'wp':'proj';
+        raw[key]=data;
+        document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent='✅ '+f.name;
+        document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');
+        document.getElementById('build-btn').disabled=false;
+        const loaded=[raw.proj?'Projekte':'',raw.wp?'Arbeitspakete':''].filter(Boolean);
+        document.getElementById('lbl-both').textContent=loaded.length===2?'✅ Beide Dateien erkannt!':'✅ '+loaded.join(', ')+' – zweite noch ausstehend';
+        dzBoth.classList.toggle('loaded',loaded.length===2);
+      }catch(err){showMsg('Fehler: '+err.message,'error');}
+    };
+    r.readAsBinaryString(f);
+  });
+}
+
+document.getElementById('build-btn').addEventListener('click',()=>{buildDashboard();importPanel.classList.remove('open');});
+document.getElementById('api-btn').addEventListener('click',()=>{loadFromAPI();importPanel.classList.remove('open');});
+
+/* ── API Load ── */
+async function loadFromAPI(){
+  let baseUrl=(document.getElementById('api-url').value||'').trim().replace(/\/$/,'');
+  const key=(document.getElementById('api-key').value||'').trim();
+  if(!baseUrl||!key){showMsg('Bitte OP-URL und API Key eingeben.','error');return;}
+  if(!baseUrl.startsWith('http'))baseUrl='https://'+baseUrl;
+
+  const api=baseUrl+'/api/v3';
+  const headers={'Authorization':'Basic '+btoa('apikey:'+key),'Content-Type':'application/json'};
+
+  showMsg('⏳ Verbinde mit OpenProject…','info');
+  document.getElementById('msg').style.display='block';
+
+  try{
+    // Load projects
+    // Use proxy if running on Render, else direct
+    const isHosted=window.location.hostname!=='localhost'&&!window.location.protocol.startsWith('file');
+    const proxyBase=isHosted?window.location.origin+'/proxy':'';
+
+    async function apiFetch(path){
+      if(isHosted){
+        // Via proxy
+        const r=await fetch(proxyBase+path,{headers:{'X-OP-URL':baseUrl,'X-OP-KEY':key}});
+        if(!r.ok){if(r.status===401)throw new Error('API Key ungültig.');throw new Error(`HTTP ${r.status}`);}
+        return r.json();
+      }else{
+        // Direct (local)
+        const r=await fetch(baseUrl+'/api/v3'+path,{headers});
+        if(!r.ok){if(r.status===401)throw new Error('API Key ungültig.');throw new Error(`HTTP ${r.status}`);}
+        return r.json();
+      }
+    }
+
+    const projData=await apiFetch(`/projects?pageSize=100&filters=${encodeURIComponent(JSON.stringify([{"active":{"operator":"=","values":["t"]}}]))}`);
+    const projects=(projData._embedded?.elements||[]).map(p=>({
+      name:       p.name||'',
+      status:     p._links?.status?.title||'',
+      pm:         p._links?.responsible?.title||'',
+      paket:      '',
+      kundennr:   '',
+      besonderheit:'',
+      statusdesc: '',
+      outlook:    '',
+      adint:      '',
+      wp_total:0, wp_closed:0,
+      _id:        p.id
+    }));
+
+    showMsg(`⏳ ${projects.length} Projekte geladen – Arbeitspakete werden abgerufen…`,'info');
+
+    const wpData=await apiFetch(`/work_packages?pageSize=500&filters=${encodeURIComponent(JSON.stringify([{"status":{"operator":"o","values":[]}}]))}`);
+    const allWPs=wpData?._embedded?.elements||[];
+
+    const wpClosedData=await apiFetch(`/work_packages?pageSize=500&filters=${encodeURIComponent(JSON.stringify([{"status":{"operator":"c","values":[]}}]))}`);
+    const closedWPs=wpClosedData?._embedded?.elements||[];
+
+    // Build WP counts per project
+    const wpByProj={};
+    [...allWPs,...closedWPs].forEach(wp=>{
+      const pId=wp._links?.project?.href?.split('/').pop();
+      const t=(wp._links?.type?.title||'').toLowerCase();
+      if(EXCL_WP_TYPES.includes(t))return;
+      if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};
+      wpByProj[pId].total++;
+    });
+    closedWPs.forEach(wp=>{
+      const pId=wp._links?.project?.href?.split('/').pop();
+      const t=(wp._links?.type?.title||'').toLowerCase();
+      if(EXCL_WP_TYPES.includes(t))return;
+      if(wpByProj[pId])wpByProj[pId].closed++;
+    });
+
+    // Enrich projects
+    projects.forEach(p=>{
+      const d=wpByProj[String(p._id)];
+      if(d){p.wp_total=d.total;p.wp_closed=d.closed;}
+    });
+
+    // Warenbestand from WPs
+    warenData=[];
+    [...allWPs,...closedWPs].forEach(wp=>{
+      const t=(wp._links?.type?.title||'').toLowerCase();
+      const st=(wp._links?.status?.title||'');
+      const closed=isWPClosed(st.toLowerCase());
+      if(WAREN_TYPES.includes(t)&&!closed){
+        warenData.push({
+          projekt: wp._links?.project?.title||'–',
+          titel:   wp.subject||'–',
+          typ:     wp._links?.type?.title||'–',
+          status:  st||'–',
+          raw:     {Projekt:wp._links?.project?.title,Thema:wp.subject,Typ:wp._links?.type?.title,Status:st,Zugewiesen:wp._links?.assignee?.title||'–',Erstellt:wp.createdAt?.substring(0,10)||'–'}
+        });
+      }
+    });
+
+    // Filter projects
+    const before=projects.length;
+    const filtered=projects.filter(p=>!EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status));
+    projectData=filtered;
+
+    renderCards(filtered);
+    renderWarenbestand();
+    setupProjFilters();
+    showMsg(`✅ ${filtered.length} Projekte per API geladen${before-filtered.length>0?' ('+(before-filtered.length)+' ausgeblendet)':''}.`,'success');
+
+  }catch(e){
+    showMsg('❌ Fehler: '+e.message,'error');
+  }
+}
+
+function parseFile(file,key){
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const wb=XLSX.read(e.target.result,{type:'binary',raw:false});
+      raw[key]=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+      document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent='✅ '+file.name;
+      document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');
+      document.getElementById('build-btn').disabled=false;
+    }catch(err){showMsg('Fehler: '+err.message,'error');}
+  };
+  r.readAsBinaryString(file);
+}
+
+/* ── Helpers ── */
+function showMsg(txt,type,id='msg'){const el=document.getElementById(id);if(!el)return;el.textContent=txt;el.className='msg-'+type;el.style.display='block';}
+function col(row,...keys){const rk=Object.keys(row).map(k=>k.trim());for(const k of keys){const f=rk.find(r=>r.toLowerCase().includes(k.toLowerCase()));if(f)return row[f]||'';}return '';}
+function statusKey(s){if(!s)return 'default';const l=s.toLowerCase();if(l.includes('plan')||l.includes('on track')||l.includes('zeit'))return 'on_track';if(l.includes('risk')||l.includes('gefähr'))return 'at_risk';if(l.includes('off')||l.includes('kritisch')||l.includes('verzög'))return 'off_track';return 'default';}
+function statusLabel(k){return{on_track:'Im Plan',at_risk:'Gefährdet',off_track:'Kritisch',default:'Kein Status'}[k]||k;}
+function isProjectClosed(s){if(!s)return false;const l=s.toLowerCase();return['abgeschlossen','closed','archiv','fertig','done','beendet','finished'].some(x=>l.includes(x));}
+function isWPClosed(st){return['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(s=>st.includes(s));}
+
+/* ── Build Dashboard ── */
+function buildDashboard(){
+  document.getElementById('msg').style.display='none';
+  document.getElementById('cards').innerHTML='';
+  let projects=[];
+
+  if(raw.proj){
+    projects=raw.proj.map(r=>({
+      name:       col(r,'name','bezeichnung','projekt','title')||'(Unbekannt)',
+      status:     col(r,'status','zustand','state'),
+      pm:         col(r,'projektverantwortlicher','verantwortlich','responsible','manager','projektleiter','owner'),
+      paket:      col(r,'paket','package','paketname'),
+      kundennr:   col(r,'kundennummer','kunden-nr','kundennr','kd-nr'),
+      besonderheit:col(r,'besonderheiten','besonderheit','hinweis','anmerkung','notes'),
+      statusdesc: col(r,'statusbeschreibung','status beschreibung','statuskommentar','statusinfo'),
+      outlook:    col(r,'outlook'),
+      adint:      col(r,'ad-integration','ad integration','active directory'),
+      wp_total:0, wp_closed:0
+    }));
+  }
+
+  warenData=[];
+  if(raw.wp){
+    const s0=raw.wp[0]||{};
+    const stCol= Object.keys(s0).find(k=>k.toLowerCase().includes('status'))||'';
+    const prCol= Object.keys(s0).find(k=>k.toLowerCase().includes('projekt')||k.toLowerCase().includes('project'))||'';
+    const tyCol= Object.keys(s0).find(k=>k.toLowerCase()==='typ'||k.toLowerCase()==='type')||'';
+    const tiCol= Object.keys(s0).find(k=>['thema','betreff','subject','titel','title'].some(x=>k.toLowerCase().includes(x)))||'';
+    const wpByProj={};
+
+    raw.wp.forEach(wp=>{
+      const t=(tyCol?(wp[tyCol]||''):'').toString().trim().toLowerCase();
+      const pName=(prCol?(wp[prCol]||''):'').trim();
+      const stRaw= stCol?(wp[stCol]||''):'';
+      const st=stRaw.toLowerCase();
+      const closed=isWPClosed(st);
+
+      if(WAREN_TYPES.includes(t)&&!closed){
+        warenData.push({projekt:pName, titel:tiCol?(wp[tiCol]||'–'):'–', typ:wp[tyCol]||'–', status:stRaw||'–', raw:wp});
+      }
+      if(EXCL_WP_TYPES.includes(t))return;
+      if(!wpByProj[pName])wpByProj[pName]={total:0,closed:0};
+      wpByProj[pName].total++;
+      if(closed)wpByProj[pName].closed++;
+    });
+
+    if(!projects.length){
+      projects=Object.keys(wpByProj).filter(Boolean).map(n=>({name:n,status:'',pm:'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:wpByProj[n].total,wp_closed:wpByProj[n].closed}));
+    }else{
+      projects.forEach(p=>{
+        const ex=wpByProj[p.name];
+        if(ex){p.wp_total=ex.total;p.wp_closed=ex.closed;return;}
+        const fz=Object.keys(wpByProj).find(k=>k.toLowerCase().includes(p.name.toLowerCase())||p.name.toLowerCase().includes(k.toLowerCase()));
+        if(fz){p.wp_total=wpByProj[fz].total;p.wp_closed=wpByProj[fz].closed;}
+      });
+    }
+  }
+
+  if(!projects.length){showMsg('Keine Projektdaten gefunden.','error');return;}
+  const before=projects.length;
+  projects=projects.filter(p=>!EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status));
+  projectData=projects;
+
+  renderCards(projects);
+  renderWarenbestand();
+  setupProjFilters();
+
+  showMsg(`✅ ${projects.length} Projekte geladen${before-projects.length>0?' ('+(before-projects.length)+' ausgeblendet)':''}.`,'success');
+}
+
+/* ── Render Cards ── */
+function renderCards(projects){
+  const wrap=document.getElementById('cards');
+  wrap.innerHTML='';
+  let tw=0,to=0,td=0;
+  projects.forEach((p,i)=>{
+    const sk=statusKey(p.status);
+    const pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0;
+    const fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
+    tw+=p.wp_total; to+=p.wp_total-p.wp_closed; td+=p.wp_closed;
+    const fi=[];
+    if(['beauftragt','gewünscht'].includes((p.outlook||'').toLowerCase().trim()))fi.push({l:'Outlook',v:p.outlook});
+    if(['beauftragt','gewünscht'].includes((p.adint||'').toLowerCase().trim()))fi.push({l:'AD-Integration',v:p.adint});
+    const card=document.createElement('div');
+    card.className=`project-card status-${sk}`;
+    card.dataset.name=p.name.toLowerCase();
+    card.dataset.status=sk;
+    card.dataset.pm=(p.pm||'').toLowerCase();
+    card.innerHTML=`
+      <div class="proj-header"><div class="proj-name">${p.name}</div><span class="badge badge-${sk}">${statusLabel(sk)}</span></div>
+      <div class="proj-meta">
+        ${p.pm?`<div class="meta-item"><strong>👤</strong> ${p.pm}</div>`:''}
+        ${p.paket?`<div class="meta-item"><strong>📦 Paket:</strong> ${p.paket}</div>`:''}
+        ${p.kundennr?`<div class="meta-item"><strong>🔢 Kundennr.:</strong> ${p.kundennr}</div>`:''}
+        <div class="meta-item"><strong>📋</strong> ${p.wp_total} Arbeitspakete</div>
+      </div>
+      ${p.besonderheit?`<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>⚠️ Besonderheiten:</strong> ${p.besonderheit}</div></div>`:''}
+      ${fi.length?`<div class="feature-badges">${fi.map(x=>`<span class="feature-badge feature-${x.v.toLowerCase().replace(/ü/g,'ue')}">${x.v.toLowerCase()==='beauftragt'?'⏳':'🕐'}<span class="feature-name">${x.l}:</span> ${x.v}</span>`).join('')}</div>`:''}
+      <div class="progress-section">
+        <div class="progress-label"><span>Fortschritt</span><span>${p.wp_closed}/${p.wp_total} · ${pct}%</span></div>
+        <div class="progress-track"><div class="progress-fill ${fill}" style="width:${pct}%"></div></div>
+      </div>
+      ${p.statusdesc?`<div class="status-desc-wrap"><button class="toggle-btn" data-i="${i}">💬 Statusbeschreibung <span class="arrow">▼</span></button><div class="status-desc-body" id="sd-${i}">${p.statusdesc}</div></div>`:''}`;
+    wrap.appendChild(card);
+  });
+  wrap.querySelectorAll('.toggle-btn').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('open');document.getElementById('sd-'+b.dataset.i).classList.toggle('open');}));
+  document.getElementById('s-total').textContent=projects.length;
+  document.getElementById('s-wp').textContent=tw;
+  document.getElementById('s-open').textContent=to;
+  document.getElementById('s-done').textContent=td;
+  document.getElementById('stats-row').style.display='flex';
+  document.getElementById('export-bar').style.display='flex';
+}
+
+/* ── Project filters ── */
+function setupProjFilters(){
+  const pmF=document.getElementById('proj-pm-filter');
+  pmF.innerHTML='<option value="">Alle Verantwortlichen</option>';
+  [...new Set(projectData.map(p=>p.pm).filter(Boolean))].sort().forEach(pm=>{
+    const o=document.createElement('option');o.value=pm.toLowerCase();o.textContent=pm;pmF.appendChild(o);
+  });
+  document.getElementById('proj-filter-bar').style.display='flex';
+
+  // Init multi-select for project status
+  document.getElementById('proj-status-ms-btn').dataset.base='Status';
+  initMultiSelect('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
+
+  document.getElementById('proj-search').addEventListener('input',applyProjFilter);
+  pmF.addEventListener('change',applyProjFilter);
+  document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
+}
+
+function applyProjFilter(){
+  const q=document.getElementById('proj-search').value.toLowerCase();
+  const statuses=getMsValues('proj-status-ms-panel');
+  const pm=document.getElementById('proj-pm-filter').value;
+  let v=0;
+  document.querySelectorAll('#cards .project-card').forEach(c=>{
+    const m=(!q||c.dataset.name.includes(q))&&(!statuses.length||statuses.includes(c.dataset.status))&&(!pm||c.dataset.pm.includes(pm));
+    c.classList.toggle('hidden',!m);if(m)v++;
+  });
+  document.getElementById('no-results').style.display=v===0?'block':'none';
+  document.getElementById('proj-filter-count').textContent=v+' von '+projectData.length;
+}
+
+function clearProjFilter(){
+  document.getElementById('proj-search').value='';
+  document.getElementById('proj-pm-filter').value='';
+  resetMs('proj-status-ms-btn','proj-status-ms-panel');
+  document.getElementById('proj-filter-count').textContent='';
+  document.querySelectorAll('#cards .project-card').forEach(c=>c.classList.remove('hidden'));
+  document.getElementById('no-results').style.display='none';
+}
+
+/* ── Warenbestand ── */
+function renderWarenbestand(){
+  const content=document.getElementById('wb-content');
+  if(!warenData.length){
+    content.innerHTML='<div class="wb-empty">📭 Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';
+    document.getElementById('wb-stats').style.display='none';
+    document.getElementById('wb-export-bar').style.display='none';
+    document.getElementById('wb-filter-bar').style.display='none';
+    return;
+  }
+
+  document.getElementById('wb-total').textContent=warenData.length;
+  document.getElementById('wb-proj-count').textContent=new Set(warenData.map(w=>w.projekt)).size;
+  document.getElementById('wb-stats').style.display='flex';
+  document.getElementById('wb-export-bar').style.display='flex';
+
+  // Status counts
+  const statusCounts={};
+  warenData.forEach(w=>{statusCounts[w.status]=(statusCounts[w.status]||0)+1;});
+
+  // Fill project filter
+  const wbPF=document.getElementById('wb-proj-filter');
+  wbPF.innerHTML='<option value="">Alle Projekte</option>';
+  [...new Set(warenData.map(w=>w.projekt).filter(Boolean))].sort().forEach(p=>{
+    const o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);
+  });
+
+  // Fill status multi-select panel
+  const wbSPanel=document.getElementById('wb-status-ms-panel');
+  wbSPanel.innerHTML='';
+  Object.entries(statusCounts).sort(([a],[b])=>a.localeCompare(b)).forEach(([s,c])=>{
+    const lbl=document.createElement('label');
+    lbl.className='ms-option';
+    lbl.innerHTML=`<input type="checkbox" value="${s.toLowerCase()}"> ${s} <span class="ms-count-badge">${c}</span>`;
+    wbSPanel.appendChild(lbl);
+  });
+
+  // Build table
+  const rows=warenData.map((w,i)=>`
+    <tr class="wb-row" data-idx="${i}" data-proj="${(w.projekt||'').toLowerCase()}" data-typ="${w.typ.toLowerCase()}" data-status="${w.status.toLowerCase()}" data-search="${(w.titel+' '+w.projekt+' '+w.status).toLowerCase()}">
+      <td class="proj-col">${w.projekt||'–'}</td>
+      <td>${w.titel}</td>
+      <td><span class="wb-type-badge">${w.typ}</span></td>
+      <td>${w.status}</td>
+      <td style="text-align:center;color:var(--text-muted);font-size:.8rem">🔍</td>
+    </tr>`).join('');
+
+  content.innerHTML=`
+    <div class="wb-table-wrap">
+      <table class="wb-table">
+        <thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Typ</th><th>Status</th><th></th></tr></thead>
+        <tbody id="wb-tbody">${rows}</tbody>
+      </table>
+      <div class="wb-no-results" id="wb-no-results" style="display:none">🔍 Keine Einträge gefunden.</div>
+    </div>`;
+
+  // Row click → modal
+  content.querySelectorAll('.wb-row').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const w=warenData[+row.dataset.idx];
+      const fields=Object.entries(w.raw).filter(([,v])=>v!=='').map(([k,v])=>`
+        <div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)">
+          <div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">${k}</div>
+          <div style="font-size:.8rem;color:var(--text-sub)">${v}</div>
+        </div>`).join('');
+      document.getElementById('wb-modal-content').innerHTML=`
+        <h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">${w.titel}</h3>
+        <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">${w.projekt} · <span style="color:var(--at-risk-c)">${w.typ}</span></div>${fields}`;
+      document.getElementById('wb-modal').style.display='flex';
+    });
+  });
+  document.getElementById('wb-modal').addEventListener('click',e=>{if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
+
+  // Show filter bar + init listeners AFTER DOM is ready
+  document.getElementById('wb-filter-bar').style.display='flex';
+  document.getElementById('wb-status-ms-btn').dataset.base='Status';
+  initMultiSelect('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);
+  document.getElementById('wb-search').addEventListener('input',applyWBFilter);
+  wbPF.addEventListener('change',applyWBFilter);
+  document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);
+  document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
+}
+
+function applyWBFilter(){
+  const q=document.getElementById('wb-search').value.toLowerCase();
+  const proj=document.getElementById('wb-proj-filter').value;
+  const typ=document.getElementById('wb-type-filter').value;
+  const statuses=getMsValues('wb-status-ms-panel');
+  let v=0;
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(row=>{
+    const m=(!q||row.dataset.search.includes(q))&&(!proj||row.dataset.proj===proj)&&(!typ||row.dataset.typ===typ)&&(!statuses.length||statuses.includes(row.dataset.status));
+    row.classList.toggle('wb-hidden',!m);if(m)v++;
+  });
+  const nr=document.getElementById('wb-no-results');
+  if(nr)nr.style.display=v===0?'block':'none';
+  document.getElementById('wb-filter-count').textContent=v+' von '+warenData.length;
+}
+
+function clearWBFilter(){
+  document.getElementById('wb-search').value='';
+  document.getElementById('wb-proj-filter').value='';
+  document.getElementById('wb-type-filter').value='';
+  resetMs('wb-status-ms-btn','wb-status-ms-panel');
+  document.getElementById('wb-filter-count').textContent='';
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(r=>r.classList.remove('wb-hidden'));
+  const nr=document.getElementById('wb-no-results');
+  if(nr)nr.style.display='none';
+}
+
+/* ── Logo for PDF ── */
+function addLogoToPDF(doc,cb){
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>{
+    try{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);const r=img.width/img.height,h=10,w=h*r;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}
+    cb();
+  };
+  img.onerror=()=>cb();
+  img.src='https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';
+}
+
+/* ── Exports Projekte ── */
+function tableData(){return projectData.map(p=>({'Projektname':p.name,'Status':statusLabel(statusKey(p.status)),'Projektverantwortlicher':p.pm||'–','Paket':p.paket||'–','Outlook':p.outlook||'–','AD-Integration':p.adint||'–','AP gesamt':p.wp_total,'AP abgeschlossen':p.wp_closed,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0,'Besonderheiten':(p.besonderheit||'–').substring(0,200)}));}
+function exportExcel(){const ws=XLSX.utils.json_to_sheet(tableData());ws['!cols']=[28,14,22,16,10,12,10,14,8,14,40].map(w=>({wch:w}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Projekte');XLSX.writeFile(wb,'welcome_projekte.xlsx');}
+function exportCSV(){const rows=tableData(),h=Object.keys(rows[0]);const csv=[h.join(';'),...rows.map(r=>h.map(k=>`"${(r[k]+'').replace(/"/g,'""')}"`).join(';'))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_projekte.csv';a.click();}
+function exportPDF(){
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  addLogoToPDF(doc,()=>{
+    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME – Projektübersicht',14,14);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);
+    const cols=['Projektname','Status','Projektverantwortlicher','Paket','Outlook','AD-Integration','AP gesamt','AP offen','Fortschritt (%)'];
+    doc.autoTable({startY:24,head:[cols],body:tableData().map(r=>cols.map(c=>r[c]!==undefined?r[c]:'–')),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:44},8:{halign:'center'}}});
+    doc.save('welcome_projekte.pdf');
+  });
+}
+
+/* ── Exports Warenbestand ── */
+function wbTableData(){return warenData.map(w=>({'Projekt':w.projekt||'–','Arbeitspaket':w.titel,'Typ':w.typ,'Status':w.status}));}
+function exportWBExcel(){const ws=XLSX.utils.json_to_sheet(wbTableData());ws['!cols']=[30,40,18,16].map(w=>({wch:w}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Warenbestand');XLSX.writeFile(wb,'welcome_warenbestand.xlsx');}
+function exportWBCSV(){const rows=wbTableData(),h=Object.keys(rows[0]);const csv=[h.join(';'),...rows.map(r=>h.map(k=>`"${(r[k]+'').replace(/"/g,'""')}"`).join(';'))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_warenbestand.csv';a.click();}
+function exportWBPDF(){
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  addLogoToPDF(doc,()=>{
+    doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME – Warenbestand',14,14);
+    doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);
+    const cols=['Projekt','Arbeitspaket','Typ','Status'];
+    doc.autoTable({startY:24,head:[cols],body:wbTableData().map(r=>cols.map(c=>r[c]||'–')),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});
+    doc.save('welcome_warenbestand.pdf');
+  });
+}
+</script>
+</body>
+</html>
