@@ -880,7 +880,7 @@ async function loadProjectWPs(projId) {
   var el = document.getElementById('ap-body-' + projId);
   if (!el || el.dataset.loaded === '1') return;
   try {
-    var data = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100');
+    var data = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}])));
     var wps = data._embedded && data._embedded.elements ? data._embedded.elements : [];
     if (!wps.length) { el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete gefunden.</div>'; el.dataset.loaded = '1'; return; }
     el.innerHTML = wps.map(function(wp) {
@@ -941,7 +941,7 @@ function renderWarenbestand() {
     document.getElementById('wb-filter-bar').style.display = 'none';
     return;
   }
-  var PENDING = ['ausstehend','offen','bestellt','in bestellung','neu'];
+  var PENDING = ['ausstehend','bestellung ausstehend','offen','bestellt','in bestellung','neu'];
   warenData.sort(function(a, b) {
     var aP = PENDING.some(function(s) { return a.status.toLowerCase().includes(s); }) ? 0 : 1;
     var bP = PENDING.some(function(s) { return b.status.toLowerCase().includes(s); }) ? 0 : 1;
