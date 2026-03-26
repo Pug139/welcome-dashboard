@@ -19,6 +19,7 @@
   --on-track-c:#3fb950;--at-risk-c:#f0883e;--off-track-c:#f85149;
   --tab-active:#0055a5;--tab-inactive:#21262d;
   --input-bg:#0d1f35;--input-border:#1a4a7a;
+  --success-bg:#0d2e1a;--success-c:#3fb950;--error-bg:#2d1117;--error-c:#f85149;
 }
 [data-theme="light"]{
   --bg:#f4f6f9;--bg2:#fff;--bg3:#eef1f5;--border:#d0d7de;
@@ -30,10 +31,10 @@
   --on-track-c:#1d7a45;--at-risk-c:#e67e22;--off-track-c:#c0392b;
   --tab-active:#003366;--tab-inactive:#e8eef5;
   --input-bg:#fff;--input-border:#99b3cc;
+  --success-bg:#eafaf1;--success-c:#1d7a45;--error-bg:#fdecea;--error-c:#c0392b;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
-
 header{background:var(--brand-dark);color:white;padding:12px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.4);position:sticky;top:0;z-index:200}
 header img{height:38px}
 header .title{flex:1}
@@ -42,7 +43,6 @@ header p{font-size:.72rem;opacity:.7}
 .header-actions{display:flex;align-items:center;gap:8px}
 .theme-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;transition:background .2s;white-space:nowrap}
 .theme-toggle:hover{background:rgba(255,255,255,.2)}
-
 .import-dropdown{position:relative}
 .import-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;transition:background .2s;white-space:nowrap}
 .import-trigger:hover{background:rgba(255,255,255,.2)}
@@ -59,14 +59,12 @@ header p{font-size:.72rem;opacity:.7}
 .import-both:hover,.import-both.over{border-color:var(--brand-light);background:var(--drop-over)}
 .import-both.loaded{border-color:var(--on-track-c);background:var(--drop-loaded);color:var(--on-track-c);font-weight:600}
 .import-both input{display:none}
-
 .tab-bar{display:flex;align-items:center;max-width:920px;margin:16px auto 0;padding:0 16px;gap:4px}
 .tab-btn{padding:9px 22px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;color:var(--text-muted);background:var(--tab-inactive)}
 .tab-btn.active{background:var(--tab-active);color:white}
 .tab-btn:hover:not(.active){background:var(--bg3);color:var(--text)}
 .main{max-width:920px;margin:0 auto;padding:16px 16px 24px}
 .tab-panel{display:none}.tab-panel.active{display:block}
-
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .search-wrap{position:relative;flex:1;min-width:160px}
 .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:.85rem;pointer-events:none;opacity:.5}
@@ -77,8 +75,6 @@ header p{font-size:.72rem;opacity:.7}
 .clear-btn{padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;transition:all .2s}
 .clear-btn:hover{border-color:var(--brand-light);color:var(--brand-light)}
 .filter-count{font-size:.78rem;color:var(--text-muted);white-space:nowrap;align-self:center}
-
-/* Multi-select */
 .ms-wrap{position:relative}
 .ms-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;cursor:pointer;white-space:nowrap;min-width:120px;justify-content:space-between}
 .ms-btn:hover{border-color:var(--brand-light)}
@@ -90,27 +86,25 @@ header p{font-size:.72rem;opacity:.7}
 .ms-option:hover{background:var(--bg3)}
 .ms-option input[type=checkbox]{accent-color:var(--brand-light);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .ms-count-badge{margin-left:auto;background:var(--bg3);color:var(--text-muted);border-radius:10px;padding:1px 6px;font-size:.68rem;font-weight:600}
-
 #msg,#msg-wb{padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none}
-.msg-error{background:#2d1117;color:#f85149;border:1px solid #f85149}
-.msg-success{background:#0d2e1a;color:#3fb950;border:1px solid #3fb950}
-[data-theme="light"] .msg-error{background:#fdecea;color:#c0392b;border-color:#e8b4b0}
-[data-theme="light"] .msg-success{background:#eafaf1;color:#1d7a45;border-color:#a9dfc0}
-
+.msg-error{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c)}
+.msg-success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
+.msg-info{background:var(--hint-bg);color:var(--hint-text);border:1px solid var(--hint-border)}
 .stats-row,.wb-stats{display:none;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .stat-card{background:var(--stat-bg);border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:120px;text-align:center}
 .stat-card .num{font-size:1.7rem;font-weight:700;color:var(--brand-light)}
 .stat-card .lbl{font-size:.72rem;color:var(--text-muted);margin-top:2px}
-
 .export-bar,.wb-export-bar{display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .btn{padding:9px 18px;border:none;border-radius:7px;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary{background:var(--brand);color:white;width:100%;justify-content:center;margin-top:4px}
+.btn-primary{background:var(--brand);color:white;justify-content:center;margin-top:4px}
 .btn-primary:hover:not(:disabled){background:var(--brand-dark)}
+.btn-success{background:#1d7a45;color:white}
+.btn-success:hover:not(:disabled){background:#165e35}
 .btn-excel{background:#1d7a45;color:white}.btn-excel:hover{background:#165e35}
 .btn-pdf{background:#a93226;color:white}.btn-pdf:hover{background:#922b21}
 .btn-csv{background:#555e6a;color:white}.btn-csv:hover{background:#444d58}
-
+.btn-full{width:100%}
 .project-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:12px;border-left:5px solid var(--brand);transition:background .3s}
 .project-card.status-on_track{border-left-color:var(--on-track-c)}
 .project-card.status-at_risk{border-left-color:var(--at-risk-c)}
@@ -147,7 +141,6 @@ header p{font-size:.72rem;opacity:.7}
 .status-desc-body{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-size:.8rem;color:var(--text-sub);line-height:1.6;background:var(--sdesc-bg);border:1px solid var(--sdesc-border);border-top:none;border-radius:0 0 6px 6px;padding:0 12px}
 .status-desc-body.open{max-height:300px;padding:10px 12px}
 .no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
-
 .wb-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .wb-table{width:100%;border-collapse:collapse;font-size:.83rem}
 .wb-table th{background:var(--brand-dark);color:white;padding:9px 13px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
@@ -159,6 +152,46 @@ header p{font-size:.72rem;opacity:.7}
 .wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
 .wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
 
+/* ── Neues Projekt Form ── */
+.np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
+.np-card .np-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
+.np-section{margin-bottom:20px}
+.np-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:14px}
+.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.np-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.np-field{display:flex;flex-direction:column;gap:5px}
+.np-field.full{grid-column:1/-1}
+.np-label{font-size:.78rem;font-weight:600;color:var(--text-sub)}
+.np-label .req{color:var(--at-risk-c);margin-left:2px}
+.np-input,.np-select,.np-textarea{padding:9px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;width:100%;transition:border-color .2s;font-family:inherit}
+.np-input:focus,.np-select:focus,.np-textarea:focus{outline:none;border-color:var(--brand-light)}
+.np-input.invalid,.np-select.invalid{border-color:var(--error-c)}
+.np-textarea{resize:vertical;min-height:80px}
+.np-radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.np-radio-label{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--input-border);border-radius:7px;cursor:pointer;font-size:.83rem;color:var(--text-sub);transition:all .2s;background:var(--input-bg)}
+.np-radio-label:hover{border-color:var(--brand-light)}
+.np-radio-label input{display:none}
+.np-radio-label.selected{border-color:var(--brand-light);background:rgba(74,144,217,.12);color:var(--brand-light);font-weight:600}
+
+.np-wp-section{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
+.np-wp-title{font-size:.8rem;font-weight:700;color:var(--text-sub);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.np-wp-list{display:flex;flex-direction:column;gap:6px}
+.np-wp-item{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--text-sub);padding:5px 0;border-bottom:1px solid var(--border)}
+.np-wp-item:last-child{border-bottom:none}
+.np-wp-item .wp-dot{width:7px;height:7px;border-radius:50%;background:var(--brand-light);flex-shrink:0}
+
+.np-api-section{background:var(--hint-bg);border:1px solid var(--hint-border);border-radius:8px;padding:14px;margin-bottom:16px}
+.np-api-title{font-size:.78rem;font-weight:700;color:var(--hint-text);margin-bottom:10px}
+.np-api-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.np-result{padding:14px 16px;border-radius:8px;font-size:.85rem;margin-top:16px;display:none;line-height:1.6}
+.np-result.success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
+.np-result.error{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c)}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 14px}
 
 @media(max-width:640px){
@@ -167,20 +200,13 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   header h1{font-size:.9rem}
   .import-panel{width:calc(100vw - 24px);right:-10px}
   .import-grid{grid-template-columns:1fr}
-  .tab-bar{padding:0 10px}
+  .tab-bar{padding:0 10px;flex-wrap:wrap}
   .tab-btn{padding:7px 14px;font-size:.8rem}
   .main{padding:10px 10px 20px}
-  .stats-row,.wb-stats{gap:6px}
-  .stat-card{padding:10px 12px;min-width:90px}
-  .stat-card .num{font-size:1.4rem}
-  .project-card{padding:12px 14px}
-  .proj-header,.proj-meta{flex-direction:column;gap:5px}
+  .np-grid,.np-grid-3,.np-api-grid{grid-template-columns:1fr}
+  .np-field.full{grid-column:1}
   .filter-bar{flex-direction:column;align-items:stretch}
-  .ms-btn,.filter-select,.search-wrap{width:100%}
   .export-bar,.wb-export-bar{flex-direction:column}
-  .export-bar .btn,.wb-export-bar .btn,.btn-primary{width:100%;justify-content:center}
-  .wb-table{font-size:.73rem}
-  .wb-table th,.wb-table td{padding:7px 9px}
 }
 </style>
 </head>
@@ -216,14 +242,14 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div style="display:flex;flex-direction:column;gap:8px">
             <input type="text" id="api-url" placeholder="https://meine-instanz.openproject.com" style="padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.82rem;width:100%">
             <input type="password" id="api-key" placeholder="API Key" style="padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.82rem;width:100%">
-            <button class="btn btn-primary" id="api-btn" style="margin-top:0">🔌 Per API laden</button>
+            <button class="btn btn-primary btn-full" id="api-btn">🔌 Per API laden</button>
           </div>
           <p style="font-size:.7rem;color:var(--text-muted);margin-top:6px">🔒 Key wird nur lokal verwendet, nicht gespeichert.</p>
         </div>
         <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
           <h3 style="margin-bottom:8px">📂 Oder per CSV importieren</h3>
         </div>
-        <button class="btn btn-primary" id="build-btn" disabled>🚀 Dashboard aus CSV erstellen</button>
+        <button class="btn btn-primary btn-full" id="build-btn" disabled>🚀 Dashboard aus CSV erstellen</button>
       </div>
     </div>
     <button class="theme-toggle" id="themeBtn"><span class="theme-icon">☀️</span><span class="theme-label">Light</span></button>
@@ -233,9 +259,11 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="projekte">📋 Projekte</button>
   <button class="tab-btn" data-tab="warenbestand">📦 Warenbestand</button>
+  <button class="tab-btn" data-tab="neu">➕ Neues Projekt</button>
 </div>
 
 <div class="main">
+
   <!-- TAB PROJEKTE -->
   <div class="tab-panel active" id="tab-projekte">
     <div id="msg"></div>
@@ -298,7 +326,128 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     </div>
     <div id="wb-content"><div class="wb-empty">📥 Bitte zuerst die CSVs über „Import" laden und Dashboard erstellen.</div></div>
   </div>
-</div>
+
+  <!-- TAB NEUES PROJEKT -->
+  <div class="tab-panel" id="tab-neu">
+
+    <!-- API Verbindung -->
+    <div class="np-api-section" id="np-api-section">
+      <div class="np-api-title">🔌 OpenProject Verbindung</div>
+      <div class="np-api-grid">
+        <div class="np-field">
+          <label class="np-label">Instanz-URL</label>
+          <input class="np-input" id="np-url" type="text" placeholder="https://meine-instanz.openproject.com">
+        </div>
+        <div class="np-field">
+          <label class="np-label">API Key</label>
+          <input class="np-input" id="np-key" type="password" placeholder="API Key eingeben">
+        </div>
+      </div>
+      <p style="font-size:.7rem;color:var(--hint-text);margin-top:8px">🔒 Verbindungsdaten werden nicht gespeichert. Alternativ: Projekt ohne API anlegen und manuell in OP übertragen.</p>
+    </div>
+
+    <!-- Formular -->
+    <div class="np-card">
+      <h2>➕ Neues Projekt anlegen</h2>
+      <p class="np-sub">Kundendaten vom Vertrieb eintragen – das Projekt wird per API direkt in OpenProject angelegt.</p>
+
+      <!-- Kundendaten -->
+      <div class="np-section">
+        <div class="np-section-title">👤 Kundendaten</div>
+        <div class="np-grid">
+          <div class="np-field">
+            <label class="np-label">Kundenname / Projektname <span class="req">*</span></label>
+            <input class="np-input" id="np-name" type="text" placeholder="z.B. Mustermann GmbH">
+          </div>
+          <div class="np-field">
+            <label class="np-label">Standort</label>
+            <input class="np-input" id="np-standort" type="text" placeholder="z.B. München">
+          </div>
+          <div class="np-field">
+            <label class="np-label">Ansprechpartner (Kunde)</label>
+            <input class="np-input" id="np-ap" type="text" placeholder="Vor- und Nachname">
+          </div>
+          <div class="np-field">
+            <label class="np-label">Telefon / E-Mail</label>
+            <input class="np-input" id="np-kontakt" type="text" placeholder="Kontaktdaten">
+          </div>
+        </div>
+      </div>
+
+      <!-- Paket & Features -->
+      <div class="np-section">
+        <div class="np-section-title">📦 Gebuchtes Paket & Features</div>
+        <div class="np-grid">
+          <div class="np-field">
+            <label class="np-label">Paket <span class="req">*</span></label>
+            <select class="np-select" id="np-paket">
+              <option value="">– Bitte wählen –</option>
+              <option value="Starter">Starter</option>
+              <option value="Professional">Professional</option>
+              <option value="Enterprise">Enterprise</option>
+            </select>
+          </div>
+          <div class="np-field">
+            <label class="np-label">Eingesetzte Hardware</label>
+            <input class="np-input" id="np-hardware" type="text" placeholder="z.B. Surface Pro, Drucker XY">
+          </div>
+        </div>
+        <div class="np-grid-3" style="margin-top:12px">
+          <div class="np-field">
+            <label class="np-label">Outlook Add-in</label>
+            <div class="np-radio-group" id="np-outlook">
+              <label class="np-radio-label"><input type="radio" name="outlook" value="Ja"> ✅ Ja</label>
+              <label class="np-radio-label"><input type="radio" name="outlook" value="Nein" checked> ❌ Nein</label>
+              <label class="np-radio-label"><input type="radio" name="outlook" value="Gewünscht"> 🕐 Gewünscht</label>
+            </div>
+          </div>
+          <div class="np-field">
+            <label class="np-label">AD-Integration</label>
+            <div class="np-radio-group" id="np-adint">
+              <label class="np-radio-label"><input type="radio" name="adint" value="Ja"> ✅ Ja</label>
+              <label class="np-radio-label"><input type="radio" name="adint" value="Nein" checked> ❌ Nein</label>
+              <label class="np-radio-label"><input type="radio" name="adint" value="Gewünscht"> 🕐 Gewünscht</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bemerkungen -->
+      <div class="np-section">
+        <div class="np-section-title">📝 Weitere Infos</div>
+        <div class="np-grid">
+          <div class="np-field full">
+            <label class="np-label">Bemerkungen / Besonderheiten</label>
+            <textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen, Hinweise vom Vertrieb…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standard-Arbeitspakete Vorschau -->
+      <div class="np-section">
+        <div class="np-section-title">📋 Standard-Arbeitspakete (werden automatisch angelegt)</div>
+        <div class="np-wp-section">
+          <div class="np-wp-title">📦 Vorlage: Basis-Arbeitspakete</div>
+          <div class="np-wp-list" id="wp-preview"></div>
+        </div>
+        <p style="font-size:.72rem;color:var(--text-muted);margin-top:8px">💡 Die Arbeitspakete passen sich je nach Paket und gebuchten Features an.</p>
+      </div>
+
+      <!-- Aktionsbuttons -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn btn-success" id="np-submit-btn" style="flex:1;min-width:200px;justify-content:center">
+          🚀 Projekt in OpenProject anlegen
+        </button>
+        <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="resetForm()">
+          🗑 Formular leeren
+        </button>
+      </div>
+
+      <div class="np-result" id="np-result"></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
 
 <footer>WELCOME Projekt-Dashboard · EnterSmart GmbH · Alle Daten bleiben lokal in eurem Browser</footer>
 
@@ -316,6 +465,51 @@ let projectData=[], warenData=[];
 const EXCL_PROJ=['demo project','supportfälle','test portl','dräxlmaier main','wisag main','test portal'];
 const EXCL_WP_TYPES=['phase','meilenstein'];
 const WAREN_TYPES=['hardware','elo einrichtung'];
+
+/* ── Standard-Arbeitspakete Vorlagen ── */
+const WP_TEMPLATES = {
+  basis: [
+    { name: 'Kickoff & Projektplanung', type: 'Task' },
+    { name: 'Systemeinrichtung', type: 'Task' },
+    { name: 'Benutzerverwaltung', type: 'Task' },
+    { name: 'Schulung', type: 'Task' },
+    { name: 'Go-Live', type: 'Task' },
+    { name: 'Abnahme & Dokumentation', type: 'Task' },
+  ],
+  outlook: { name: 'Outlook Add-in einrichten', type: 'Task' },
+  adint:   { name: 'AD-Integration konfigurieren', type: 'Task' },
+  hardware:{ name: 'Hardware einrichten & liefern', type: 'Task' },
+};
+
+/* ── WP Vorschau ── */
+function updateWPPreview(){
+  const outlook = document.querySelector('input[name="outlook"]:checked')?.value;
+  const adint   = document.querySelector('input[name="adint"]:checked')?.value;
+  const hw      = document.getElementById('np-hardware')?.value.trim();
+  const list = [...WP_TEMPLATES.basis];
+  if(outlook==='Ja'||outlook==='Gewünscht') list.push(WP_TEMPLATES.outlook);
+  if(adint==='Ja'||adint==='Gewünscht')     list.push(WP_TEMPLATES.adint);
+  if(hw) list.push(WP_TEMPLATES.hardware);
+  const el = document.getElementById('wp-preview');
+  el.innerHTML = list.map(wp=>`<div class="np-wp-item"><span class="wp-dot"></span>${wp.name}</div>`).join('');
+}
+updateWPPreview();
+
+/* ── Radio styling ── */
+function initRadios(){
+  document.querySelectorAll('.np-radio-group').forEach(grp=>{
+    grp.querySelectorAll('input[type=radio]').forEach(r=>{
+      r.addEventListener('change',()=>{
+        grp.querySelectorAll('.np-radio-label').forEach(l=>l.classList.remove('selected'));
+        r.closest('.np-radio-label').classList.add('selected');
+        updateWPPreview();
+      });
+      if(r.checked) r.closest('.np-radio-label').classList.add('selected');
+    });
+  });
+}
+initRadios();
+document.getElementById('np-hardware').addEventListener('input', updateWPPreview);
 
 /* ── Theme ── */
 document.getElementById('themeBtn').addEventListener('click',()=>{
@@ -340,57 +534,32 @@ document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',
 }));
 
 /* ── Multi-select ── */
-function initMultiSelect(btnId, panelId, onChangeFn){
-  const btn=document.getElementById(btnId);
-  const panel=document.getElementById(panelId);
-  if(!btn||!panel) return;
-
+function initMultiSelect(btnId,panelId,onChangeFn){
+  const btn=document.getElementById(btnId),panel=document.getElementById(panelId);
+  if(!btn||!panel)return;
   btn.addEventListener('click',e=>{
     e.stopPropagation();
-    // close others
     document.querySelectorAll('.ms-panel.open').forEach(p=>{if(p!==panel)p.classList.remove('open');});
-    document.querySelectorAll('.ms-btn').forEach(b=>{if(b!==btn)b.querySelector('.ms-arrow').style.transform='';});
     panel.classList.toggle('open');
     btn.querySelector('.ms-arrow').style.transform=panel.classList.contains('open')?'rotate(180deg)':'';
   });
-
-  panel.addEventListener('change',()=>{
-    updateMsBtn(btnId, panelId);
-    onChangeFn();
-  });
+  panel.addEventListener('change',()=>{updateMsBtn(btnId,panelId);onChangeFn();});
 }
-
-function updateMsBtn(btnId, panelId){
-  const btn=document.getElementById(btnId);
-  const panel=document.getElementById(panelId);
-  if(!btn||!panel) return;
+function updateMsBtn(btnId,panelId){
+  const btn=document.getElementById(btnId),panel=document.getElementById(panelId);
+  if(!btn||!panel)return;
   const n=panel.querySelectorAll('input:checked').length;
-  const baseText=btn.dataset.base||'Status';
-  btn.innerHTML=`${baseText}${n>0?' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">'+n+'</span>':''} <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">▼</span>`;
+  const base=btn.dataset.base||'Status';
+  btn.innerHTML=`${base}${n>0?' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">'+n+'</span>':''} <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">▼</span>`;
   btn.classList.toggle('has-selection',n>0);
 }
-
-function getMsValues(panelId){
-  const panel=document.getElementById(panelId);
-  if(!panel) return [];
-  return [...panel.querySelectorAll('input:checked')].map(i=>i.value);
-}
-
-function resetMs(btnId, panelId){
-  const panel=document.getElementById(panelId);
-  if(panel) panel.querySelectorAll('input').forEach(i=>i.checked=false);
-  updateMsBtn(btnId, panelId);
-}
-
-// Close all ms panels on outside click
-document.addEventListener('click',()=>{
-  document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));
-  document.querySelectorAll('.ms-btn .ms-arrow').forEach(a=>a.style.transform='');
-});
+function getMsValues(panelId){const p=document.getElementById(panelId);if(!p)return[];return[...p.querySelectorAll('input:checked')].map(i=>i.value);}
+function resetMs(btnId,panelId){const p=document.getElementById(panelId);if(p)p.querySelectorAll('input').forEach(i=>i.checked=false);updateMsBtn(btnId,panelId);}
+document.addEventListener('click',()=>{document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));document.querySelectorAll('.ms-btn .ms-arrow').forEach(a=>a.style.transform='');});
 
 /* ── Drop zones ── */
 function setupZone(zoneId,inputId,key){
-  const zone=document.getElementById(zoneId), inp=document.getElementById(inputId);
+  const zone=document.getElementById(zoneId),inp=document.getElementById(inputId);
   zone.addEventListener('click',()=>inp.click());
   inp.addEventListener('change',()=>{if(inp.files[0])parseFile(inp.files[0],key);});
   ['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();zone.classList.add('over');}));
@@ -399,8 +568,7 @@ function setupZone(zoneId,inputId,key){
 }
 setupZone('dz-proj','f-proj','proj');
 setupZone('dz-wp','f-wp','wp');
-
-const dzBoth=document.getElementById('dz-both'), fBoth=document.getElementById('f-both');
+const dzBoth=document.getElementById('dz-both'),fBoth=document.getElementById('f-both');
 dzBoth.addEventListener('click',()=>fBoth.click());
 fBoth.addEventListener('change',()=>handleMulti(fBoth.files));
 ['dragenter','dragover'].forEach(ev=>dzBoth.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.add('over');}));
@@ -430,118 +598,42 @@ function handleMulti(files){
     r.readAsBinaryString(f);
   });
 }
-
 document.getElementById('build-btn').addEventListener('click',()=>{buildDashboard();importPanel.classList.remove('open');});
 document.getElementById('api-btn').addEventListener('click',()=>{loadFromAPI();importPanel.classList.remove('open');});
 
-/* ── API Load ── */
+/* ── API Load (Dashboard) ── */
 async function loadFromAPI(){
   let baseUrl=(document.getElementById('api-url').value||'').trim().replace(/\/$/,'');
   const key=(document.getElementById('api-key').value||'').trim();
   if(!baseUrl||!key){showMsg('Bitte OP-URL und API Key eingeben.','error');return;}
   if(!baseUrl.startsWith('http'))baseUrl='https://'+baseUrl;
-
   const api=baseUrl+'/api/v3';
   const headers={'Authorization':'Basic '+btoa('apikey:'+key),'Content-Type':'application/json'};
-
   showMsg('⏳ Verbinde mit OpenProject…','info');
   document.getElementById('msg').style.display='block';
-
   try{
-    // Load projects
-    // Use proxy if running on Render, else direct
-    const isHosted=window.location.hostname!=='localhost'&&!window.location.protocol.startsWith('file');
-    const proxyBase=isHosted?window.location.origin+'/proxy':'';
-
-    async function apiFetch(path){
-      if(isHosted){
-        // Via proxy
-        const r=await fetch(proxyBase+path,{headers:{'X-OP-URL':baseUrl,'X-OP-KEY':key}});
-        if(!r.ok){if(r.status===401)throw new Error('API Key ungültig.');throw new Error(`HTTP ${r.status}`);}
-        return r.json();
-      }else{
-        // Direct (local)
-        const r=await fetch(baseUrl+'/api/v3'+path,{headers});
-        if(!r.ok){if(r.status===401)throw new Error('API Key ungültig.');throw new Error(`HTTP ${r.status}`);}
-        return r.json();
-      }
-    }
-
-    const projData=await apiFetch(`/projects?pageSize=100&filters=${encodeURIComponent(JSON.stringify([{"active":{"operator":"=","values":["t"]}}]))}`);
-    const projects=(projData._embedded?.elements||[]).map(p=>({
-      name:       p.name||'',
-      status:     p._links?.status?.title||'',
-      pm:         p._links?.responsible?.title||'',
-      paket:      '',
-      kundennr:   '',
-      besonderheit:'',
-      statusdesc: '',
-      outlook:    '',
-      adint:      '',
-      wp_total:0, wp_closed:0,
-      _id:        p.id
-    }));
-
-    showMsg(`⏳ ${projects.length} Projekte geladen – Arbeitspakete werden abgerufen…`,'info');
-
-    const wpData=await apiFetch(`/work_packages?pageSize=500&filters=${encodeURIComponent(JSON.stringify([{"status":{"operator":"o","values":[]}}]))}`);
+    const projRes=await fetch(`${api}/projects?pageSize=100`,{headers});
+    if(!projRes.ok) throw new Error(projRes.status===401?'API Key ungültig.':`HTTP ${projRes.status}`);
+    const projData=await projRes.json();
+    const projects=(projData._embedded?.elements||[]).map(p=>({name:p.name||'',status:p._links?.status?.title||'',pm:p._links?.responsible?.title||'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0,_id:p.id}));
+    const wpRes=await fetch(`${api}/work_packages?pageSize=500`,{headers});
+    const wpData=wpRes.ok?await wpRes.json():null;
     const allWPs=wpData?._embedded?.elements||[];
-
-    const wpClosedData=await apiFetch(`/work_packages?pageSize=500&filters=${encodeURIComponent(JSON.stringify([{"status":{"operator":"c","values":[]}}]))}`);
-    const closedWPs=wpClosedData?._embedded?.elements||[];
-
-    // Build WP counts per project
     const wpByProj={};
-    [...allWPs,...closedWPs].forEach(wp=>{
+    allWPs.forEach(wp=>{
       const pId=wp._links?.project?.href?.split('/').pop();
       const t=(wp._links?.type?.title||'').toLowerCase();
       if(EXCL_WP_TYPES.includes(t))return;
       if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};
       wpByProj[pId].total++;
+      if(isWPClosed((wp._links?.status?.title||'').toLowerCase()))wpByProj[pId].closed++;
     });
-    closedWPs.forEach(wp=>{
-      const pId=wp._links?.project?.href?.split('/').pop();
-      const t=(wp._links?.type?.title||'').toLowerCase();
-      if(EXCL_WP_TYPES.includes(t))return;
-      if(wpByProj[pId])wpByProj[pId].closed++;
-    });
-
-    // Enrich projects
-    projects.forEach(p=>{
-      const d=wpByProj[String(p._id)];
-      if(d){p.wp_total=d.total;p.wp_closed=d.closed;}
-    });
-
-    // Warenbestand from WPs
-    warenData=[];
-    [...allWPs,...closedWPs].forEach(wp=>{
-      const t=(wp._links?.type?.title||'').toLowerCase();
-      const st=(wp._links?.status?.title||'');
-      const closed=isWPClosed(st.toLowerCase());
-      if(WAREN_TYPES.includes(t)&&!closed){
-        warenData.push({
-          projekt: wp._links?.project?.title||'–',
-          titel:   wp.subject||'–',
-          typ:     wp._links?.type?.title||'–',
-          status:  st||'–',
-          raw:     {Projekt:wp._links?.project?.title,Thema:wp.subject,Typ:wp._links?.type?.title,Status:st,Zugewiesen:wp._links?.assignee?.title||'–',Erstellt:wp.createdAt?.substring(0,10)||'–'}
-        });
-      }
-    });
-
-    // Filter projects
-    const before=projects.length;
+    projects.forEach(p=>{const d=wpByProj[String(p._id)];if(d){p.wp_total=d.total;p.wp_closed=d.closed;}});
     const filtered=projects.filter(p=>!EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status));
     projectData=filtered;
-
-    renderCards(filtered);
-    renderWarenbestand();
-    setupProjFilters();
-    showMsg(`✅ ${filtered.length} Projekte per API geladen${before-filtered.length>0?' ('+(before-filtered.length)+' ausgeblendet)':''}.`,'success');
-
-  }catch(e){
-    showMsg('❌ Fehler: '+e.message,'error');
-  }
+    renderCards(filtered);renderWarenbestand();setupProjFilters();
+    showMsg(`✅ ${filtered.length} Projekte geladen.`,'success');
+  }catch(e){showMsg('❌ Fehler: '+e.message,'error');}
 }
 
 function parseFile(file,key){
@@ -571,47 +663,29 @@ function buildDashboard(){
   document.getElementById('msg').style.display='none';
   document.getElementById('cards').innerHTML='';
   let projects=[];
-
   if(raw.proj){
-    projects=raw.proj.map(r=>({
-      name:       col(r,'name','bezeichnung','projekt','title')||'(Unbekannt)',
-      status:     col(r,'status','zustand','state'),
-      pm:         col(r,'projektverantwortlicher','verantwortlich','responsible','manager','projektleiter','owner'),
-      paket:      col(r,'paket','package','paketname'),
-      kundennr:   col(r,'kundennummer','kunden-nr','kundennr','kd-nr'),
-      besonderheit:col(r,'besonderheiten','besonderheit','hinweis','anmerkung','notes'),
-      statusdesc: col(r,'statusbeschreibung','status beschreibung','statuskommentar','statusinfo'),
-      outlook:    col(r,'outlook'),
-      adint:      col(r,'ad-integration','ad integration','active directory'),
-      wp_total:0, wp_closed:0
-    }));
+    projects=raw.proj.map(r=>({name:col(r,'name','bezeichnung','projekt','title')||'(Unbekannt)',status:col(r,'status','zustand','state'),pm:col(r,'projektverantwortlicher','verantwortlich','responsible','manager','projektleiter','owner'),paket:col(r,'paket','package','paketname'),kundennr:col(r,'kundennummer','kunden-nr','kundennr','kd-nr'),besonderheit:col(r,'besonderheiten','besonderheit','hinweis','anmerkung','notes'),statusdesc:col(r,'statusbeschreibung','status beschreibung','statuskommentar','statusinfo'),outlook:col(r,'outlook'),adint:col(r,'ad-integration','ad integration','active directory'),wp_total:0,wp_closed:0}));
   }
-
   warenData=[];
   if(raw.wp){
     const s0=raw.wp[0]||{};
-    const stCol= Object.keys(s0).find(k=>k.toLowerCase().includes('status'))||'';
-    const prCol= Object.keys(s0).find(k=>k.toLowerCase().includes('projekt')||k.toLowerCase().includes('project'))||'';
-    const tyCol= Object.keys(s0).find(k=>k.toLowerCase()==='typ'||k.toLowerCase()==='type')||'';
-    const tiCol= Object.keys(s0).find(k=>['thema','betreff','subject','titel','title'].some(x=>k.toLowerCase().includes(x)))||'';
+    const stCol=Object.keys(s0).find(k=>k.toLowerCase().includes('status'))||'';
+    const prCol=Object.keys(s0).find(k=>k.toLowerCase().includes('projekt')||k.toLowerCase().includes('project'))||'';
+    const tyCol=Object.keys(s0).find(k=>k.toLowerCase()==='typ'||k.toLowerCase()==='type')||'';
+    const tiCol=Object.keys(s0).find(k=>['thema','betreff','subject','titel','title'].some(x=>k.toLowerCase().includes(x)))||'';
     const wpByProj={};
-
     raw.wp.forEach(wp=>{
       const t=(tyCol?(wp[tyCol]||''):'').toString().trim().toLowerCase();
       const pName=(prCol?(wp[prCol]||''):'').trim();
-      const stRaw= stCol?(wp[stCol]||''):'';
+      const stRaw=stCol?(wp[stCol]||''):'';
       const st=stRaw.toLowerCase();
       const closed=isWPClosed(st);
-
-      if(WAREN_TYPES.includes(t)&&!closed){
-        warenData.push({projekt:pName, titel:tiCol?(wp[tiCol]||'–'):'–', typ:wp[tyCol]||'–', status:stRaw||'–', raw:wp});
-      }
+      if(WAREN_TYPES.includes(t)&&!closed){warenData.push({projekt:pName,titel:tiCol?(wp[tiCol]||'–'):'–',typ:wp[tyCol]||'–',status:stRaw||'–',raw:wp});}
       if(EXCL_WP_TYPES.includes(t))return;
       if(!wpByProj[pName])wpByProj[pName]={total:0,closed:0};
       wpByProj[pName].total++;
       if(closed)wpByProj[pName].closed++;
     });
-
     if(!projects.length){
       projects=Object.keys(wpByProj).filter(Boolean).map(n=>({name:n,status:'',pm:'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:wpByProj[n].total,wp_closed:wpByProj[n].closed}));
     }else{
@@ -623,16 +697,11 @@ function buildDashboard(){
       });
     }
   }
-
   if(!projects.length){showMsg('Keine Projektdaten gefunden.','error');return;}
   const before=projects.length;
   projects=projects.filter(p=>!EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status));
   projectData=projects;
-
-  renderCards(projects);
-  renderWarenbestand();
-  setupProjFilters();
-
+  renderCards(projects);renderWarenbestand();setupProjFilters();
   showMsg(`✅ ${projects.length} Projekte geladen${before-projects.length>0?' ('+(before-projects.length)+' ausgeblendet)':''}.`,'success');
 }
 
@@ -645,7 +714,7 @@ function renderCards(projects){
     const sk=statusKey(p.status);
     const pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0;
     const fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
-    tw+=p.wp_total; to+=p.wp_total-p.wp_closed; td+=p.wp_closed;
+    tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
     const fi=[];
     if(['beauftragt','gewünscht'].includes((p.outlook||'').toLowerCase().trim()))fi.push({l:'Outlook',v:p.outlook});
     if(['beauftragt','gewünscht'].includes((p.adint||'').toLowerCase().trim()))fi.push({l:'AD-Integration',v:p.adint});
@@ -684,20 +753,14 @@ function renderCards(projects){
 function setupProjFilters(){
   const pmF=document.getElementById('proj-pm-filter');
   pmF.innerHTML='<option value="">Alle Verantwortlichen</option>';
-  [...new Set(projectData.map(p=>p.pm).filter(Boolean))].sort().forEach(pm=>{
-    const o=document.createElement('option');o.value=pm.toLowerCase();o.textContent=pm;pmF.appendChild(o);
-  });
+  [...new Set(projectData.map(p=>p.pm).filter(Boolean))].sort().forEach(pm=>{const o=document.createElement('option');o.value=pm.toLowerCase();o.textContent=pm;pmF.appendChild(o);});
   document.getElementById('proj-filter-bar').style.display='flex';
-
-  // Init multi-select for project status
   document.getElementById('proj-status-ms-btn').dataset.base='Status';
   initMultiSelect('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
-
   document.getElementById('proj-search').addEventListener('input',applyProjFilter);
   pmF.addEventListener('change',applyProjFilter);
   document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
 }
-
 function applyProjFilter(){
   const q=document.getElementById('proj-search').value.toLowerCase();
   const statuses=getMsValues('proj-status-ms-panel');
@@ -710,7 +773,6 @@ function applyProjFilter(){
   document.getElementById('no-results').style.display=v===0?'block':'none';
   document.getElementById('proj-filter-count').textContent=v+' von '+projectData.length;
 }
-
 function clearProjFilter(){
   document.getElementById('proj-search').value='';
   document.getElementById('proj-pm-filter').value='';
@@ -723,77 +785,30 @@ function clearProjFilter(){
 /* ── Warenbestand ── */
 function renderWarenbestand(){
   const content=document.getElementById('wb-content');
-  if(!warenData.length){
-    content.innerHTML='<div class="wb-empty">📭 Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';
-    document.getElementById('wb-stats').style.display='none';
-    document.getElementById('wb-export-bar').style.display='none';
-    document.getElementById('wb-filter-bar').style.display='none';
-    return;
-  }
-
+  if(!warenData.length){content.innerHTML='<div class="wb-empty">📭 Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';document.getElementById('wb-stats').style.display='none';document.getElementById('wb-export-bar').style.display='none';document.getElementById('wb-filter-bar').style.display='none';return;}
   document.getElementById('wb-total').textContent=warenData.length;
   document.getElementById('wb-proj-count').textContent=new Set(warenData.map(w=>w.projekt)).size;
   document.getElementById('wb-stats').style.display='flex';
   document.getElementById('wb-export-bar').style.display='flex';
-
-  // Status counts
   const statusCounts={};
   warenData.forEach(w=>{statusCounts[w.status]=(statusCounts[w.status]||0)+1;});
-
-  // Fill project filter
   const wbPF=document.getElementById('wb-proj-filter');
   wbPF.innerHTML='<option value="">Alle Projekte</option>';
-  [...new Set(warenData.map(w=>w.projekt).filter(Boolean))].sort().forEach(p=>{
-    const o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);
-  });
-
-  // Fill status multi-select panel
+  [...new Set(warenData.map(w=>w.projekt).filter(Boolean))].sort().forEach(p=>{const o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);});
   const wbSPanel=document.getElementById('wb-status-ms-panel');
   wbSPanel.innerHTML='';
-  Object.entries(statusCounts).sort(([a],[b])=>a.localeCompare(b)).forEach(([s,c])=>{
-    const lbl=document.createElement('label');
-    lbl.className='ms-option';
-    lbl.innerHTML=`<input type="checkbox" value="${s.toLowerCase()}"> ${s} <span class="ms-count-badge">${c}</span>`;
-    wbSPanel.appendChild(lbl);
-  });
-
-  // Build table
-  const rows=warenData.map((w,i)=>`
-    <tr class="wb-row" data-idx="${i}" data-proj="${(w.projekt||'').toLowerCase()}" data-typ="${w.typ.toLowerCase()}" data-status="${w.status.toLowerCase()}" data-search="${(w.titel+' '+w.projekt+' '+w.status).toLowerCase()}">
-      <td class="proj-col">${w.projekt||'–'}</td>
-      <td>${w.titel}</td>
-      <td><span class="wb-type-badge">${w.typ}</span></td>
-      <td>${w.status}</td>
-      <td style="text-align:center;color:var(--text-muted);font-size:.8rem">🔍</td>
-    </tr>`).join('');
-
-  content.innerHTML=`
-    <div class="wb-table-wrap">
-      <table class="wb-table">
-        <thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Typ</th><th>Status</th><th></th></tr></thead>
-        <tbody id="wb-tbody">${rows}</tbody>
-      </table>
-      <div class="wb-no-results" id="wb-no-results" style="display:none">🔍 Keine Einträge gefunden.</div>
-    </div>`;
-
-  // Row click → modal
+  Object.entries(statusCounts).sort(([a],[b])=>a.localeCompare(b)).forEach(([s,c])=>{const lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML=`<input type="checkbox" value="${s.toLowerCase()}"> ${s} <span class="ms-count-badge">${c}</span>`;wbSPanel.appendChild(lbl);});
+  const rows=warenData.map((w,i)=>`<tr class="wb-row" data-idx="${i}" data-proj="${(w.projekt||'').toLowerCase()}" data-typ="${w.typ.toLowerCase()}" data-status="${w.status.toLowerCase()}" data-search="${(w.titel+' '+w.projekt+' '+w.status).toLowerCase()}"><td class="proj-col">${w.projekt||'–'}</td><td>${w.titel}</td><td><span class="wb-type-badge">${w.typ}</span></td><td>${w.status}</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">🔍</td></tr>`).join('');
+  content.innerHTML=`<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Typ</th><th>Status</th><th></th></tr></thead><tbody id="wb-tbody">${rows}</tbody></table><div class="wb-no-results" id="wb-no-results" style="display:none">🔍 Keine Einträge gefunden.</div></div>`;
   content.querySelectorAll('.wb-row').forEach(row=>{
     row.addEventListener('click',()=>{
       const w=warenData[+row.dataset.idx];
-      const fields=Object.entries(w.raw).filter(([,v])=>v!=='').map(([k,v])=>`
-        <div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)">
-          <div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">${k}</div>
-          <div style="font-size:.8rem;color:var(--text-sub)">${v}</div>
-        </div>`).join('');
-      document.getElementById('wb-modal-content').innerHTML=`
-        <h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">${w.titel}</h3>
-        <div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">${w.projekt} · <span style="color:var(--at-risk-c)">${w.typ}</span></div>${fields}`;
+      const fields=Object.entries(w.raw).filter(([,v])=>v!=='').map(([k,v])=>`<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">${k}</div><div style="font-size:.8rem;color:var(--text-sub)">${v}</div></div>`).join('');
+      document.getElementById('wb-modal-content').innerHTML=`<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">${w.titel}</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">${w.projekt} · <span style="color:var(--at-risk-c)">${w.typ}</span></div>${fields}`;
       document.getElementById('wb-modal').style.display='flex';
     });
   });
   document.getElementById('wb-modal').addEventListener('click',e=>{if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
-
-  // Show filter bar + init listeners AFTER DOM is ready
   document.getElementById('wb-filter-bar').style.display='flex';
   document.getElementById('wb-status-ms-btn').dataset.base='Status';
   initMultiSelect('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);
@@ -802,7 +817,6 @@ function renderWarenbestand(){
   document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);
   document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
 }
-
 function applyWBFilter(){
   const q=document.getElementById('wb-search').value.toLowerCase();
   const proj=document.getElementById('wb-proj-filter').value;
@@ -817,25 +831,146 @@ function applyWBFilter(){
   if(nr)nr.style.display=v===0?'block':'none';
   document.getElementById('wb-filter-count').textContent=v+' von '+warenData.length;
 }
-
 function clearWBFilter(){
-  document.getElementById('wb-search').value='';
-  document.getElementById('wb-proj-filter').value='';
-  document.getElementById('wb-type-filter').value='';
-  resetMs('wb-status-ms-btn','wb-status-ms-panel');
-  document.getElementById('wb-filter-count').textContent='';
+  document.getElementById('wb-search').value='';document.getElementById('wb-proj-filter').value='';document.getElementById('wb-type-filter').value='';
+  resetMs('wb-status-ms-btn','wb-status-ms-panel');document.getElementById('wb-filter-count').textContent='';
   document.querySelectorAll('#wb-tbody .wb-row').forEach(r=>r.classList.remove('wb-hidden'));
-  const nr=document.getElementById('wb-no-results');
-  if(nr)nr.style.display='none';
+  const nr=document.getElementById('wb-no-results');if(nr)nr.style.display='none';
 }
+
+/* ── Neues Projekt anlegen ── */
+function getFormData(){
+  return {
+    name:      document.getElementById('np-name').value.trim(),
+    standort:  document.getElementById('np-standort').value.trim(),
+    ap:        document.getElementById('np-ap').value.trim(),
+    kontakt:   document.getElementById('np-kontakt').value.trim(),
+    paket:     document.getElementById('np-paket').value,
+    hardware:  document.getElementById('np-hardware').value.trim(),
+    outlook:   document.querySelector('input[name="outlook"]:checked')?.value||'Nein',
+    adint:     document.querySelector('input[name="adint"]:checked')?.value||'Nein',
+    bemerkung: document.getElementById('np-bemerkung').value.trim(),
+  };
+}
+
+function buildDescription(d){
+  const lines=[
+    `**Kundenname:** ${d.name}`,
+    d.standort?`**Standort:** ${d.standort}`:'',
+    d.ap?`**Ansprechpartner:** ${d.ap}`:'',
+    d.kontakt?`**Kontakt:** ${d.kontakt}`:'',
+    `**Paket:** ${d.paket}`,
+    d.hardware?`**Hardware:** ${d.hardware}`:'',
+    `**Outlook Add-in:** ${d.outlook}`,
+    `**AD-Integration:** ${d.adint}`,
+    d.bemerkung?`\n**Bemerkungen:** ${d.bemerkung}`:'',
+  ].filter(Boolean);
+  return lines.join('\n');
+}
+
+function getWPList(d){
+  const list=[...WP_TEMPLATES.basis];
+  if(d.outlook==='Ja'||d.outlook==='Gewünscht') list.push(WP_TEMPLATES.outlook);
+  if(d.adint==='Ja'||d.adint==='Gewünscht')     list.push(WP_TEMPLATES.adint);
+  if(d.hardware) list.push(WP_TEMPLATES.hardware);
+  return list;
+}
+
+function showNpResult(msg, type){
+  const el=document.getElementById('np-result');
+  el.innerHTML=msg; el.className='np-result '+type; el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function resetForm(){
+  ['np-name','np-standort','np-ap','np-kontakt','np-hardware','np-bemerkung'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('np-paket').value='';
+  document.querySelectorAll('input[name="outlook"]').forEach(r=>r.checked=r.value==='Nein');
+  document.querySelectorAll('input[name="adint"]').forEach(r=>r.checked=r.value==='Nein');
+  document.querySelectorAll('.np-radio-label').forEach(l=>{l.classList.toggle('selected',l.querySelector('input')?.checked);});
+  document.getElementById('np-result').style.display='none';
+  updateWPPreview();
+}
+
+document.getElementById('np-submit-btn').addEventListener('click', async ()=>{
+  const d=getFormData();
+  const btn=document.getElementById('np-submit-btn');
+
+  // Validierung
+  let valid=true;
+  if(!d.name){document.getElementById('np-name').classList.add('invalid');valid=false;}else document.getElementById('np-name').classList.remove('invalid');
+  if(!d.paket){document.getElementById('np-paket').classList.add('invalid');valid=false;}else document.getElementById('np-paket').classList.remove('invalid');
+  if(!valid){showNpResult('⚠️ Bitte Pflichtfelder ausfüllen (Projektname und Paket).','error');return;}
+
+  const url=(document.getElementById('np-url').value||'').trim().replace(/\/$/,'');
+  const key=(document.getElementById('np-key').value||'').trim();
+
+  // Kein API Key → nur Zusammenfassung anzeigen
+  if(!url||!key){
+    const wps=getWPList(d);
+    showNpResult(`
+      <strong>📋 Projektzusammenfassung (ohne API-Anlage)</strong><br><br>
+      Kein API-Key hinterlegt – hier die Daten zur manuellen Übertragung in OpenProject:<br><br>
+      <strong>Projektname:</strong> ${d.name}<br>
+      ${d.standort?`<strong>Standort:</strong> ${d.standort}<br>`:''}
+      ${d.ap?`<strong>Ansprechpartner:</strong> ${d.ap}<br>`:''}
+      ${d.kontakt?`<strong>Kontakt:</strong> ${d.kontakt}<br>`:''}
+      <strong>Paket:</strong> ${d.paket}<br>
+      ${d.hardware?`<strong>Hardware:</strong> ${d.hardware}<br>`:''}
+      <strong>Outlook Add-in:</strong> ${d.outlook} · <strong>AD-Integration:</strong> ${d.adint}<br>
+      ${d.bemerkung?`<strong>Bemerkungen:</strong> ${d.bemerkung}<br>`:''}
+      <br><strong>Arbeitspakete (${wps.length}):</strong> ${wps.map(w=>w.name).join(', ')}
+    `,'success');
+    return;
+  }
+
+  // Per API anlegen
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt…';
+  const api=(url.startsWith('http')?url:'https://'+url)+'/api/v3';
+  const headers={'Authorization':'Basic '+btoa('apikey:'+key),'Content-Type':'application/json'};
+
+  try{
+    // 1. Projekt anlegen
+    const projBody={name: d.name, description:{format:'markdown',raw:buildDescription(d)}};
+    const projRes=await fetch(`${api}/projects`,{method:'POST',headers,body:JSON.stringify(projBody)});
+    if(!projRes.ok){
+      const err=await projRes.json().catch(()=>({}));
+      throw new Error(err.message||`HTTP ${projRes.status} beim Projekt anlegen`);
+    }
+    const proj=await projRes.json();
+    const projId=proj.id;
+    const projUrl=proj._links?.self?.href?`${url}/projects/${proj.identifier}`:'';
+
+    // 2. Arbeitspakete anlegen
+    const wps=getWPList(d);
+    const wpResults=[];
+    for(const wp of wps){
+      const wpBody={subject:wp.name,_links:{project:{href:`/api/v3/projects/${projId}`}}};
+      const wpRes=await fetch(`${api}/work_packages`,{method:'POST',headers,body:JSON.stringify(wpBody)});
+      wpResults.push(wpRes.ok?'✅':'⚠️');
+    }
+
+    showNpResult(`
+      ✅ <strong>Projekt erfolgreich angelegt!</strong><br><br>
+      <strong>Name:</strong> ${d.name}<br>
+      <strong>Projekt-ID:</strong> ${projId}<br>
+      <strong>Arbeitspakete:</strong> ${wps.length} angelegt (${wpResults.filter(r=>r==='✅').length} erfolgreich)<br>
+      ${projUrl?`<br><a href="${projUrl}" target="_blank" style="color:var(--brand-light)">🔗 In OpenProject öffnen</a>`:''}
+    `,'success');
+
+  }catch(e){
+    showNpResult(`❌ Fehler: ${e.message}`, 'error');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='🚀 Projekt in OpenProject anlegen';
+  }
+});
 
 /* ── Logo for PDF ── */
 function addLogoToPDF(doc,cb){
   const img=new Image();img.crossOrigin='anonymous';
-  img.onload=()=>{
-    try{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);const r=img.width/img.height,h=10,w=h*r;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}
-    cb();
-  };
+  img.onload=()=>{try{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);const r=img.width/img.height,h=10,w=h*r;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}cb();};
   img.onerror=()=>cb();
   img.src='https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';
 }
