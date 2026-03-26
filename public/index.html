@@ -35,28 +35,25 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
-
-/* Login */
 .login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:32px;max-width:420px;width:100%;box-shadow:0 16px 48px rgba(0,0,0,.5)}
 .login-box img{height:40px;margin-bottom:20px}
 .login-box h2{font-size:1.1rem;font-weight:700;margin-bottom:6px}
 .login-box p{font-size:.8rem;color:var(--text-muted);margin-bottom:20px;line-height:1.5}
-.login-box .np-label{display:block;margin-bottom:5px}
+.login-lbl{display:block;font-size:.78rem;font-weight:600;color:var(--text-sub);margin-bottom:5px}
 .login-box input{width:100%;padding:10px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.9rem;margin-bottom:12px}
 .login-box input:focus{outline:none;border-color:var(--brand-light)}
 .login-btn{width:100%;padding:11px;background:var(--brand);color:white;border:none;border-radius:7px;font-size:.9rem;font-weight:700;cursor:pointer}
 .login-btn:hover{background:var(--brand-dark)}
 .login-err{color:var(--error-c);font-size:.8rem;margin-top:8px;display:none}
 .login-hint{font-size:.7rem;color:var(--text-muted);margin-top:10px;text-align:center}
-.token-badge{display:flex;align-items:center;gap:6px;background:rgba(63,185,80,.15);border:1px solid var(--on-track-c);border-radius:20px;padding:5px 12px;font-size:.75rem;color:var(--on-track-c);font-weight:600;cursor:pointer;transition:background .2s}
+.token-badge{display:flex;align-items:center;gap:6px;background:rgba(63,185,80,.15);border:1px solid var(--on-track-c);border-radius:20px;padding:5px 12px;font-size:.75rem;color:var(--on-track-c);font-weight:600;cursor:pointer}
 .token-badge:hover{background:rgba(63,185,80,.25)}
 .refresh-bar{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text-muted);margin-bottom:12px}
-.refresh-bar .progress-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.refresh-bar .progress-fill{height:100%;background:var(--brand-light);border-radius:2px;transition:width 1s linear}
+.refresh-bar .prog-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.refresh-bar .prog-fill{height:100%;background:var(--brand-light);border-radius:2px;transition:width 1s linear}
 .refresh-btn{padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:none;color:var(--text-muted);font-size:.75rem;cursor:pointer}
 .refresh-btn:hover{border-color:var(--brand-light);color:var(--brand-light)}
-
 header{background:var(--brand-dark);color:white;padding:12px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.4);position:sticky;top:0;z-index:200}
 header img{height:38px}
 header .title{flex:1}
@@ -94,17 +91,17 @@ header p{font-size:.72rem;opacity:.7}
 .search-input:focus{outline:none;border-color:var(--brand-light)}
 .filter-select{padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;cursor:pointer}
 .filter-select:focus{outline:none;border-color:var(--brand-light)}
-.clear-btn{padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;transition:all .2s}
+.clear-btn{padding:8px 12px;border:1px solid var(--border);border-radius:7px;background:none;color:var(--text-muted);font-size:.8rem;cursor:pointer}
 .clear-btn:hover{border-color:var(--brand-light);color:var(--brand-light)}
 .filter-count{font-size:.78rem;color:var(--text-muted);white-space:nowrap;align-self:center}
 .ms-wrap{position:relative}
 .ms-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;cursor:pointer;white-space:nowrap;min-width:120px;justify-content:space-between}
 .ms-btn:hover{border-color:var(--brand-light)}
-.ms-btn.has-selection{border-color:var(--brand-light);color:var(--brand-light)}
+.ms-btn.has-sel{border-color:var(--brand-light);color:var(--brand-light)}
 .ms-arrow{font-size:.65rem;opacity:.6;transition:transform .2s;margin-left:4px}
 .ms-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:190px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.3);z-index:150;display:none}
 .ms-panel.open{display:block}
-.ms-option{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:.82rem;color:var(--text-sub);transition:background .15s;user-select:none}
+.ms-option{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;font-size:.82rem;color:var(--text-sub);user-select:none}
 .ms-option:hover{background:var(--bg3)}
 .ms-option input[type=checkbox]{accent-color:var(--brand-light);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .ms-count-badge{margin-left:auto;background:var(--bg3);color:var(--text-muted);border-radius:10px;padding:1px 6px;font-size:.68rem;font-weight:600}
@@ -143,8 +140,8 @@ header p{font-size:.72rem;opacity:.7}
 .meta-item strong{color:var(--text)}
 .progress-section{margin-top:12px}
 .progress-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted);margin-bottom:4px}
-.progress-track{background:var(--bg3);border-radius:20px;height:12px;overflow:hidden}
-.progress-fill{height:100%;border-radius:20px;transition:width .7s ease}
+.prog-track{background:var(--bg3);border-radius:20px;height:12px;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;transition:width .7s ease}
 .fill-high{background:linear-gradient(90deg,#1d7a45,#3fb950)}
 .fill-medium{background:linear-gradient(90deg,#0055a5,#4a90d9)}
 .fill-low{background:linear-gradient(90deg,#003366,#0055a5)}
@@ -154,13 +151,21 @@ header p{font-size:.72rem;opacity:.7}
 .feature-badge.feature-beauftragt{background:rgba(230,126,34,.15);color:var(--at-risk-c);border:1px solid var(--at-risk-c)}
 .feature-badge.feature-gewuenscht{background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light)}
 .feature-name{font-weight:700}
-.status-desc-wrap{margin-top:10px}
-.toggle-btn{background:var(--toggle-bg);border:1px solid var(--hint-border);border-radius:6px;padding:5px 10px;font-size:.77rem;color:var(--hint-text);cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:600;transition:background .2s}
+.toggle-btn{background:var(--toggle-bg);border:1px solid var(--hint-border);border-radius:6px;padding:5px 10px;font-size:.77rem;color:var(--hint-text);cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:600;transition:background .2s;margin-top:8px}
 .toggle-btn:hover{background:var(--toggle-hover)}
 .toggle-btn .arrow{transition:transform .25s;display:inline-block}
 .toggle-btn.open .arrow{transform:rotate(180deg)}
-.status-desc-body{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-size:.8rem;color:var(--text-sub);line-height:1.6;background:var(--sdesc-bg);border:1px solid var(--sdesc-border);border-top:none;border-radius:0 0 6px 6px;padding:0 12px}
-.status-desc-body.open{max-height:300px;padding:10px 12px}
+.sdesc-body{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-size:.8rem;color:var(--text-sub);line-height:1.6;background:var(--sdesc-bg);border:1px solid var(--sdesc-border);border-top:none;border-radius:0 0 6px 6px;padding:0 12px}
+.sdesc-body.open{max-height:300px;padding:10px 12px}
+.ap-body{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--bg);border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px}
+.ap-body.open{max-height:600px;overflow-y:auto}
+.ap-item{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--border);font-size:.78rem}
+.ap-item:last-child{border-bottom:none}
+.ap-item.ap-closed .ap-name{text-decoration:line-through;opacity:.5}
+.ap-name{flex:1;color:var(--text-sub)}
+.ap-type{font-size:.65rem;padding:1px 6px;border-radius:10px;background:var(--bg3);color:var(--text-muted);flex-shrink:0}
+.ap-status{font-size:.65rem;padding:2px 7px;border-radius:10px;background:rgba(74,144,217,.12);color:var(--brand-light);border:1px solid var(--brand-light);flex-shrink:0;white-space:nowrap}
+.ap-status.done{background:rgba(63,185,80,.12);color:var(--on-track-c);border-color:var(--on-track-c)}
 .no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
 .wb-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .wb-table{width:100%;border-collapse:collapse;font-size:.83rem}
@@ -172,15 +177,12 @@ header p{font-size:.72rem;opacity:.7}
 .wb-table .proj-col{color:var(--brand-light);font-weight:600}
 .wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
 .wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
-
-/* ── Neues Projekt ── */
 .np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
 .np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
-.np-card .np-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
+.np-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
 .np-section{margin-bottom:20px}
-.np-section-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:14px}
+.np-sec-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:14px}
 .np-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.np-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .np-field{display:flex;flex-direction:column;gap:5px}
 .np-field.full{grid-column:1/-1}
 .np-label{font-size:.78rem;font-weight:600;color:var(--text-sub)}
@@ -190,12 +192,10 @@ header p{font-size:.72rem;opacity:.7}
 .np-input.invalid,.np-select.invalid{border-color:var(--error-c)}
 .np-textarea{resize:vertical;min-height:80px}
 .np-radio-group{display:flex;gap:8px;flex-wrap:wrap}
-.np-radio-label{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--input-border);border-radius:7px;cursor:pointer;font-size:.83rem;color:var(--text-sub);transition:all .2s;background:var(--input-bg)}
-.np-radio-label:hover{border-color:var(--brand-light)}
-.np-radio-label input{display:none}
-.np-radio-label.selected{border-color:var(--brand-light);background:rgba(74,144,217,.12);color:var(--brand-light);font-weight:600}
-
-/* ── Hardware Auswahl ── */
+.np-radio-lbl{display:flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--input-border);border-radius:7px;cursor:pointer;font-size:.83rem;color:var(--text-sub);transition:all .2s;background:var(--input-bg)}
+.np-radio-lbl:hover{border-color:var(--brand-light)}
+.np-radio-lbl input{display:none}
+.np-radio-lbl.selected{border-color:var(--brand-light);background:rgba(74,144,217,.12);color:var(--brand-light);font-weight:600}
 .hw-list{display:flex;flex-direction:column;gap:6px}
 .hw-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);transition:border-color .2s}
 .hw-item:hover{border-color:var(--brand-light)}
@@ -204,16 +204,13 @@ header p{font-size:.72rem;opacity:.7}
 .hw-item-name{flex:1;font-size:.85rem;color:var(--text-sub);cursor:pointer}
 .hw-item.selected .hw-item-name{color:var(--text)}
 .hw-qty{display:flex;align-items:center;gap:4px}
-.hw-qty-btn{width:24px;height:24px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:var(--text);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.hw-qty-btn{width:24px;height:24px;border:1px solid var(--border);border-radius:4px;background:var(--bg3);color:var(--text);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .hw-qty-btn:hover{background:var(--brand);color:white}
 .hw-qty-val{min-width:24px;text-align:center;font-size:.85rem;font-weight:600;color:var(--brand-light)}
-
-/* ── Brother Papier ── */
 .brother-extra{background:var(--hint-bg);border:1px solid var(--hint-border);border-radius:8px;padding:12px;margin-top:8px;display:none}
 .brother-extra.visible{display:block}
 .brother-extra-title{font-size:.75rem;font-weight:700;color:var(--hint-text);margin-bottom:10px}
 .brother-paper-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
-
 .np-wp-section{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px}
 .np-wp-title{font-size:.8rem;font-weight:700;color:var(--text-sub);margin-bottom:10px}
 .np-wp-list{display:flex;flex-direction:column;gap:4px}
@@ -226,15 +223,6 @@ header p{font-size:.72rem;opacity:.7}
 .np-result.success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
 .np-result.error{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c)}
 .np-result.warning{background:rgba(240,136,62,.1);color:var(--at-risk-c);border:1px solid var(--at-risk-c)}
-.ap-body{max-height:0;overflow:hidden;transition:max-height .3s ease;background:var(--bg);border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px}
-.ap-body.open{max-height:600px;overflow-y:auto}
-.ap-item{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--border);font-size:.78rem}
-.ap-item:last-child{border-bottom:none}
-.ap-item.ap-closed .ap-name{text-decoration:line-through;opacity:.5}
-.ap-name{flex:1;color:var(--text-sub)}
-.ap-type-badge{font-size:.65rem;padding:1px 6px;border-radius:10px;background:var(--bg3);color:var(--text-muted);flex-shrink:0}
-.ap-status-badge{font-size:.65rem;padding:2px 7px;border-radius:10px;background:rgba(74,144,217,.12);color:var(--brand-light);border:1px solid var(--brand-light);flex-shrink:0;white-space:nowrap}
-.ap-status-badge.done{background:rgba(63,185,80,.12);color:var(--on-track-c);border-color:var(--on-track-c)}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 14px}
@@ -243,7 +231,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   .import-panel{width:calc(100vw - 24px);right:-10px}.import-grid{grid-template-columns:1fr}
   .tab-bar{padding:0 10px;flex-wrap:wrap}.tab-btn{padding:7px 14px;font-size:.8rem}
   .main{padding:10px 10px 20px}
-  .np-grid,.np-grid-3{grid-template-columns:1fr}.np-field.full{grid-column:1}
+  .np-grid{grid-template-columns:1fr}.np-field.full{grid-column:1}
   .filter-bar{flex-direction:column;align-items:stretch}
   .export-bar,.wb-export-bar{flex-direction:column}
 }
@@ -251,17 +239,16 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 </head>
 <body>
 
-<!-- Login Modal -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <img src="https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp" alt="WELCOME">
     <h2>Willkommen im Projekt-Dashboard</h2>
     <p>Bitte gib deinen OpenProject API-Token ein um fortzufahren. Der Token wird nur für diese Sitzung gespeichert.</p>
-    <label class="np-label">API Token</label>
+    <label class="login-lbl">API Token</label>
     <input type="password" id="login-token" placeholder="opapi-xxxxxxxxxxxxxxxx" autocomplete="off">
-    <button class="login-btn" id="login-btn">🔐 Anmelden</button>
-    <div class="login-err" id="login-err">❌ Token ungültig. Bitte prüfen und erneut versuchen.</div>
-    <p class="login-hint">🔒 Der Token wird nicht gespeichert und ist nur für diese Sitzung aktiv.</p>
+    <button class="login-btn" id="login-btn">&#x1F510; Anmelden</button>
+    <div class="login-err" id="login-err">&#x274C; Token ungültig. Bitte prüfen und erneut versuchen.</div>
+    <p class="login-hint">&#x1F512; Der Token wird nicht gespeichert und ist nur für diese Sitzung aktiv.</p>
   </div>
 </div>
 
@@ -270,37 +257,35 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <div class="title"><h1>Projekt-Übersicht</h1><p>EnterSmart GmbH · entersmart.openproject.com</p></div>
   <div class="header-actions">
     <div class="import-dropdown" id="importDropdown">
-      <button class="import-trigger" id="importTrigger">📥 CSV Import ▼</button>
+      <button class="import-trigger" id="importTrigger">&#x1F4E5; CSV Import &#x25BC;</button>
       <div class="import-panel" id="importPanel">
-        <h3>📥 Daten aus CSV importieren</h3>
+        <h3>&#x1F4E5; Daten aus CSV importieren</h3>
         <div class="import-grid">
-          <div class="import-zone" id="dz-proj"><div class="dz-icon">📁</div><div>Projekte-CSV</div><p id="lbl-proj" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p><input type="file" id="f-proj" accept=".csv,.xlsx"></div>
-          <div class="import-zone" id="dz-wp"><div class="dz-icon">📦</div><div>Arbeitspakete-CSV</div><p id="lbl-wp" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p><input type="file" id="f-wp" accept=".csv,.xlsx"></div>
+          <div class="import-zone" id="dz-proj"><div class="dz-icon">&#x1F4C1;</div><div>Projekte-CSV</div><p id="lbl-proj" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p><input type="file" id="f-proj" accept=".csv,.xlsx"></div>
+          <div class="import-zone" id="dz-wp"><div class="dz-icon">&#x1F4E6;</div><div>Arbeitspakete-CSV</div><p id="lbl-wp" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p><input type="file" id="f-wp" accept=".csv,.xlsx"></div>
         </div>
-        <div class="import-both" id="dz-both"><span style="font-size:1.1rem">📂📂</span>&nbsp;<span id="lbl-both">Beide CSVs gleichzeitig ablegen oder klicken</span><input type="file" id="f-both" accept=".csv,.xlsx" multiple></div>
-        <button class="btn btn-primary btn-full" id="build-btn" disabled>🚀 Dashboard aus CSV erstellen</button>
+        <div class="import-both" id="dz-both"><span style="font-size:1.1rem">&#x1F4C2;&#x1F4C2;</span>&nbsp;<span id="lbl-both">Beide CSVs gleichzeitig ablegen oder klicken</span><input type="file" id="f-both" accept=".csv,.xlsx" multiple></div>
+        <button class="btn btn-primary btn-full" id="build-btn" disabled>&#x1F680; Dashboard aus CSV erstellen</button>
       </div>
     </div>
-    <div class="token-badge" id="tokenBadge" onclick="showRelogin()">🔑 <span id="tokenLabel">Verbunden</span></div>
-    <button class="theme-toggle" id="themeBtn"><span class="theme-icon">☀️</span><span class="theme-label">Light</span></button>
+    <div class="token-badge" id="tokenBadge" onclick="showRelogin()">&#x1F511; <span id="tokenLabel">Verbunden</span></div>
+    <button class="theme-toggle" id="themeBtn"><span class="theme-icon">&#x2600;&#xFE0F;</span><span class="theme-label">Light</span></button>
   </div>
 </header>
 
 <div class="tab-bar">
-  <button class="tab-btn active" data-tab="projekte">📋 Projekte</button>
-  <button class="tab-btn" data-tab="warenbestand">📦 Warenbestand</button>
-  <button class="tab-btn" data-tab="neu">➕ Neues Projekt</button>
+  <button class="tab-btn active" data-tab="projekte">&#x1F4CB; Projekte</button>
+  <button class="tab-btn" data-tab="warenbestand">&#x1F4E6; Warenbestand</button>
+  <button class="tab-btn" data-tab="neu">&#x2795; Neues Projekt</button>
 </div>
 
 <div class="main">
-
-  <!-- TAB PROJEKTE -->
   <div class="tab-panel active" id="tab-projekte">
     <div id="msg"></div>
     <div class="refresh-bar" id="refresh-bar" style="display:none">
       <span id="refresh-label">Aktualisierung in 5:00</span>
-      <div class="progress-track"><div class="progress-fill" id="refresh-progress" style="width:100%"></div></div>
-      <button class="refresh-btn" onclick="manualRefresh()">↻ Jetzt</button>
+      <div class="prog-track"><div class="prog-fill" id="refresh-progress" style="width:100%"></div></div>
+      <button class="refresh-btn" onclick="manualRefresh()">&#x21BB; Jetzt</button>
     </div>
     <div class="stats-row" id="stats-row">
       <div class="stat-card"><div class="num" id="s-total">–</div><div class="lbl">Projekte</div></div>
@@ -309,14 +294,14 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <div class="stat-card"><div class="num" id="s-done">–</div><div class="lbl">Abgeschlossen</div></div>
     </div>
     <div class="export-bar" id="export-bar">
-      <button class="btn btn-excel" onclick="exportExcel()">⬇ Excel</button>
-      <button class="btn btn-pdf" onclick="exportPDF()">⬇ PDF</button>
-      <button class="btn btn-csv" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn btn-excel" onclick="exportExcel()">&#x2B07; Excel</button>
+      <button class="btn btn-pdf" onclick="exportPDF()">&#x2B07; PDF</button>
+      <button class="btn btn-csv" onclick="exportCSV()">&#x2B07; CSV</button>
     </div>
     <div class="filter-bar" id="proj-filter-bar" style="display:none">
-      <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="proj-search" type="text" placeholder="Projekt suchen…"></div>
+      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="proj-search" type="text" placeholder="Projekt suchen…"></div>
       <div class="ms-wrap" id="proj-status-ms">
-        <button class="ms-btn" id="proj-status-ms-btn">Status <span class="ms-arrow">▼</span></button>
+        <button class="ms-btn" id="proj-status-ms-btn" data-base="Status">Status <span class="ms-arrow">&#x25BC;</span></button>
         <div class="ms-panel" id="proj-status-ms-panel">
           <label class="ms-option"><input type="checkbox" value="on_track"> Im Plan</label>
           <label class="ms-option"><input type="checkbox" value="at_risk"> Gefährdet</label>
@@ -325,14 +310,13 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         </div>
       </div>
       <select class="filter-select" id="proj-pm-filter"><option value="">Alle Verantwortlichen</option></select>
-      <button class="clear-btn" id="proj-clear-btn">✕ Reset</button>
+      <button class="clear-btn" id="proj-clear-btn">&#x2715; Reset</button>
       <span class="filter-count" id="proj-filter-count"></span>
     </div>
-    <div id="no-results" class="no-results">🔍 Keine Projekte gefunden.</div>
+    <div id="no-results" class="no-results">&#x1F50D; Keine Projekte gefunden.</div>
     <div id="cards"></div>
   </div>
 
-  <!-- TAB WARENBESTAND -->
   <div class="tab-panel" id="tab-warenbestand">
     <div id="msg-wb"></div>
     <div class="wb-stats" id="wb-stats">
@@ -340,63 +324,42 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <div class="stat-card"><div class="num" id="wb-proj-count">–</div><div class="lbl">Betroffene Projekte</div></div>
     </div>
     <div class="wb-export-bar" id="wb-export-bar">
-      <button class="btn btn-excel" onclick="exportWBExcel()">⬇ Excel</button>
-      <button class="btn btn-pdf" onclick="exportWBPDF()">⬇ PDF</button>
-      <button class="btn btn-csv" onclick="exportWBCSV()">⬇ CSV</button>
+      <button class="btn btn-excel" onclick="exportWBExcel()">&#x2B07; Excel</button>
+      <button class="btn btn-pdf" onclick="exportWBPDF()">&#x2B07; PDF</button>
+      <button class="btn btn-csv" onclick="exportWBCSV()">&#x2B07; CSV</button>
     </div>
     <div class="filter-bar" id="wb-filter-bar" style="display:none">
-      <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen…"></div>
+      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen…"></div>
       <select class="filter-select" id="wb-proj-filter"><option value="">Alle Projekte</option></select>
       <select class="filter-select" id="wb-type-filter"><option value="">Alle Typen</option><option value="hardware">Hardware</option><option value="elo einrichtung">ELO Einrichtung</option></select>
       <div class="ms-wrap" id="wb-status-ms">
-        <button class="ms-btn" id="wb-status-ms-btn">Status <span class="ms-arrow">▼</span></button>
+        <button class="ms-btn" id="wb-status-ms-btn" data-base="Status">Status <span class="ms-arrow">&#x25BC;</span></button>
         <div class="ms-panel" id="wb-status-ms-panel"></div>
       </div>
-      <button class="clear-btn" id="wb-clear-btn">✕ Reset</button>
+      <button class="clear-btn" id="wb-clear-btn">&#x2715; Reset</button>
       <span class="filter-count" id="wb-filter-count"></span>
     </div>
-    <div id="wb-content"><div class="wb-empty">⏳ Daten werden geladen…</div></div>
+    <div id="wb-content"><div class="wb-empty">&#x23F3; Daten werden geladen…</div></div>
   </div>
 
-  <!-- TAB NEUES PROJEKT -->
   <div class="tab-panel" id="tab-neu">
     <div class="np-card">
-      <h2>➕ Neues Projekt anlegen</h2>
+      <h2>&#x2795; Neues Projekt anlegen</h2>
       <p class="np-sub">Kundendaten vom Vertrieb eintragen – das Projekt wird per API direkt in OpenProject angelegt.</p>
-
-      <!-- Kundendaten -->
       <div class="np-section">
-        <div class="np-section-title">👤 Kundendaten</div>
+        <div class="np-sec-title">&#x1F464; Kundendaten</div>
         <div class="np-grid">
-          <div class="np-field">
-            <label class="np-label">Kundenname / Projektname <span class="req">*</span></label>
-            <input class="np-input" id="np-name" type="text" placeholder="z.B. Mustermann GmbH">
-          </div>
-          <div class="np-field">
-            <label class="np-label">Standort <span class="req">*</span></label>
-            <input class="np-input" id="np-standort" type="text" placeholder="z.B. München">
-          </div>
-          <div class="np-field">
-            <label class="np-label">Ansprechpartner (Kunde) <span class="req">*</span></label>
-            <input class="np-input" id="np-ap" type="text" placeholder="Vor- und Nachname">
-          </div>
-          <div class="np-field">
-            <label class="np-label">Telefon</label>
-            <input class="np-input" id="np-telefon" type="text" placeholder="+49 89 ...">
-          </div>
-          <div class="np-field">
-            <label class="np-label">E-Mail</label>
-            <input class="np-input" id="np-email" type="text" placeholder="name@firma.de">
-          </div>
+          <div class="np-field"><label class="np-label">Kundenname / Projektname <span class="req">*</span></label><input class="np-input" id="np-name" type="text" placeholder="z.B. Mustermann GmbH"></div>
+          <div class="np-field"><label class="np-label">Standort <span class="req">*</span></label><input class="np-input" id="np-standort" type="text" placeholder="z.B. München"></div>
+          <div class="np-field"><label class="np-label">Ansprechpartner (Kunde) <span class="req">*</span></label><input class="np-input" id="np-ap" type="text" placeholder="Vor- und Nachname"></div>
+          <div class="np-field"><label class="np-label">Telefon</label><input class="np-input" id="np-telefon" type="text" placeholder="+49 89 ..."></div>
+          <div class="np-field"><label class="np-label">E-Mail</label><input class="np-input" id="np-email" type="text" placeholder="name@firma.de"></div>
         </div>
       </div>
-
-      <!-- Paket & Features -->
       <div class="np-section">
-        <div class="np-section-title">📦 Gebuchtes Paket & Features</div>
+        <div class="np-sec-title">&#x1F4E6; Gebuchtes Paket &amp; Features</div>
         <div class="np-grid">
-          <div class="np-field">
-            <label class="np-label">Paket <span class="req">*</span></label>
+          <div class="np-field"><label class="np-label">Paket <span class="req">*</span></label>
             <select class="np-select" id="np-paket">
               <option value="">– Bitte wählen –</option>
               <option value="S">S</option>
@@ -406,73 +369,53 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           </div>
         </div>
         <div class="np-grid" style="margin-top:12px">
-          <div class="np-field">
-            <label class="np-label">Outlook Add-in <span class="req">*</span></label>
+          <div class="np-field"><label class="np-label">Outlook Add-in <span class="req">*</span></label>
             <div class="np-radio-group" id="np-outlook">
-              <label class="np-radio-label"><input type="radio" name="outlook" value="Nicht Aktiv" checked> ❌ Nicht Aktiv</label>
-              <label class="np-radio-label"><input type="radio" name="outlook" value="Gewünscht"> 🕐 Gewünscht</label>
-              <label class="np-radio-label"><input type="radio" name="outlook" value="Beauftragt"> ⏳ Beauftragt</label>
-              <label class="np-radio-label"><input type="radio" name="outlook" value="Aktiv"> ✅ Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Nicht Aktiv" checked> &#x274C; Nicht Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Gewünscht"> &#x1F550; Gewünscht</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Beauftragt"> &#x23F3; Beauftragt</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Aktiv"> &#x2705; Aktiv</label>
             </div>
           </div>
-          <div class="np-field">
-            <label class="np-label">AD-Integration <span class="req">*</span></label>
+          <div class="np-field"><label class="np-label">AD-Integration <span class="req">*</span></label>
             <div class="np-radio-group" id="np-adint">
-              <label class="np-radio-label"><input type="radio" name="adint" value="Nicht Aktiv" checked> ❌ Nicht Aktiv</label>
-              <label class="np-radio-label"><input type="radio" name="adint" value="Gewünscht"> 🕐 Gewünscht</label>
-              <label class="np-radio-label"><input type="radio" name="adint" value="Beauftragt"> ⏳ Beauftragt</label>
-              <label class="np-radio-label"><input type="radio" name="adint" value="Aktiv"> ✅ Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Nicht Aktiv" checked> &#x274C; Nicht Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Gewünscht"> &#x1F550; Gewünscht</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Beauftragt"> &#x23F3; Beauftragt</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Aktiv"> &#x2705; Aktiv</label>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Hardware -->
       <div class="np-section">
-        <div class="np-section-title">🖥️ Eingesetzte Hardware</div>
+        <div class="np-sec-title">&#x1F5A5;&#xFE0F; Eingesetzte Hardware</div>
         <div class="hw-list" id="hw-list"></div>
-        <!-- Brother Papier -->
         <div class="brother-extra" id="brother-extra">
-          <div class="brother-extra-title">🖨️ Brother 820NWB – Papier / Etiketten</div>
+          <div class="brother-extra-title">&#x1F5A8;&#xFE0F; Brother 820NWB – Papier / Etiketten</div>
           <div class="brother-paper-row">
-            <div class="np-field">
-              <label class="np-label">Papiertyp</label>
+            <div class="np-field"><label class="np-label">Papiertyp</label>
               <select class="np-select" id="brother-paper-type">
                 <option value="">– Bitte wählen –</option>
-                <option value="DK-N55224 Endlospapierrolle (nicht klebend) 54mm, 30,48m">DK-N55224 – Endlospapierrolle (nicht klebend) 54mm</option>
-                <option value="DK-44205 Endlosetiketten (Papier) 62mm, 30,48m, wiederablösbar">DK-44205 – Endlosetiketten 62mm, wiederablösbar</option>
-                <option value="DK-22251 Endlosetiketten schwarz-rot 62mm, 15,24m">DK-22251 – Endlosetiketten schwarz-rot 62mm</option>
+                <option value="DK-N55224 Endlospapierrolle (nicht klebend) 54mm 30,48m">DK-N55224 – Endlospapierrolle (nicht klebend) 54mm</option>
+                <option value="DK-44205 Endlosetiketten (Papier) 62mm 30,48m wiederablösbar">DK-44205 – Endlosetiketten 62mm, wiederablösbar</option>
+                <option value="DK-22251 Endlosetiketten schwarz-rot 62mm 15,24m">DK-22251 – Endlosetiketten schwarz-rot 62mm</option>
               </select>
             </div>
-            <div class="np-field" style="min-width:100px">
-              <label class="np-label">Menge (Rollen)</label>
-              <input class="np-input" id="brother-paper-qty" type="number" min="1" value="1" placeholder="Anzahl">
-            </div>
+            <div class="np-field" style="min-width:100px"><label class="np-label">Menge (Rollen)</label><input class="np-input" id="brother-paper-qty" type="number" min="1" value="1"></div>
           </div>
         </div>
       </div>
-
-      <!-- Bemerkungen -->
       <div class="np-section">
-        <div class="np-section-title">📝 Weitere Infos</div>
-        <div class="np-field">
-          <label class="np-label">Bemerkungen / Besonderheiten</label>
-          <textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen, Hinweise vom Vertrieb…"></textarea>
-        </div>
+        <div class="np-sec-title">&#x1F4DD; Weitere Infos</div>
+        <div class="np-field"><label class="np-label">Bemerkungen / Besonderheiten</label><textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen, Hinweise vom Vertrieb…"></textarea></div>
       </div>
-
-      <!-- AP Vorschau -->
       <div class="np-section">
-        <div class="np-section-title">📋 Arbeitspakete (Vorschau)</div>
-        <div class="np-wp-section">
-          <div class="np-wp-title">Folgende APs werden angelegt:</div>
-          <div class="np-wp-list" id="wp-preview"></div>
-        </div>
+        <div class="np-sec-title">&#x1F4CB; Arbeitspakete (Vorschau)</div>
+        <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="wp-preview"></div></div>
       </div>
-
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-        <button class="btn btn-success" id="np-submit-btn" style="flex:1;min-width:200px;justify-content:center">🚀 Projekt in OpenProject anlegen</button>
-        <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="resetForm()">🗑 Formular leeren</button>
+        <button class="btn btn-success" id="np-submit-btn" style="flex:1;min-width:200px;justify-content:center">&#x1F680; Projekt in OpenProject anlegen</button>
+        <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="resetForm()">&#x1F5D1; Formular leeren</button>
       </div>
       <div class="np-result" id="np-result"></div>
     </div>
@@ -483,522 +426,841 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 
 <div id="wb-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:560px;width:100%;padding:24px;position:relative;max-height:80vh;overflow-y:auto">
-    <button onclick="document.getElementById('wb-modal').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted)">✕</button>
+    <button onclick="document.getElementById('wb-modal').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted)">&#x2715;</button>
     <div id="wb-modal-content"></div>
   </div>
 </div>
 
 <script>
-/* ── Config ── */
-const OP_URL='https://entersmart.openproject.com';
-const PROXY='/proxy';
-const REFRESH_INTERVAL=5*60;
+var OP_URL = 'https://entersmart.openproject.com';
+var PROXY = '/proxy';
+var REFRESH_INTERVAL = 300;
 
-/* ── State ── */
-let API_KEY='', projectData=[], warenData=[];
-const raw={proj:null,wp:null};
-const EXCL_PROJ=['demo project','supportfälle','test portl','dräxlmaier main','wisag main','test portal'];
-const EXCL_WP_TYPES=['phase','meilenstein'];
-const WAREN_TYPES=['hardware','elo einrichtung'];
+var API_KEY = '';
+var projectData = [];
+var warenData = [];
+var raw = {proj: null, wp: null};
+var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal'];
+var EXCL_WP_TYPES = ['phase','meilenstein'];
+var WAREN_TYPES = ['hardware','elo einrichtung'];
 
-/* ── Custom Option IDs ── */
-const OUTLOOK_OPTIONS={'Nicht Aktiv':'/api/v3/custom_options/10','Gewünscht':'/api/v3/custom_options/14','Beauftragt':'/api/v3/custom_options/36','Aktiv':'/api/v3/custom_options/37'};
-const ADINT_OPTIONS={'Nicht Aktiv':'/api/v3/custom_options/34','Gewünscht':'/api/v3/custom_options/35','Beauftragt':'/api/v3/custom_options/16','Aktiv':'/api/v3/custom_options/17'};
+var PAKET_OPTIONS = {};
+PAKET_OPTIONS['S'] = '/api/v3/custom_options/4';
+PAKET_OPTIONS['M'] = '/api/v3/custom_options/5';
+PAKET_OPTIONS['L'] = '/api/v3/custom_options/6';
 
-/* ── Hardware Liste ── */
-const HW_ITEMS=[
-  {id:'elo22',name:'ELO 22"'},
-  {id:'elo15',name:'ELO 15"'},
-  {id:'brother',name:'Brother 820NWB'},
-  {id:'magicard600',name:'MagiCard 600'},
-  {id:'magiCardPronto',name:'MagiCard Pronto'},
-  {id:'customVKP',name:'Custom VKP800III'},
-  {id:'bodenRM',name:'Bodenständer RM-System'},
-  {id:'tischRM',name:'Tischständer RM-System'},
-  {id:'bodenWallaby',name:'Bodenständer Wallaby'},
+var OUTLOOK_OPTIONS = {};
+OUTLOOK_OPTIONS['Nicht Aktiv'] = '/api/v3/custom_options/10';
+OUTLOOK_OPTIONS['Gew\u00FCnscht'] = '/api/v3/custom_options/14';
+OUTLOOK_OPTIONS['Beauftragt'] = '/api/v3/custom_options/36';
+OUTLOOK_OPTIONS['Aktiv'] = '/api/v3/custom_options/37';
+
+var ADINT_OPTIONS = {};
+ADINT_OPTIONS['Nicht Aktiv'] = '/api/v3/custom_options/34';
+ADINT_OPTIONS['Gew\u00FCnscht'] = '/api/v3/custom_options/35';
+ADINT_OPTIONS['Beauftragt'] = '/api/v3/custom_options/16';
+ADINT_OPTIONS['Aktiv'] = '/api/v3/custom_options/17';
+
+var HW_ITEMS = [
+  {id:'elo22', name:'ELO 22"'},
+  {id:'elo15', name:'ELO 15"'},
+  {id:'brother', name:'Brother 820NWB'},
+  {id:'magicard600', name:'MagiCard 600'},
+  {id:'magiCardPronto', name:'MagiCard Pronto'},
+  {id:'customVKP', name:'Custom VKP800III'},
+  {id:'bodenRM', name:'Bodenst\u00E4nder RM-System'},
+  {id:'tischRM', name:'Tischst\u00E4nder RM-System'},
+  {id:'bodenWallaby', name:'Bodenst\u00E4nder Wallaby'}
 ];
 
-/* ── WP Basis-Vorlagen ── */
-const WP_BASIS=[
+var WP_BASIS = [
   {name:'Kickoff & Projektplanung'},
   {name:'Systemeinrichtung'},
   {name:'Benutzerverwaltung'},
   {name:'Schulung'},
   {name:'Go-Live'},
-  {name:'Abnahme & Dokumentation'},
+  {name:'Abnahme & Dokumentation'}
 ];
 
-/* ── Hardware initialisieren ── */
-function initHardware(){
-  const list=document.getElementById('hw-list');
-  list.innerHTML='';
-  HW_ITEMS.forEach(hw=>{
-    const row=document.createElement('div');
-    row.className='hw-item';
-    row.id='hw-row-'+hw.id;
-    row.innerHTML=`
-      <input type="checkbox" id="hw-cb-${hw.id}" onchange="hwChanged('${hw.id}')">
-      <label class="hw-item-name" for="hw-cb-${hw.id}">${hw.name}</label>
-      <div class="hw-qty" id="hw-qty-${hw.id}" style="display:none">
-        <button class="hw-qty-btn" onclick="hwQty('${hw.id}',-1)">−</button>
-        <span class="hw-qty-val" id="hw-qty-val-${hw.id}">1</span>
-        <button class="hw-qty-btn" onclick="hwQty('${hw.id}',1)">+</button>
-      </div>`;
+function apiHeaders() {
+  return {'Content-Type':'application/json','X-OP-URL':OP_URL,'X-OP-KEY':API_KEY};
+}
+
+async function apiFetch(path, opts) {
+  opts = opts || {};
+  var res = await fetch(PROXY + path, Object.assign({}, opts, {headers: Object.assign({}, apiHeaders(), opts.headers || {})}));
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
+  return data;
+}
+
+async function doLogin() {
+  var token = document.getElementById('login-token').value.trim();
+  if (!token) return;
+  var btn = document.getElementById('login-btn');
+  var err = document.getElementById('login-err');
+  btn.textContent = 'Prüfe Token…';
+  btn.disabled = true;
+  err.style.display = 'none';
+  try {
+    var r = await fetch(PROXY + '/projects?pageSize=1', {headers: {'X-OP-URL': OP_URL, 'X-OP-KEY': token}});
+    if (!r.ok) throw new Error();
+    API_KEY = token;
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('tokenLabel').textContent = 'Verbunden';
+    loadFromAPI();
+    startRefreshTimer();
+  } catch(e) {
+    err.style.display = 'block';
+    btn.textContent = 'Anmelden';
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('login-token').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
+
+function showRelogin() {
+  API_KEY = '';
+  document.getElementById('login-token').value = '';
+  document.getElementById('login-err').style.display = 'none';
+  document.getElementById('login-btn').textContent = 'Anmelden';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('loginOverlay').style.display = 'flex';
+}
+
+var refreshTimer = null;
+var refreshSecondsLeft = REFRESH_INTERVAL;
+
+function startRefreshTimer() {
+  document.getElementById('refresh-bar').style.display = 'flex';
+  clearInterval(refreshTimer);
+  refreshSecondsLeft = REFRESH_INTERVAL;
+  refreshTimer = setInterval(function() {
+    refreshSecondsLeft--;
+    document.getElementById('refresh-progress').style.width = (refreshSecondsLeft / REFRESH_INTERVAL * 100) + '%';
+    var m = Math.floor(refreshSecondsLeft / 60);
+    var s = refreshSecondsLeft % 60;
+    document.getElementById('refresh-label').textContent = 'Aktualisierung in ' + m + ':' + (s < 10 ? '0' : '') + s;
+    if (refreshSecondsLeft <= 0) { refreshSecondsLeft = REFRESH_INTERVAL; loadFromAPI(); }
+  }, 1000);
+}
+
+function manualRefresh() { refreshSecondsLeft = REFRESH_INTERVAL; loadFromAPI(); }
+
+document.getElementById('themeBtn').addEventListener('click', function() {
+  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+  document.querySelector('.theme-icon').textContent = dark ? '🌙' : '☀️';
+  document.querySelector('.theme-label').textContent = dark ? 'Dark' : 'Light';
+});
+
+var importTrigger = document.getElementById('importTrigger');
+var importPanel = document.getElementById('importPanel');
+importTrigger.addEventListener('click', function(e) { e.stopPropagation(); importPanel.classList.toggle('open'); });
+document.addEventListener('click', function(e) { if (!document.getElementById('importDropdown').contains(e.target)) importPanel.classList.remove('open'); });
+
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+function initMS(btnId, panelId, onChange) {
+  var btn = document.getElementById(btnId);
+  var panel = document.getElementById(panelId);
+  if (!btn || !panel) return;
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.querySelectorAll('.ms-panel.open').forEach(function(p) { if (p !== panel) p.classList.remove('open'); });
+    panel.classList.toggle('open');
+    btn.querySelector('.ms-arrow').style.transform = panel.classList.contains('open') ? 'rotate(180deg)' : '';
+  });
+  panel.addEventListener('change', function() { updateMsBtn(btnId, panelId); onChange(); });
+}
+
+function updateMsBtn(btnId, panelId) {
+  var btn = document.getElementById(btnId);
+  var panel = document.getElementById(panelId);
+  if (!btn || !panel) return;
+  var n = panel.querySelectorAll('input:checked').length;
+  var base = btn.dataset.base || 'Status';
+  btn.innerHTML = base + (n > 0 ? ' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">' + n + '</span>' : '') + ' <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">&#x25BC;</span>';
+  btn.classList.toggle('has-sel', n > 0);
+}
+
+function getMsValues(panelId) {
+  var p = document.getElementById(panelId);
+  if (!p) return [];
+  return Array.from(p.querySelectorAll('input:checked')).map(function(i) { return i.value; });
+}
+
+function resetMs(btnId, panelId) {
+  var p = document.getElementById(panelId);
+  if (p) p.querySelectorAll('input').forEach(function(i) { i.checked = false; });
+  updateMsBtn(btnId, panelId);
+}
+
+document.addEventListener('click', function() {
+  document.querySelectorAll('.ms-panel.open').forEach(function(p) { p.classList.remove('open'); });
+  document.querySelectorAll('.ms-btn .ms-arrow').forEach(function(a) { a.style.transform = ''; });
+});
+
+function setupZone(zoneId, inputId, key) {
+  var zone = document.getElementById(zoneId);
+  var inp = document.getElementById(inputId);
+  zone.addEventListener('click', function() { inp.click(); });
+  inp.addEventListener('change', function() { if (inp.files[0]) parseFile(inp.files[0], key); });
+  ['dragenter','dragover'].forEach(function(ev) { zone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('over'); }); });
+  zone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); });
+  zone.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); if (e.dataTransfer.files[0]) parseFile(e.dataTransfer.files[0], key); });
+}
+
+setupZone('dz-proj','f-proj','proj');
+setupZone('dz-wp','f-wp','wp');
+
+var dzBoth = document.getElementById('dz-both');
+var fBoth = document.getElementById('f-both');
+dzBoth.addEventListener('click', function() { fBoth.click(); });
+fBoth.addEventListener('change', function() { handleMulti(fBoth.files); });
+['dragenter','dragover'].forEach(function(ev) { dzBoth.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.add('over'); }); });
+dzBoth.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.remove('over'); });
+dzBoth.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.remove('over'); handleMulti(e.dataTransfer.files); });
+
+function handleMulti(files) {
+  Array.from(files).forEach(function(f) {
+    var r = new FileReader();
+    r.onload = function(e) {
+      try {
+        var wb = XLSX.read(e.target.result, {type:'binary',raw:false});
+        var data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
+        if (!data.length) return;
+        var h = Object.keys(data[0]).map(function(k) { return k.toLowerCase(); });
+        var isWP = h.some(function(k) { return k.includes('typ') || k.includes('thema') || k.includes('betreff') || k.includes('zugewiesen'); });
+        var key = isWP ? 'wp' : 'proj';
+        raw[key] = data;
+        document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = '✅ ' + f.name;
+        document.getElementById(key === 'proj' ? 'dz-proj' : 'dz-wp').classList.add('loaded');
+        document.getElementById('build-btn').disabled = false;
+        var loaded = [raw.proj ? 'Projekte' : '', raw.wp ? 'Arbeitspakete' : ''].filter(Boolean);
+        document.getElementById('lbl-both').textContent = loaded.length === 2 ? '✅ Beide Dateien erkannt!' : '✅ ' + loaded.join(', ') + ' – zweite noch ausstehend';
+        dzBoth.classList.toggle('loaded', loaded.length === 2);
+      } catch(err) { showMsg('Fehler: ' + err.message, 'error'); }
+    };
+    r.readAsBinaryString(f);
+  });
+}
+
+document.getElementById('build-btn').addEventListener('click', function() { buildDashboard(); importPanel.classList.remove('open'); });
+
+function parseFile(file, key) {
+  var r = new FileReader();
+  r.onload = function(e) {
+    try {
+      var wb = XLSX.read(e.target.result, {type:'binary',raw:false});
+      raw[key] = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
+      document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = '✅ ' + file.name;
+      document.getElementById(key === 'proj' ? 'dz-proj' : 'dz-wp').classList.add('loaded');
+      document.getElementById('build-btn').disabled = false;
+    } catch(err) { showMsg('Fehler: ' + err.message, 'error'); }
+  };
+  r.readAsBinaryString(file);
+}
+
+function showMsg(txt, type, id) {
+  id = id || 'msg';
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = txt;
+  el.className = 'msg-' + type;
+  el.style.display = 'block';
+}
+
+function col(row) {
+  var keys = Array.from(arguments).slice(1);
+  var rk = Object.keys(row).map(function(k) { return k.trim(); });
+  for (var i = 0; i < keys.length; i++) {
+    var f = rk.find(function(r) { return r.toLowerCase().includes(keys[i].toLowerCase()); });
+    if (f) return row[f] || '';
+  }
+  return '';
+}
+
+function statusKey(s) {
+  if (!s) return 'default';
+  var l = s.toLowerCase();
+  if (l.includes('plan') || l.includes('on track') || l.includes('zeit')) return 'on_track';
+  if (l.includes('risk') || l.includes('gef\u00E4hr')) return 'at_risk';
+  if (l.includes('off') || l.includes('kritisch') || l.includes('verz\u00F6g')) return 'off_track';
+  return 'default';
+}
+
+function statusLabel(k) {
+  var map = {on_track:'Im Plan', at_risk:'Gef\u00E4hrdet', off_track:'Kritisch', 'default':'Kein Status'};
+  return map[k] || k;
+}
+
+function isProjectClosed(s) {
+  if (!s) return false;
+  var l = s.toLowerCase();
+  return ['abgeschlossen','closed','archiv','fertig','done','beendet','finished'].some(function(x) { return l.includes(x); });
+}
+
+function isWPClosed(st) {
+  return ['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(function(s) { return st.includes(s); });
+}
+
+async function loadFromAPI() {
+  showMsg('Daten werden geladen…', 'info');
+  document.getElementById('msg').style.display = 'block';
+  try {
+    var projData = await apiFetch('/projects?pageSize=100');
+    var projects = (projData._embedded && projData._embedded.elements ? projData._embedded.elements : []).map(function(p) {
+      return {name: p.name || '', status: (p._links && p._links.status ? p._links.status.title : '') || '', pm: (p._links && p._links.responsible ? p._links.responsible.title : '') || '', paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total:0, wp_closed:0, _id: p.id};
+    });
+    var wpOpen = await apiFetch('/work_packages?pageSize=500');
+    var wpClosed = await apiFetch('/work_packages?pageSize=500&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"c","values":[]}}])));
+    var allWPs = (wpOpen._embedded && wpOpen._embedded.elements ? wpOpen._embedded.elements : []).concat(wpClosed._embedded && wpClosed._embedded.elements ? wpClosed._embedded.elements : []);
+    var wpByProj = {};
+    allWPs.forEach(function(wp) {
+      var pId = wp._links && wp._links.project ? wp._links.project.href.split('/').pop() : null;
+      var t = (wp._links && wp._links.type ? wp._links.type.title : '').toLowerCase();
+      if (EXCL_WP_TYPES.includes(t)) return;
+      if (!wpByProj[pId]) wpByProj[pId] = {total:0, closed:0};
+      wpByProj[pId].total++;
+      if (isWPClosed((wp._links && wp._links.status ? wp._links.status.title : '').toLowerCase())) wpByProj[pId].closed++;
+    });
+    projects.forEach(function(p) {
+      var d = wpByProj[String(p._id)];
+      if (d) { p.wp_total = d.total; p.wp_closed = d.closed; }
+    });
+    warenData = [];
+    allWPs.forEach(function(wp) {
+      var t = (wp._links && wp._links.type ? wp._links.type.title : '').toLowerCase();
+      var st = wp._links && wp._links.status ? wp._links.status.title : '';
+      if (WAREN_TYPES.includes(t) && !isWPClosed(st.toLowerCase())) {
+        warenData.push({projekt: (wp._links && wp._links.project ? wp._links.project.title : '') || '–', titel: wp.subject || '–', typ: (wp._links && wp._links.type ? wp._links.type.title : '') || '–', status: st || '–', raw: {Projekt: wp._links && wp._links.project ? wp._links.project.title : '', Thema: wp.subject, Typ: wp._links && wp._links.type ? wp._links.type.title : '', Status: st, Zugewiesen: wp._links && wp._links.assignee ? wp._links.assignee.title : '–', Erstellt: wp.createdAt ? wp.createdAt.substring(0,10) : '–'}});
+      }
+    });
+    var filtered = projects.filter(function(p) { return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status); });
+    projectData = filtered;
+    renderCards(filtered);
+    renderWarenbestand();
+    setupProjFilters();
+    showMsg('✅ ' + filtered.length + ' Projekte geladen.', 'success');
+    setTimeout(function() { var el = document.getElementById('msg'); if (el && el.className === 'msg-success') el.style.display = 'none'; }, 3000);
+  } catch(e) { showMsg('❌ Fehler: ' + e.message, 'error'); }
+}
+
+function buildDashboard() {
+  document.getElementById('msg').style.display = 'none';
+  document.getElementById('cards').innerHTML = '';
+  var projects = [];
+  if (raw.proj) {
+    projects = raw.proj.map(function(r) {
+      return {name: col(r,'name','bezeichnung','projekt','title') || '(Unbekannt)', status: col(r,'status','zustand','state'), pm: col(r,'projektverantwortlicher','verantwortlich','responsible','manager','projektleiter','owner'), paket: col(r,'paket','package','paketname'), kundennr: col(r,'kundennummer','kunden-nr','kundennr','kd-nr'), besonderheit: col(r,'besonderheiten','besonderheit','hinweis','anmerkung','notes'), statusdesc: col(r,'statusbeschreibung','status beschreibung','statuskommentar','statusinfo'), outlook: col(r,'outlook'), adint: col(r,'ad-integration','ad integration','active directory'), wp_total:0, wp_closed:0};
+    });
+  }
+  warenData = [];
+  if (raw.wp) {
+    var s0 = raw.wp[0] || {};
+    var stCol = Object.keys(s0).find(function(k) { return k.toLowerCase().includes('status'); }) || '';
+    var prCol = Object.keys(s0).find(function(k) { return k.toLowerCase().includes('projekt') || k.toLowerCase().includes('project'); }) || '';
+    var tyCol = Object.keys(s0).find(function(k) { return k.toLowerCase() === 'typ' || k.toLowerCase() === 'type'; }) || '';
+    var tiCol = Object.keys(s0).find(function(k) { return ['thema','betreff','subject','titel','title'].some(function(x) { return k.toLowerCase().includes(x); }); }) || '';
+    var wpByProj = {};
+    raw.wp.forEach(function(wp) {
+      var t = (tyCol ? (wp[tyCol] || '') : '').toString().trim().toLowerCase();
+      var pName = (prCol ? (wp[prCol] || '') : '').trim();
+      var stRaw = stCol ? (wp[stCol] || '') : '';
+      var st = stRaw.toLowerCase();
+      var closed = isWPClosed(st);
+      if (WAREN_TYPES.includes(t) && !closed) warenData.push({projekt: pName, titel: tiCol ? (wp[tiCol] || '–') : '–', typ: wp[tyCol] || '–', status: stRaw || '–', raw: wp});
+      if (EXCL_WP_TYPES.includes(t)) return;
+      if (!wpByProj[pName]) wpByProj[pName] = {total:0, closed:0};
+      wpByProj[pName].total++;
+      if (closed) wpByProj[pName].closed++;
+    });
+    if (!projects.length) {
+      projects = Object.keys(wpByProj).filter(Boolean).map(function(n) { return {name:n, status:'', pm:'', paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total: wpByProj[n].total, wp_closed: wpByProj[n].closed}; });
+    } else {
+      projects.forEach(function(p) {
+        var ex = wpByProj[p.name];
+        if (ex) { p.wp_total = ex.total; p.wp_closed = ex.closed; return; }
+        var fz = Object.keys(wpByProj).find(function(k) { return k.toLowerCase().includes(p.name.toLowerCase()) || p.name.toLowerCase().includes(k.toLowerCase()); });
+        if (fz) { p.wp_total = wpByProj[fz].total; p.wp_closed = wpByProj[fz].closed; }
+      });
+    }
+  }
+  if (!projects.length) { showMsg('Keine Projektdaten gefunden.', 'error'); return; }
+  var before = projects.length;
+  projects = projects.filter(function(p) { return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status); });
+  projectData = projects;
+  renderCards(projects);
+  renderWarenbestand();
+  setupProjFilters();
+  showMsg('✅ ' + projects.length + ' Projekte geladen' + (before - projects.length > 0 ? ' (' + (before - projects.length) + ' ausgeblendet)' : '') + '.', 'success');
+}
+
+function renderCards(projects) {
+  var wrap = document.getElementById('cards');
+  wrap.innerHTML = '';
+  var tw = 0, to = 0, td = 0;
+  projects.forEach(function(p, i) {
+    var sk = statusKey(p.status);
+    var pct = p.wp_total > 0 ? Math.round((p.wp_closed / p.wp_total) * 100) : 0;
+    var fill = p.wp_total === 0 ? 'fill-none' : pct >= 70 ? 'fill-high' : pct >= 40 ? 'fill-medium' : 'fill-low';
+    tw += p.wp_total; to += p.wp_total - p.wp_closed; td += p.wp_closed;
+    var fi = [];
+    if (['beauftragt','gew\u00FCnscht'].includes((p.outlook || '').toLowerCase().trim())) fi.push({l:'Outlook', v: p.outlook});
+    if (['beauftragt','gew\u00FCnscht'].includes((p.adint || '').toLowerCase().trim())) fi.push({l:'AD-Integration', v: p.adint});
+    var card = document.createElement('div');
+    card.className = 'project-card status-' + sk;
+    card.dataset.name = p.name.toLowerCase();
+    card.dataset.status = sk;
+    card.dataset.pm = (p.pm || '').toLowerCase();
+    var html = '<div class="proj-header"><div class="proj-name">' + p.name + '</div><span class="badge badge-' + sk + '">' + statusLabel(sk) + '</span></div>';
+    html += '<div class="proj-meta">';
+    if (p.pm) html += '<div class="meta-item"><strong>&#x1F464;</strong> ' + p.pm + '</div>';
+    if (p.paket) html += '<div class="meta-item"><strong>&#x1F4E6; Paket:</strong> ' + p.paket + '</div>';
+    if (p.kundennr) html += '<div class="meta-item"><strong>&#x1F522; Kundennr.:</strong> ' + p.kundennr + '</div>';
+    html += '<div class="meta-item"><strong>&#x1F4CB;</strong> ' + p.wp_total + ' Arbeitspakete</div></div>';
+    if (p.besonderheit) html += '<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>&#x26A0;&#xFE0F; Besonderheiten:</strong> ' + p.besonderheit + '</div></div>';
+    if (fi.length) {
+      html += '<div class="feature-badges">' + fi.map(function(x) {
+        var cls = x.v.toLowerCase() === 'beauftragt' ? 'feature-beauftragt' : 'feature-gewuenscht';
+        var icon = x.v.toLowerCase() === 'beauftragt' ? '&#x23F3;' : '&#x1F550;';
+        return '<span class="feature-badge ' + cls + '">' + icon + '<span class="feature-name">' + x.l + ':</span> ' + x.v + '</span>';
+      }).join('') + '</div>';
+    }
+    html += '<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>' + p.wp_closed + '/' + p.wp_total + ' · ' + pct + '%</span></div><div class="prog-track"><div class="prog-fill ' + fill + '" style="width:' + pct + '%"></div></div></div>';
+    if (p.statusdesc) html += '<button class="toggle-btn sdesc-btn" data-i="' + i + '">&#x1F4AC; Statusbeschreibung <span class="arrow">&#x25BC;</span></button><div class="sdesc-body" id="sd-' + i + '">' + p.statusdesc + '</div>';
+    if (p._id) html += '<button class="toggle-btn ap-load-btn" data-proj-id="' + p._id + '">&#x1F4CB; Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-' + p._id + '"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">&#x23F3; Wird geladen…</div></div>';
+    card.innerHTML = html;
+    wrap.appendChild(card);
+  });
+
+  wrap.querySelectorAll('.sdesc-btn').forEach(function(b) {
+    b.addEventListener('click', function() {
+      b.classList.toggle('open');
+      document.getElementById('sd-' + b.dataset.i).classList.toggle('open');
+    });
+  });
+
+  wrap.querySelectorAll('.ap-load-btn').forEach(function(b) {
+    b.addEventListener('click', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      var projId = b.dataset.projId;
+      var body = document.getElementById('ap-body-' + projId);
+      if (!body) return;
+      if (body.classList.contains('open')) {
+        body.classList.remove('open');
+        b.classList.remove('open');
+      } else {
+        body.classList.add('open');
+        b.classList.add('open');
+        loadProjectWPs(projId);
+      }
+    });
+  });
+
+  document.getElementById('s-total').textContent = projects.length;
+  document.getElementById('s-wp').textContent = tw;
+  document.getElementById('s-open').textContent = to;
+  document.getElementById('s-done').textContent = td;
+  document.getElementById('stats-row').style.display = 'flex';
+  document.getElementById('export-bar').style.display = 'flex';
+}
+
+async function loadProjectWPs(projId) {
+  var el = document.getElementById('ap-body-' + projId);
+  if (!el || el.dataset.loaded === '1') return;
+  try {
+    var data = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100');
+    var wps = data._embedded && data._embedded.elements ? data._embedded.elements : [];
+    if (!wps.length) { el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete gefunden.</div>'; el.dataset.loaded = '1'; return; }
+    el.innerHTML = wps.map(function(wp) {
+      var status = wp._links && wp._links.status ? wp._links.status.title : '–';
+      var type = wp._links && wp._links.type ? wp._links.type.title : '–';
+      var closed = isWPClosed(status.toLowerCase());
+      return '<div class="ap-item' + (closed ? ' ap-closed' : '') + '"><span class="ap-type">' + type + '</span><span class="ap-name">' + wp.subject + '</span><span class="ap-status' + (closed ? ' done' : '') + '">' + status + '</span></div>';
+    }).join('');
+    el.dataset.loaded = '1';
+  } catch(e) {
+    el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">&#x274C; Fehler: ' + e.message + '</div>';
+    el.dataset.loaded = '0';
+  }
+}
+
+function setupProjFilters() {
+  var pmF = document.getElementById('proj-pm-filter');
+  pmF.innerHTML = '<option value="">Alle Verantwortlichen</option>';
+  Array.from(new Set(projectData.map(function(p) { return p.pm; }).filter(Boolean))).sort().forEach(function(pm) {
+    var o = document.createElement('option'); o.value = pm.toLowerCase(); o.textContent = pm; pmF.appendChild(o);
+  });
+  document.getElementById('proj-filter-bar').style.display = 'flex';
+  initMS('proj-status-ms-btn', 'proj-status-ms-panel', applyProjFilter);
+  document.getElementById('proj-search').addEventListener('input', applyProjFilter);
+  pmF.addEventListener('change', applyProjFilter);
+  document.getElementById('proj-clear-btn').addEventListener('click', clearProjFilter);
+}
+
+function applyProjFilter() {
+  var q = document.getElementById('proj-search').value.toLowerCase();
+  var statuses = getMsValues('proj-status-ms-panel');
+  var pm = document.getElementById('proj-pm-filter').value;
+  var v = 0;
+  document.querySelectorAll('#cards .project-card').forEach(function(c) {
+    var m = (!q || c.dataset.name.includes(q)) && (!statuses.length || statuses.includes(c.dataset.status)) && (!pm || c.dataset.pm.includes(pm));
+    c.classList.toggle('hidden', !m);
+    if (m) v++;
+  });
+  document.getElementById('no-results').style.display = v === 0 ? 'block' : 'none';
+  document.getElementById('proj-filter-count').textContent = v + ' von ' + projectData.length;
+}
+
+function clearProjFilter() {
+  document.getElementById('proj-search').value = '';
+  document.getElementById('proj-pm-filter').value = '';
+  resetMs('proj-status-ms-btn', 'proj-status-ms-panel');
+  document.getElementById('proj-filter-count').textContent = '';
+  document.querySelectorAll('#cards .project-card').forEach(function(c) { c.classList.remove('hidden'); });
+  document.getElementById('no-results').style.display = 'none';
+}
+
+function renderWarenbestand() {
+  var content = document.getElementById('wb-content');
+  if (!warenData.length) {
+    content.innerHTML = '<div class="wb-empty">&#x1F4ED; Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';
+    document.getElementById('wb-stats').style.display = 'none';
+    document.getElementById('wb-export-bar').style.display = 'none';
+    document.getElementById('wb-filter-bar').style.display = 'none';
+    return;
+  }
+  var PENDING = ['ausstehend','offen','bestellt','in bestellung','neu'];
+  warenData.sort(function(a, b) {
+    var aP = PENDING.some(function(s) { return a.status.toLowerCase().includes(s); }) ? 0 : 1;
+    var bP = PENDING.some(function(s) { return b.status.toLowerCase().includes(s); }) ? 0 : 1;
+    return aP - bP;
+  });
+  document.getElementById('wb-total').textContent = warenData.length;
+  document.getElementById('wb-proj-count').textContent = new Set(warenData.map(function(w) { return w.projekt; })).size;
+  document.getElementById('wb-stats').style.display = 'flex';
+  document.getElementById('wb-export-bar').style.display = 'flex';
+  var statusCounts = {};
+  warenData.forEach(function(w) { statusCounts[w.status] = (statusCounts[w.status] || 0) + 1; });
+  var wbPF = document.getElementById('wb-proj-filter');
+  wbPF.innerHTML = '<option value="">Alle Projekte</option>';
+  Array.from(new Set(warenData.map(function(w) { return w.projekt; }).filter(Boolean))).sort().forEach(function(p) {
+    var o = document.createElement('option'); o.value = p.toLowerCase(); o.textContent = p; wbPF.appendChild(o);
+  });
+  var wbSPanel = document.getElementById('wb-status-ms-panel');
+  wbSPanel.innerHTML = '';
+  Object.entries(statusCounts).sort(function(a, b) { return a[0].localeCompare(b[0]); }).forEach(function(entry) {
+    var lbl = document.createElement('label');
+    lbl.className = 'ms-option';
+    lbl.innerHTML = '<input type="checkbox" value="' + entry[0].toLowerCase() + '"> ' + entry[0] + ' <span class="ms-count-badge">' + entry[1] + '</span>';
+    wbSPanel.appendChild(lbl);
+  });
+  var rows = warenData.map(function(w, i) {
+    return '<tr class="wb-row" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + w.status + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
+  }).join('');
+  content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Typ</th><th>Status</th><th></th></tr></thead><tbody id="wb-tbody">' + rows + '</tbody></table><div class="wb-no-results" id="wb-no-results" style="display:none">&#x1F50D; Keine Einträge gefunden.</div></div>';
+  content.querySelectorAll('.wb-row').forEach(function(row) {
+    row.addEventListener('click', function() {
+      var w = warenData[+row.dataset.idx];
+      var fields = Object.entries(w.raw).filter(function(e) { return e[1] !== ''; }).map(function(e) {
+        return '<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">' + e[0] + '</div><div style="font-size:.8rem;color:var(--text-sub)">' + e[1] + '</div></div>';
+      }).join('');
+      document.getElementById('wb-modal-content').innerHTML = '<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">' + w.titel + '</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">' + w.projekt + ' · <span style="color:var(--at-risk-c)">' + w.typ + '</span></div>' + fields;
+      document.getElementById('wb-modal').style.display = 'flex';
+    });
+  });
+  document.getElementById('wb-modal').addEventListener('click', function(e) { if (e.target === document.getElementById('wb-modal')) document.getElementById('wb-modal').style.display = 'none'; });
+  document.getElementById('wb-filter-bar').style.display = 'flex';
+  initMS('wb-status-ms-btn', 'wb-status-ms-panel', applyWBFilter);
+  document.getElementById('wb-search').addEventListener('input', applyWBFilter);
+  wbPF.addEventListener('change', applyWBFilter);
+  document.getElementById('wb-type-filter').addEventListener('change', applyWBFilter);
+  document.getElementById('wb-clear-btn').addEventListener('click', clearWBFilter);
+}
+
+function applyWBFilter() {
+  var q = document.getElementById('wb-search').value.toLowerCase();
+  var proj = document.getElementById('wb-proj-filter').value;
+  var typ = document.getElementById('wb-type-filter').value;
+  var statuses = getMsValues('wb-status-ms-panel');
+  var v = 0;
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(row) {
+    var m = (!q || row.dataset.search.includes(q)) && (!proj || row.dataset.proj === proj) && (!typ || row.dataset.typ === typ) && (!statuses.length || statuses.includes(row.dataset.status));
+    row.classList.toggle('wb-hidden', !m);
+    if (m) v++;
+  });
+  var nr = document.getElementById('wb-no-results');
+  if (nr) nr.style.display = v === 0 ? 'block' : 'none';
+  document.getElementById('wb-filter-count').textContent = v + ' von ' + warenData.length;
+}
+
+function clearWBFilter() {
+  document.getElementById('wb-search').value = '';
+  document.getElementById('wb-proj-filter').value = '';
+  document.getElementById('wb-type-filter').value = '';
+  resetMs('wb-status-ms-btn', 'wb-status-ms-panel');
+  document.getElementById('wb-filter-count').textContent = '';
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(r) { r.classList.remove('wb-hidden'); });
+  var nr = document.getElementById('wb-no-results');
+  if (nr) nr.style.display = 'none';
+}
+
+function initHardware() {
+  var list = document.getElementById('hw-list');
+  list.innerHTML = '';
+  HW_ITEMS.forEach(function(hw) {
+    var row = document.createElement('div');
+    row.className = 'hw-item';
+    row.id = 'hw-row-' + hw.id;
+    row.innerHTML = '<input type="checkbox" id="hw-cb-' + hw.id + '" onchange="hwChanged(\'' + hw.id + '\')"><label class="hw-item-name" for="hw-cb-' + hw.id + '">' + hw.name + '</label><div class="hw-qty" id="hw-qty-' + hw.id + '" style="display:none"><button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',-1)">&#x2212;</button><span class="hw-qty-val" id="hw-qty-val-' + hw.id + '">1</span><button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',1)">+</button></div>';
     list.appendChild(row);
   });
 }
 
-function hwChanged(id){
-  const cb=document.getElementById('hw-cb-'+id);
-  const row=document.getElementById('hw-row-'+id);
-  const qty=document.getElementById('hw-qty-'+id);
-  row.classList.toggle('selected',cb.checked);
-  if(qty) qty.style.display=cb.checked?'flex':'none';
-  if(id==='brother'){
-    document.getElementById('brother-extra').classList.toggle('visible',cb.checked);
-  }
+function hwChanged(id) {
+  var cb = document.getElementById('hw-cb-' + id);
+  var row = document.getElementById('hw-row-' + id);
+  var qty = document.getElementById('hw-qty-' + id);
+  row.classList.toggle('selected', cb.checked);
+  if (qty) qty.style.display = cb.checked ? 'flex' : 'none';
+  if (id === 'brother') document.getElementById('brother-extra').classList.toggle('visible', cb.checked);
   updateWPPreview();
 }
 
-function hwQty(id,delta){
-  const el=document.getElementById('hw-qty-val-'+id);
-  let v=parseInt(el.textContent)||1;
-  v=Math.max(1,v+delta);
-  el.textContent=v;
+function hwQty(id, delta) {
+  var el = document.getElementById('hw-qty-val-' + id);
+  var v = Math.max(1, (parseInt(el.textContent) || 1) + delta);
+  el.textContent = v;
   updateWPPreview();
 }
 
-function getHwSelections(){
-  return HW_ITEMS.filter(hw=>document.getElementById('hw-cb-'+hw.id)?.checked).map(hw=>({
-    id:hw.id,name:hw.name,qty:parseInt(document.getElementById('hw-qty-val-'+hw.id)?.textContent)||1
-  }));
+function getHwSelections() {
+  return HW_ITEMS.filter(function(hw) { return document.getElementById('hw-cb-' + hw.id) && document.getElementById('hw-cb-' + hw.id).checked; }).map(function(hw) {
+    return {id: hw.id, name: hw.name, qty: parseInt(document.getElementById('hw-qty-val-' + hw.id).textContent) || 1};
+  });
 }
 
-/* ── WP Vorschau ── */
-function updateWPPreview(){
-  const outlook=document.querySelector('input[name="outlook"]:checked')?.value||'Nicht Aktiv';
-  const adint=document.querySelector('input[name="adint"]:checked')?.value||'Nicht Aktiv';
-  const hw=getHwSelections();
-  const brotherPaperType=document.getElementById('brother-paper-type')?.value;
-  const brotherPaperQty=document.getElementById('brother-paper-qty')?.value||1;
-  const brotherSel=hw.find(h=>h.id==='brother');
-
-  const items=[];
-  WP_BASIS.forEach(w=>items.push({name:w.name,sub:false}));
-  if(outlook==='Beauftragt'||outlook==='Gewünscht') items.push({name:'Outlook Add-in einrichten',sub:false});
-  if(adint==='Beauftragt'||adint==='Gewünscht') items.push({name:'AD-Integration konfigurieren',sub:false});
-
-  hw.forEach(h=>{
-    for(let i=0;i<h.qty;i++){
-      const label=h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name;
-      items.push({name:label,sub:false,hw:true});
-      if(h.id==='brother'&&i===0&&brotherPaperType){
-        items.push({name:`Papier: ${brotherPaperType} × ${brotherPaperQty} Rollen`,sub:true});
-      }
+function updateWPPreview() {
+  var outlook = (document.querySelector('input[name="outlook"]:checked') || {}).value || 'Nicht Aktiv';
+  var adint = (document.querySelector('input[name="adint"]:checked') || {}).value || 'Nicht Aktiv';
+  var hw = getHwSelections();
+  var brotherPaperType = document.getElementById('brother-paper-type').value;
+  var brotherPaperQty = document.getElementById('brother-paper-qty').value || 1;
+  var items = WP_BASIS.map(function(w) { return {name: w.name, sub: false}; });
+  if (outlook === 'Beauftragt' || outlook === 'Gew\u00FCnscht') items.push({name: 'Outlook Add-in einrichten', sub: false});
+  if (adint === 'Beauftragt' || adint === 'Gew\u00FCnscht') items.push({name: 'AD-Integration konfigurieren', sub: false});
+  hw.forEach(function(h) {
+    for (var i = 0; i < h.qty; i++) {
+      var label = h.qty > 1 ? h.name + ' (' + (i+1) + '/' + h.qty + ')' : h.name;
+      items.push({name: label, sub: false});
+      if (h.id === 'brother' && i === 0 && brotherPaperType) items.push({name: 'Papier: ' + brotherPaperType + ' x ' + brotherPaperQty + ' Rollen', sub: true});
     }
   });
-
-  document.getElementById('wp-preview').innerHTML=items.map(it=>
-    `<div class="np-wp-item${it.sub?' wp-sub':''}"><span class="wp-dot"></span>${it.name}</div>`
-  ).join('');
+  document.getElementById('wp-preview').innerHTML = items.map(function(it) {
+    return '<div class="np-wp-item' + (it.sub ? ' wp-sub' : '') + '"><span class="wp-dot"></span>' + it.name + '</div>';
+  }).join('');
 }
 
-/* ── Radio styling ── */
-function initRadios(){
-  document.querySelectorAll('.np-radio-group').forEach(grp=>{
-    grp.querySelectorAll('input[type=radio]').forEach(r=>{
-      r.addEventListener('change',()=>{
-        grp.querySelectorAll('.np-radio-label').forEach(l=>l.classList.remove('selected'));
-        r.closest('.np-radio-label').classList.add('selected');
+function initRadios() {
+  document.querySelectorAll('.np-radio-group').forEach(function(grp) {
+    grp.querySelectorAll('input[type=radio]').forEach(function(r) {
+      r.addEventListener('change', function() {
+        grp.querySelectorAll('.np-radio-lbl').forEach(function(l) { l.classList.remove('selected'); });
+        r.closest('.np-radio-lbl').classList.add('selected');
         updateWPPreview();
       });
-      if(r.checked)r.closest('.np-radio-label').classList.add('selected');
+      if (r.checked) r.closest('.np-radio-lbl').classList.add('selected');
     });
   });
 }
 
-document.getElementById('brother-paper-type').addEventListener('change',updateWPPreview);
-document.getElementById('brother-paper-qty').addEventListener('input',updateWPPreview);
+document.getElementById('brother-paper-type').addEventListener('change', updateWPPreview);
+document.getElementById('brother-paper-qty').addEventListener('input', updateWPPreview);
 
-/* ── API Helper ── */
-function apiHeaders(){return{'Content-Type':'application/json','X-OP-URL':OP_URL,'X-OP-KEY':API_KEY};}
-async function apiFetch(path,opts={}){
-  const res=await fetch(PROXY+path,{...opts,headers:{...apiHeaders(),...(opts.headers||{})}});
-  const data=await res.json();
-  if(!res.ok)throw Object.assign(new Error(data.message||`HTTP ${res.status}`),{data});
-  return data;
-}
-
-/* ── Login ── */
-async function doLogin(){
-  const token=document.getElementById('login-token').value.trim();
-  if(!token)return;
-  const btn=document.getElementById('login-btn'),err=document.getElementById('login-err');
-  btn.textContent='⏳ Prüfe Token…';btn.disabled=true;err.style.display='none';
-  try{
-    const r=await fetch(PROXY+'/projects?pageSize=1',{headers:{'X-OP-URL':OP_URL,'X-OP-KEY':token}});
-    if(!r.ok)throw new Error();
-    API_KEY=token;
-    document.getElementById('loginOverlay').style.display='none';
-    document.getElementById('tokenLabel').textContent='Verbunden ✓';
-    loadFromAPI();startRefreshTimer();
-  }catch(e){err.style.display='block';btn.textContent='🔐 Anmelden';btn.disabled=false;}
-}
-document.getElementById('login-btn').addEventListener('click',doLogin);
-document.getElementById('login-token').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-function showRelogin(){API_KEY='';document.getElementById('login-token').value='';document.getElementById('login-err').style.display='none';document.getElementById('login-btn').textContent='🔐 Anmelden';document.getElementById('login-btn').disabled=false;document.getElementById('loginOverlay').style.display='flex';}
-
-/* ── Auto-Refresh ── */
-let refreshTimer=null,refreshSecondsLeft=REFRESH_INTERVAL;
-function startRefreshTimer(){
-  document.getElementById('refresh-bar').style.display='flex';
-  clearInterval(refreshTimer);refreshSecondsLeft=REFRESH_INTERVAL;
-  refreshTimer=setInterval(()=>{
-    refreshSecondsLeft--;
-    document.getElementById('refresh-progress').style.width=(refreshSecondsLeft/REFRESH_INTERVAL*100)+'%';
-    const m=Math.floor(refreshSecondsLeft/60),s=refreshSecondsLeft%60;
-    document.getElementById('refresh-label').textContent=`Aktualisierung in ${m}:${String(s).padStart(2,'0')}`;
-    if(refreshSecondsLeft<=0){refreshSecondsLeft=REFRESH_INTERVAL;loadFromAPI();}
-  },1000);
-}
-function manualRefresh(){refreshSecondsLeft=REFRESH_INTERVAL;loadFromAPI();}
-
-/* ── Theme ── */
-document.getElementById('themeBtn').addEventListener('click',()=>{
-  const dark=document.documentElement.getAttribute('data-theme')==='dark';
-  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
-  document.querySelector('.theme-icon').textContent=dark?'🌙':'☀️';
-  document.querySelector('.theme-label').textContent=dark?'Dark':'Light';
-});
-
-/* ── Import dropdown ── */
-const importTrigger=document.getElementById('importTrigger'),importPanel=document.getElementById('importPanel');
-importTrigger.addEventListener('click',e=>{e.stopPropagation();importPanel.classList.toggle('open');});
-document.addEventListener('click',e=>{if(!document.getElementById('importDropdown').contains(e.target))importPanel.classList.remove('open');});
-
-/* ── Tabs ── */
-document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
-}));
-
-/* ── Multi-select ── */
-function initMultiSelect(btnId,panelId,onChangeFn){
-  const btn=document.getElementById(btnId),panel=document.getElementById(panelId);
-  if(!btn||!panel)return;
-  btn.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.ms-panel.open').forEach(p=>{if(p!==panel)p.classList.remove('open');});panel.classList.toggle('open');btn.querySelector('.ms-arrow').style.transform=panel.classList.contains('open')?'rotate(180deg)':'';});
-  panel.addEventListener('change',()=>{updateMsBtn(btnId,panelId);onChangeFn();});
-}
-function updateMsBtn(btnId,panelId){const btn=document.getElementById(btnId),panel=document.getElementById(panelId);if(!btn||!panel)return;const n=panel.querySelectorAll('input:checked').length;const base=btn.dataset.base||'Status';btn.innerHTML=`${base}${n>0?' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">'+n+'</span>':''} <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">▼</span>`;btn.classList.toggle('has-selection',n>0);}
-function getMsValues(panelId){const p=document.getElementById(panelId);if(!p)return[];return[...p.querySelectorAll('input:checked')].map(i=>i.value);}
-function resetMs(btnId,panelId){const p=document.getElementById(panelId);if(p)p.querySelectorAll('input').forEach(i=>i.checked=false);updateMsBtn(btnId,panelId);}
-document.addEventListener('click',()=>{document.querySelectorAll('.ms-panel.open').forEach(p=>p.classList.remove('open'));document.querySelectorAll('.ms-btn .ms-arrow').forEach(a=>a.style.transform='');});
-
-/* ── Drop zones ── */
-function setupZone(zoneId,inputId,key){
-  const zone=document.getElementById(zoneId),inp=document.getElementById(inputId);
-  zone.addEventListener('click',()=>inp.click());
-  inp.addEventListener('change',()=>{if(inp.files[0])parseFile(inp.files[0],key);});
-  ['dragenter','dragover'].forEach(ev=>zone.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();zone.classList.add('over');}));
-  zone.addEventListener('dragleave',e=>{e.preventDefault();e.stopPropagation();zone.classList.remove('over');});
-  zone.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();zone.classList.remove('over');if(e.dataTransfer.files[0])parseFile(e.dataTransfer.files[0],key);});
-}
-setupZone('dz-proj','f-proj','proj');setupZone('dz-wp','f-wp','wp');
-const dzBoth=document.getElementById('dz-both'),fBoth=document.getElementById('f-both');
-dzBoth.addEventListener('click',()=>fBoth.click());
-fBoth.addEventListener('change',()=>handleMulti(fBoth.files));
-['dragenter','dragover'].forEach(ev=>dzBoth.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.add('over');}));
-dzBoth.addEventListener('dragleave',e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');});
-dzBoth.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');handleMulti(e.dataTransfer.files);});
-function handleMulti(files){Array.from(files).forEach(f=>{const r=new FileReader();r.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'binary',raw:false});const data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});if(!data.length)return;const h=Object.keys(data[0]).map(k=>k.toLowerCase());const isWP=h.some(k=>k.includes('typ')||k.includes('thema')||k.includes('betreff')||k.includes('zugewiesen'));const key=isWP?'wp':'proj';raw[key]=data;document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent='✅ '+f.name;document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');document.getElementById('build-btn').disabled=false;const loaded=[raw.proj?'Projekte':'',raw.wp?'Arbeitspakete':''].filter(Boolean);document.getElementById('lbl-both').textContent=loaded.length===2?'✅ Beide Dateien erkannt!':'✅ '+loaded.join(', ')+' – zweite noch ausstehend';dzBoth.classList.toggle('loaded',loaded.length===2);}catch(err){showMsg('Fehler: '+err.message,'error');}};r.readAsBinaryString(f);});}
-document.getElementById('build-btn').addEventListener('click',()=>{buildDashboard();importPanel.classList.remove('open');});
-function parseFile(file,key){const r=new FileReader();r.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'binary',raw:false});raw[key]=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent='✅ '+file.name;document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');document.getElementById('build-btn').disabled=false;}catch(err){showMsg('Fehler: '+err.message,'error');}};r.readAsBinaryString(file);}
-
-/* ── Helpers ── */
-function showMsg(txt,type,id='msg'){const el=document.getElementById(id);if(!el)return;el.textContent=txt;el.className='msg-'+type;el.style.display='block';}
-function col(row,...keys){const rk=Object.keys(row).map(k=>k.trim());for(const k of keys){const f=rk.find(r=>r.toLowerCase().includes(k.toLowerCase()));if(f)return row[f]||'';}return '';}
-function statusKey(s){if(!s)return 'default';const l=s.toLowerCase();if(l.includes('plan')||l.includes('on track')||l.includes('zeit'))return 'on_track';if(l.includes('risk')||l.includes('gefähr'))return 'at_risk';if(l.includes('off')||l.includes('kritisch')||l.includes('verzög'))return 'off_track';return 'default';}
-function statusLabel(k){return{on_track:'Im Plan',at_risk:'Gefährdet',off_track:'Kritisch',default:'Kein Status'}[k]||k;}
-function isProjectClosed(s){if(!s)return false;const l=s.toLowerCase();return['abgeschlossen','closed','archiv','fertig','done','beendet','finished'].some(x=>l.includes(x));}
-function isWPClosed(st){return['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(s=>st.includes(s));}
-
-/* ── API Load ── */
-async function loadFromAPI(){
-  showMsg('⏳ Daten werden geladen…','info');
-  document.getElementById('msg').style.display='block';
-  try{
-    const projData=await apiFetch('/projects?pageSize=100');
-    const projects=(projData._embedded?.elements||[]).map(p=>({name:p.name||'',status:p._links?.status?.title||'',pm:p._links?.responsible?.title||'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0,_id:p.id}));
-    const [wpOpen,wpClosed]=await Promise.all([apiFetch('/work_packages?pageSize=500'),apiFetch('/work_packages?pageSize=500&filters='+encodeURIComponent(JSON.stringify([{"status":{"operator":"c","values":[]}}])))]);
-    const allWPs=[...(wpOpen._embedded?.elements||[]),...(wpClosed._embedded?.elements||[])];
-    const wpByProj={};
-    allWPs.forEach(wp=>{const pId=wp._links?.project?.href?.split('/').pop();const t=(wp._links?.type?.title||'').toLowerCase();if(EXCL_WP_TYPES.includes(t))return;if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};wpByProj[pId].total++;if(isWPClosed((wp._links?.status?.title||'').toLowerCase()))wpByProj[pId].closed++;});
-    projects.forEach(p=>{const d=wpByProj[String(p._id)];if(d){p.wp_total=d.total;p.wp_closed=d.closed;}});
-    warenData=[];
-    allWPs.forEach(wp=>{const t=(wp._links?.type?.title||'').toLowerCase();const st=wp._links?.status?.title||'';if(WAREN_TYPES.includes(t)&&!isWPClosed(st.toLowerCase())){warenData.push({projekt:wp._links?.project?.title||'–',titel:wp.subject||'–',typ:wp._links?.type?.title||'–',status:st||'–',raw:{Projekt:wp._links?.project?.title,Thema:wp.subject,Typ:wp._links?.type?.title,Status:st,Zugewiesen:wp._links?.assignee?.title||'–',Erstellt:wp.createdAt?.substring(0,10)||'–'}});}});
-    const filtered=projects.filter(p=>!EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status));
-    projectData=filtered;renderCards(filtered);renderWarenbestand();setupProjFilters();
-    showMsg(`✅ ${filtered.length} Projekte geladen.`,'success');
-    setTimeout(()=>{const el=document.getElementById('msg');if(el&&el.className==='msg-success')el.style.display='none';},3000);
-  }catch(e){showMsg('❌ Fehler: '+e.message,'error');}
-}
-
-/* ── Build Dashboard (CSV) ── */
-function buildDashboard(){
-  document.getElementById('msg').style.display='none';document.getElementById('cards').innerHTML='';let projects=[];
-  if(raw.proj){projects=raw.proj.map(r=>({name:col(r,'name','bezeichnung','projekt','title')||'(Unbekannt)',status:col(r,'status','zustand','state'),pm:col(r,'projektverantwortlicher','verantwortlich','responsible','manager','projektleiter','owner'),paket:col(r,'paket','package','paketname'),kundennr:col(r,'kundennummer','kunden-nr','kundennr','kd-nr'),besonderheit:col(r,'besonderheiten','besonderheit','hinweis','anmerkung','notes'),statusdesc:col(r,'statusbeschreibung','status beschreibung','statuskommentar','statusinfo'),outlook:col(r,'outlook'),adint:col(r,'ad-integration','ad integration','active directory'),wp_total:0,wp_closed:0}));}
-  warenData=[];
-  if(raw.wp){const s0=raw.wp[0]||{};const stCol=Object.keys(s0).find(k=>k.toLowerCase().includes('status'))||'';const prCol=Object.keys(s0).find(k=>k.toLowerCase().includes('projekt')||k.toLowerCase().includes('project'))||'';const tyCol=Object.keys(s0).find(k=>k.toLowerCase()==='typ'||k.toLowerCase()==='type')||'';const tiCol=Object.keys(s0).find(k=>['thema','betreff','subject','titel','title'].some(x=>k.toLowerCase().includes(x)))||'';const wpByProj={};raw.wp.forEach(wp=>{const t=(tyCol?(wp[tyCol]||''):'').toString().trim().toLowerCase();const pName=(prCol?(wp[prCol]||''):'').trim();const stRaw=stCol?(wp[stCol]||''):'';const st=stRaw.toLowerCase();const closed=isWPClosed(st);if(WAREN_TYPES.includes(t)&&!closed){warenData.push({projekt:pName,titel:tiCol?(wp[tiCol]||'–'):'–',typ:wp[tyCol]||'–',status:stRaw||'–',raw:wp});}if(EXCL_WP_TYPES.includes(t))return;if(!wpByProj[pName])wpByProj[pName]={total:0,closed:0};wpByProj[pName].total++;if(closed)wpByProj[pName].closed++;});if(!projects.length){projects=Object.keys(wpByProj).filter(Boolean).map(n=>({name:n,status:'',pm:'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:wpByProj[n].total,wp_closed:wpByProj[n].closed}));}else{projects.forEach(p=>{const ex=wpByProj[p.name];if(ex){p.wp_total=ex.total;p.wp_closed=ex.closed;return;}const fz=Object.keys(wpByProj).find(k=>k.toLowerCase().includes(p.name.toLowerCase())||p.name.toLowerCase().includes(k.toLowerCase()));if(fz){p.wp_total=wpByProj[fz].total;p.wp_closed=wpByProj[fz].closed;}});}}
-  if(!projects.length){showMsg('Keine Projektdaten gefunden.','error');return;}
-  const before=projects.length;projects=projects.filter(p=>!EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status));projectData=projects;
-  renderCards(projects);renderWarenbestand();setupProjFilters();
-  showMsg(`✅ ${projects.length} Projekte geladen${before-projects.length>0?' ('+(before-projects.length)+' ausgeblendet)':''}.`,'success');
-}
-
-/* ── Render Cards ── */
-function renderCards(projects){
-  const wrap=document.getElementById('cards');wrap.innerHTML='';let tw=0,to=0,td=0;
-  projects.forEach((p,i)=>{
-    const sk=statusKey(p.status),pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0,fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
-    tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
-    const fi=[];if(['beauftragt','gewünscht'].includes((p.outlook||'').toLowerCase().trim()))fi.push({l:'Outlook',v:p.outlook});if(['beauftragt','gewünscht'].includes((p.adint||'').toLowerCase().trim()))fi.push({l:'AD-Integration',v:p.adint});
-    const card=document.createElement('div');card.className=`project-card status-${sk}`;card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();
-    card.innerHTML=`<div class="proj-header"><div class="proj-name">${p.name}</div><span class="badge badge-${sk}">${statusLabel(sk)}</span></div><div class="proj-meta">${p.pm?`<div class="meta-item"><strong>👤</strong> ${p.pm}</div>`:''} ${p.paket?`<div class="meta-item"><strong>📦 Paket:</strong> ${p.paket}</div>`:''} ${p.kundennr?`<div class="meta-item"><strong>🔢 Kundennr.:</strong> ${p.kundennr}</div>`:''}<div class="meta-item"><strong>📋</strong> ${p.wp_total} Arbeitspakete</div></div>${p.besonderheit?`<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>⚠️ Besonderheiten:</strong> ${p.besonderheit}</div></div>`:''} ${fi.length?`<div class="feature-badges">${fi.map(x=>`<span class="feature-badge feature-${x.v.toLowerCase().replace(/ü/g,'ue')}">${x.v.toLowerCase()==='beauftragt'?'⏳':'🕐'}<span class="feature-name">${x.l}:</span> ${x.v}</span>`).join('')}</div>`:''}<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>${p.wp_closed}/${p.wp_total} · ${pct}%</span></div><div class="progress-track"><div class="progress-fill ${fill}" style="width:${pct}%"></div></div></div>${p.statusdesc?`<div class="status-desc-wrap"><button class="toggle-btn" data-i="${i}">💬 Statusbeschreibung <span class="arrow">▼</span></button><div class="status-desc-body" id="sd-${i}">${p.statusdesc}</div></div>`:''}
-      ${p._id?`<div style="margin-top:8px"><button class="toggle-btn ap-load-btn" data-proj-id="${p._id}" data-open="0">📋 Arbeitspakete anzeigen <span class="arrow">▼</span></button><div class="ap-body" id="ap-body-${p._id}"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">⏳ Wird geladen…</div></div></div>`:''}`;
-    wrap.appendChild(card);
-  });
-  wrap.querySelectorAll('.toggle-btn:not(.ap-load-btn)').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('open');document.getElementById('sd-'+b.dataset.i).classList.toggle('open');}));
-  wrap.querySelectorAll('.ap-load-btn').forEach(b=>b.addEventListener('click',e=>{
-    e.stopPropagation();
-    const projId=b.dataset.projId;
-    const body=document.getElementById('ap-body-'+projId);
-    const open=b.dataset.open==='1';
-    if(!open){body.classList.add('open');b.classList.add('open');b.dataset.open='1';loadProjectWPs(projId);}
-    else{body.classList.remove('open');b.classList.remove('open');b.dataset.open='0';}
-  }));
-  document.getElementById('s-total').textContent=projects.length;document.getElementById('s-wp').textContent=tw;document.getElementById('s-open').textContent=to;document.getElementById('s-done').textContent=td;
-  document.getElementById('stats-row').style.display='flex';document.getElementById('export-bar').style.display='flex';
-}
-
-/* ── Project filters ── */
-function setupProjFilters(){
-  const pmF=document.getElementById('proj-pm-filter');pmF.innerHTML='<option value="">Alle Verantwortlichen</option>';[...new Set(projectData.map(p=>p.pm).filter(Boolean))].sort().forEach(pm=>{const o=document.createElement('option');o.value=pm.toLowerCase();o.textContent=pm;pmF.appendChild(o);});
-  document.getElementById('proj-filter-bar').style.display='flex';
-  document.getElementById('proj-status-ms-btn').dataset.base='Status';
-  initMultiSelect('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
-  document.getElementById('proj-search').addEventListener('input',applyProjFilter);
-  pmF.addEventListener('change',applyProjFilter);
-  document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
-}
-function applyProjFilter(){const q=document.getElementById('proj-search').value.toLowerCase();const statuses=getMsValues('proj-status-ms-panel');const pm=document.getElementById('proj-pm-filter').value;let v=0;document.querySelectorAll('#cards .project-card').forEach(c=>{const m=(!q||c.dataset.name.includes(q))&&(!statuses.length||statuses.includes(c.dataset.status))&&(!pm||c.dataset.pm.includes(pm));c.classList.toggle('hidden',!m);if(m)v++;});document.getElementById('no-results').style.display=v===0?'block':'none';document.getElementById('proj-filter-count').textContent=v+' von '+projectData.length;}
-function clearProjFilter(){document.getElementById('proj-search').value='';document.getElementById('proj-pm-filter').value='';resetMs('proj-status-ms-btn','proj-status-ms-panel');document.getElementById('proj-filter-count').textContent='';document.querySelectorAll('#cards .project-card').forEach(c=>c.classList.remove('hidden'));document.getElementById('no-results').style.display='none';}
-
-/* ── Warenbestand ── */
-function renderWarenbestand(){
-  const content=document.getElementById('wb-content');
-  if(!warenData.length){content.innerHTML='<div class="wb-empty">📭 Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';document.getElementById('wb-stats').style.display='none';document.getElementById('wb-export-bar').style.display='none';document.getElementById('wb-filter-bar').style.display='none';return;}
-      // Warenbestand sortieren – ausstehende zuerst
-    const PENDING_STATUS=['ausstehend','offen','bestellt','in bestellung','neu'];
-    warenData.sort((a,b)=>{
-      const aP=PENDING_STATUS.some(s=>a.status.toLowerCase().includes(s))?0:1;
-      const bP=PENDING_STATUS.some(s=>b.status.toLowerCase().includes(s))?0:1;
-      return aP-bP;
-    });document.getElementById('wb-proj-count').textContent=new Set(warenData.map(w=>w.projekt)).size;document.getElementById('wb-stats').style.display='flex';document.getElementById('wb-export-bar').style.display='flex';
-  const statusCounts={};warenData.forEach(w=>{statusCounts[w.status]=(statusCounts[w.status]||0)+1;});
-  const wbPF=document.getElementById('wb-proj-filter');wbPF.innerHTML='<option value="">Alle Projekte</option>';[...new Set(warenData.map(w=>w.projekt).filter(Boolean))].sort().forEach(p=>{const o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);});
-  const wbSPanel=document.getElementById('wb-status-ms-panel');wbSPanel.innerHTML='';Object.entries(statusCounts).sort(([a],[b])=>a.localeCompare(b)).forEach(([s,c])=>{const lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML=`<input type="checkbox" value="${s.toLowerCase()}"> ${s} <span class="ms-count-badge">${c}</span>`;wbSPanel.appendChild(lbl);});
-  const rows=warenData.map((w,i)=>`<tr class="wb-row" data-idx="${i}" data-proj="${(w.projekt||'').toLowerCase()}" data-typ="${w.typ.toLowerCase()}" data-status="${w.status.toLowerCase()}" data-search="${(w.titel+' '+w.projekt+' '+w.status).toLowerCase()}"><td class="proj-col">${w.projekt||'–'}</td><td>${w.titel}</td><td><span class="wb-type-badge">${w.typ}</span></td><td>${w.status}</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">🔍</td></tr>`).join('');
-  content.innerHTML=`<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Typ</th><th>Status</th><th></th></tr></thead><tbody id="wb-tbody">${rows}</tbody></table><div class="wb-no-results" id="wb-no-results" style="display:none">🔍 Keine Einträge gefunden.</div></div>`;
-  content.querySelectorAll('.wb-row').forEach(row=>{row.addEventListener('click',()=>{const w=warenData[+row.dataset.idx];const fields=Object.entries(w.raw).filter(([,v])=>v!=='').map(([k,v])=>`<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">${k}</div><div style="font-size:.8rem;color:var(--text-sub)">${v}</div></div>`).join('');document.getElementById('wb-modal-content').innerHTML=`<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">${w.titel}</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">${w.projekt} · <span style="color:var(--at-risk-c)">${w.typ}</span></div>${fields}`;document.getElementById('wb-modal').style.display='flex';});});
-  document.getElementById('wb-modal').addEventListener('click',e=>{if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
-  document.getElementById('wb-filter-bar').style.display='flex';document.getElementById('wb-status-ms-btn').dataset.base='Status';initMultiSelect('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);document.getElementById('wb-search').addEventListener('input',applyWBFilter);wbPF.addEventListener('change',applyWBFilter);document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
-}
-function applyWBFilter(){const q=document.getElementById('wb-search').value.toLowerCase();const proj=document.getElementById('wb-proj-filter').value;const typ=document.getElementById('wb-type-filter').value;const statuses=getMsValues('wb-status-ms-panel');let v=0;document.querySelectorAll('#wb-tbody .wb-row').forEach(row=>{const m=(!q||row.dataset.search.includes(q))&&(!proj||row.dataset.proj===proj)&&(!typ||row.dataset.typ===typ)&&(!statuses.length||statuses.includes(row.dataset.status));row.classList.toggle('wb-hidden',!m);if(m)v++;});const nr=document.getElementById('wb-no-results');if(nr)nr.style.display=v===0?'block':'none';document.getElementById('wb-filter-count').textContent=v+' von '+warenData.length;}
-function clearWBFilter(){document.getElementById('wb-search').value='';document.getElementById('wb-proj-filter').value='';document.getElementById('wb-type-filter').value='';resetMs('wb-status-ms-btn','wb-status-ms-panel');document.getElementById('wb-filter-count').textContent='';document.querySelectorAll('#wb-tbody .wb-row').forEach(r=>r.classList.remove('wb-hidden'));const nr=document.getElementById('wb-no-results');if(nr)nr.style.display='none';}
-
-/* ── Formular ── */
-function getFormData(){
-  const ap=document.getElementById('np-ap').value.trim();
-  const tel=document.getElementById('np-telefon').value.trim();
-  const email=document.getElementById('np-email').value.trim();
-  const apFull=[ap,tel?`Tel: ${tel}`:'',email?`E-Mail: ${email}`:''].filter(Boolean).join(' | ');
-  return{
-    name:document.getElementById('np-name').value.trim(),
-    standort:document.getElementById('np-standort').value.trim(),
-    ap:apFull,apName:ap,
-    paket:document.getElementById('np-paket').value,
-    outlook:document.querySelector('input[name="outlook"]:checked')?.value||'Nicht Aktiv',
-    adint:document.querySelector('input[name="adint"]:checked')?.value||'Nicht Aktiv',
-    hw:getHwSelections(),
-    brotherPaperType:document.getElementById('brother-paper-type').value,
-    brotherPaperQty:parseInt(document.getElementById('brother-paper-qty').value)||1,
-    bemerkung:document.getElementById('np-bemerkung').value.trim(),
+function getFormData() {
+  var ap = document.getElementById('np-ap').value.trim();
+  var tel = document.getElementById('np-telefon').value.trim();
+  var email = document.getElementById('np-email').value.trim();
+  var parts = [ap];
+  if (tel) parts.push('Tel: ' + tel);
+  if (email) parts.push('E-Mail: ' + email);
+  var apFull = parts.join(' | ');
+  return {
+    name: document.getElementById('np-name').value.trim(),
+    standort: document.getElementById('np-standort').value.trim(),
+    ap: apFull,
+    apName: ap,
+    paket: document.getElementById('np-paket').value,
+    outlook: (document.querySelector('input[name="outlook"]:checked') || {}).value || 'Nicht Aktiv',
+    adint: (document.querySelector('input[name="adint"]:checked') || {}).value || 'Nicht Aktiv',
+    hw: getHwSelections(),
+    brotherPaperType: document.getElementById('brother-paper-type').value,
+    brotherPaperQty: parseInt(document.getElementById('brother-paper-qty').value) || 1,
+    bemerkung: document.getElementById('np-bemerkung').value.trim()
   };
 }
 
-function buildDescription(d){
-  const hwText=d.hw.map(h=>`${h.qty}x ${h.name}`).join(', ');
-  return[`**Kundenname:** ${d.name}`,`**Standort:** ${d.standort}`,`**Ansprechpartner:** ${d.ap}`,`**Paket:** ${d.paket}`,hwText?`**Hardware:** ${hwText}`:'',`**Outlook Add-in:** ${d.outlook}`,`**AD-Integration:** ${d.adint}`,d.bemerkung?`\n**Bemerkungen:** ${d.bemerkung}`:''].filter(Boolean).join('\n');
+function buildDescription(d) {
+  var hwText = d.hw.map(function(h) { return h.qty + 'x ' + h.name; }).join(', ');
+  var lines = ['**Kundenname:** ' + d.name, '**Standort:** ' + d.standort, '**Ansprechpartner:** ' + d.ap, '**Paket:** ' + d.paket];
+  if (hwText) lines.push('**Hardware:** ' + hwText);
+  lines.push('**Outlook Add-in:** ' + d.outlook);
+  lines.push('**AD-Integration:** ' + d.adint);
+  if (d.bemerkung) lines.push('\n**Bemerkungen:** ' + d.bemerkung);
+  return lines.join('\n');
 }
 
-function showNpResult(msg,type){const el=document.getElementById('np-result');el.innerHTML=msg;el.className='np-result '+type;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showNpResult(msg, type) {
+  var el = document.getElementById('np-result');
+  el.innerHTML = msg;
+  el.className = 'np-result ' + type;
+  el.style.display = 'block';
+  el.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
 
-function resetForm(){
-  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('np-paket').value='';
-  document.querySelectorAll('input[name="outlook"]').forEach(r=>r.checked=r.value==='Nicht Aktiv');
-  document.querySelectorAll('input[name="adint"]').forEach(r=>r.checked=r.value==='Nicht Aktiv');
-  document.querySelectorAll('.np-radio-label').forEach(l=>l.classList.toggle('selected',l.querySelector('input')?.checked));
-  HW_ITEMS.forEach(hw=>{const cb=document.getElementById('hw-cb-'+hw.id);if(cb)cb.checked=false;hwChanged(hw.id);});
-  document.getElementById('brother-paper-type').value='';
-  document.getElementById('brother-paper-qty').value=1;
-  document.getElementById('np-result').style.display='none';
+function resetForm() {
+  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(function(id) { document.getElementById(id).value = ''; });
+  document.getElementById('np-paket').value = '';
+  document.querySelectorAll('input[name="outlook"]').forEach(function(r) { r.checked = r.value === 'Nicht Aktiv'; });
+  document.querySelectorAll('input[name="adint"]').forEach(function(r) { r.checked = r.value === 'Nicht Aktiv'; });
+  document.querySelectorAll('.np-radio-lbl').forEach(function(l) { l.classList.toggle('selected', l.querySelector('input') && l.querySelector('input').checked); });
+  HW_ITEMS.forEach(function(hw) { var cb = document.getElementById('hw-cb-' + hw.id); if (cb) cb.checked = false; hwChanged(hw.id); });
+  document.getElementById('brother-paper-type').value = '';
+  document.getElementById('brother-paper-qty').value = 1;
+  document.getElementById('np-result').style.display = 'none';
   updateWPPreview();
 }
 
-/* ── Projekt anlegen ── */
-document.getElementById('np-submit-btn').addEventListener('click',async()=>{
-  const d=getFormData();
-  const btn=document.getElementById('np-submit-btn');
-  let valid=true;
-  ['np-name','np-standort','np-ap'].forEach(id=>{const el=document.getElementById(id);if(!el.value.trim()){el.classList.add('invalid');valid=false;}else el.classList.remove('invalid');});
-  if(!d.paket){document.getElementById('np-paket').classList.add('invalid');valid=false;}else document.getElementById('np-paket').classList.remove('invalid');
-  if(!valid){showNpResult('⚠️ Bitte alle Pflichtfelder ausfüllen.','error');return;}
-
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird geprüft…';
-  try{
-    // Doppelter Name Check
-    const search=await apiFetch('/projects?filters='+encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}])));
-    const existing=(search._embedded?.elements||[]).find(p=>p.name.toLowerCase()===d.name.toLowerCase());
-    if(existing){
-      btn.disabled=false;btn.innerHTML='🚀 Projekt in OpenProject anlegen';
-      showNpResult(`⚠️ <strong>Ein Projekt mit dem Namen „${d.name}" existiert bereits!</strong><br><br>
-        <a href="${OP_URL}/projects/${existing.identifier}" target="_blank" style="color:var(--at-risk-c)">🔗 Bestehendes Projekt öffnen</a><br><br>
-        <button onclick="document.getElementById('np-name').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">✏️ Anderen Namen verwenden</button>
-        <button onclick="updateExistingProject('${existing.id}')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">🔄 Bestehendes Projekt aktualisieren</button>
-      `,'warning');
+document.getElementById('np-submit-btn').addEventListener('click', async function() {
+  var d = getFormData();
+  var btn = document.getElementById('np-submit-btn');
+  var valid = true;
+  ['np-name','np-standort','np-ap'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el.value.trim()) { el.classList.add('invalid'); valid = false; } else el.classList.remove('invalid');
+  });
+  if (!d.paket) { document.getElementById('np-paket').classList.add('invalid'); valid = false; } else document.getElementById('np-paket').classList.remove('invalid');
+  if (!valid) { showNpResult('&#x26A0;&#xFE0F; Bitte alle Pflichtfelder ausfüllen.', 'error'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Wird geprüft…';
+  try {
+    var search = await apiFetch('/projects?filters=' + encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}])));
+    var existing = (search._embedded && search._embedded.elements ? search._embedded.elements : []).find(function(p) { return p.name.toLowerCase() === d.name.toLowerCase(); });
+    if (existing) {
+      btn.disabled = false;
+      btn.innerHTML = '&#x1F680; Projekt in OpenProject anlegen';
+      showNpResult('&#x26A0;&#xFE0F; <strong>Ein Projekt mit dem Namen "' + d.name + '" existiert bereits!</strong><br><br><a href="' + OP_URL + '/projects/' + existing.identifier + '" target="_blank" style="color:var(--at-risk-c)">&#x1F517; Bestehendes Projekt öffnen</a><br><br><button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">&#x270F;&#xFE0F; Anderen Namen verwenden</button><button onclick="updateExistingProject(\'' + existing.id + '\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">&#x1F504; Bestehendes Projekt aktualisieren</button>', 'warning');
       return;
     }
-
-    // Projekt anlegen
-    btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt…';
-    const projBody={name:d.name,description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField2:d.paket,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
-    const proj=await apiFetch('/projects',{method:'POST',body:JSON.stringify(projBody)});
-    const projId=proj.id;
-
-    btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt…';
-    let wpCount=0,wpOk=0;
-
-    const makeWP=async(subject,parentId=null,isHardware=false)=>{
+    btn.innerHTML = '<span class="spinner"></span> Projekt wird angelegt…';
+    var projBody = {name: d.name, description: {format:'markdown', raw: buildDescription(d)}, customField11: d.name, customField12: d.standort, customField24: {format:'plain', raw: d.ap}, _links: {}};
+    projBody._links.customField2 = {href: PAKET_OPTIONS[d.paket]};
+    projBody._links.customField6 = {href: ADINT_OPTIONS[d.adint]};
+    projBody._links.customField4 = {href: OUTLOOK_OPTIONS[d.outlook]};
+    var proj = await apiFetch('/projects', {method:'POST', body: JSON.stringify(projBody)});
+    var projId = proj.id;
+    btn.innerHTML = '<span class="spinner"></span> Arbeitspakete werden angelegt…';
+    var wpCount = 0, wpOk = 0;
+    async function makeWP(subject, parentId, isHardware) {
       wpCount++;
-      const body={subject,_links:{project:{href:`/api/v3/projects/${projId}`}}};
-      if(isHardware) body._links.type={href:'/api/v3/types/8'};
-      if(parentId) body._links.parent={href:`/api/v3/work_packages/${parentId}`};
-      try{const r=await apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});wpOk++;return r.id;}
-      catch(e){return null;}
-    };
-
-    // Basis-APs
-    for(const wp of WP_BASIS) await makeWP(wp.name);
-
-    // Outlook/AD APs
-    if(d.outlook==='Beauftragt'||d.outlook==='Gewünscht') await makeWP('Outlook Add-in einrichten');
-    if(d.adint==='Beauftragt'||d.adint==='Gewünscht') await makeWP('AD-Integration konfigurieren');
-
-    // Hardware APs
-    let brotherParentId=null;
-    for(const h of d.hw){
-      for(let i=0;i<h.qty;i++){
-        const label=h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name;
-        const id=await makeWP(label,null,true);
-        if(h.id==='brother'&&i===0) brotherParentId=id;
+      var body = {subject: subject, _links: {project: {href: '/api/v3/projects/' + projId}}};
+      if (isHardware) body._links.type = {href: '/api/v3/types/8'};
+      if (parentId) body._links.parent = {href: '/api/v3/work_packages/' + parentId};
+      try { var r = await apiFetch('/work_packages', {method:'POST', body: JSON.stringify(body)}); wpOk++; return r.id; } catch(e) { return null; }
+    }
+    for (var i = 0; i < WP_BASIS.length; i++) await makeWP(WP_BASIS[i].name, null, false);
+    if (d.outlook === 'Beauftragt' || d.outlook === 'Gew\u00FCnscht') await makeWP('Outlook Add-in einrichten', null, false);
+    if (d.adint === 'Beauftragt' || d.adint === 'Gew\u00FCnscht') await makeWP('AD-Integration konfigurieren', null, false);
+    var brotherParentId = null;
+    for (var hi = 0; hi < d.hw.length; hi++) {
+      var h = d.hw[hi];
+      for (var qi = 0; qi < h.qty; qi++) {
+        var label = h.qty > 1 ? h.name + ' (' + (qi+1) + '/' + h.qty + ')' : h.name;
+        var wid = await makeWP(label, null, true);
+        if (h.id === 'brother' && qi === 0) brotherParentId = wid;
       }
     }
-
-    // Brother Papier als Unteraufgabe (Typ Hardware)
-    if(brotherParentId&&d.brotherPaperType){
-      await makeWP(`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`,brotherParentId,true);
-    }
-
-    showNpResult(`✅ <strong>Projekt erfolgreich angelegt!</strong><br><br>
-      <strong>Name:</strong> ${d.name}<br>
-      <strong>Projekt-ID:</strong> ${projId}<br>
-      <strong>Arbeitspakete:</strong> ${wpCount} angelegt (${wpOk} erfolgreich)<br><br>
-      <a href="${OP_URL}/projects/${proj.identifier}" target="_blank" style="color:var(--success-c)">🔗 In OpenProject öffnen</a>
-    `,'success');
+    if (brotherParentId && d.brotherPaperType) await makeWP('Papier: ' + d.brotherPaperType + ' x ' + d.brotherPaperQty + ' Rollen', brotherParentId, true);
+    showNpResult('&#x2705; <strong>Projekt erfolgreich angelegt!</strong><br><br><strong>Name:</strong> ' + d.name + '<br><strong>Projekt-ID:</strong> ' + projId + '<br><strong>Arbeitspakete:</strong> ' + wpCount + ' angelegt (' + wpOk + ' erfolgreich)<br><br><a href="' + OP_URL + '/projects/' + proj.identifier + '" target="_blank" style="color:var(--success-c)">&#x1F517; In OpenProject öffnen</a>', 'success');
     loadFromAPI();
-  }catch(e){
-    showNpResult('❌ Fehler: '+e.message,'error');
-  }finally{
-    btn.disabled=false;btn.innerHTML='🚀 Projekt in OpenProject anlegen';
+  } catch(e) {
+    showNpResult('&#x274C; Fehler: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '&#x1F680; Projekt in OpenProject anlegen';
   }
 });
 
-async function updateExistingProject(projId){
-  const d=getFormData();const btn=document.getElementById('np-submit-btn');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert…';
-  try{
-    // Projektfelder aktualisieren
-    const projBody={description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField2:d.paket,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
-    await apiFetch(`/projects/${projId}`,{method:'PATCH',body:JSON.stringify(projBody)});
-
-    // Hardware-APs: bestehende laden und nicht mehr ausgewählte löschen
-    btn.innerHTML='<span class="spinner"></span> Hardware-APs werden abgeglichen…';
-    const existingWPs=await apiFetch(`/projects/${projId}/work_packages?pageSize=100&filters=`+encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}}])));
-    const hwWPs=existingWPs._embedded?.elements||[];
-    const selectedNames=d.hw.flatMap(h=>Array.from({length:h.qty},(_,i)=>h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name));
-    // Papier-AP Namen auch behalten
-    if(d.brotherPaperType) selectedNames.push(`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`);
-    let deleted=0;
-    for(const wp of hwWPs){
-      if(!selectedNames.includes(wp.subject)){
-        try{await apiFetch(`/work_packages/${wp.id}`,{method:'DELETE'});deleted++;}catch(e){}
+async function updateExistingProject(projId) {
+  var d = getFormData();
+  var btn = document.getElementById('np-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Wird aktualisiert…';
+  try {
+    var projBody = {description: {format:'markdown', raw: buildDescription(d)}, customField11: d.name, customField12: d.standort, customField24: {format:'plain', raw: d.ap}, _links: {}};
+    projBody._links.customField2 = {href: PAKET_OPTIONS[d.paket]};
+    projBody._links.customField6 = {href: ADINT_OPTIONS[d.adint]};
+    projBody._links.customField4 = {href: OUTLOOK_OPTIONS[d.outlook]};
+    await apiFetch('/projects/' + projId, {method:'PATCH', body: JSON.stringify(projBody)});
+    var existingWPs = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}}])));
+    var hwWPs = existingWPs._embedded && existingWPs._embedded.elements ? existingWPs._embedded.elements : [];
+    var selectedNames = [];
+    d.hw.forEach(function(h) {
+      for (var i = 0; i < h.qty; i++) selectedNames.push(h.qty > 1 ? h.name + ' (' + (i+1) + '/' + h.qty + ')' : h.name);
+    });
+    if (d.brotherPaperType) selectedNames.push('Papier: ' + d.brotherPaperType + ' x ' + d.brotherPaperQty + ' Rollen');
+    var deleted = 0;
+    for (var i = 0; i < hwWPs.length; i++) {
+      if (!selectedNames.includes(hwWPs[i].subject)) {
+        try { await apiFetch('/work_packages/' + hwWPs[i].id, {method:'DELETE'}); deleted++; } catch(e) {}
       }
     }
-
-    // Neue Hardware-APs anlegen die noch nicht existieren
-    let brotherParentId=null;
-    for(const h of d.hw){
-      for(let i=0;i<h.qty;i++){
-        const label=h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name;
-        const exists=hwWPs.find(wp=>wp.subject===label);
-        if(!exists){
-          const body={subject:label,_links:{project:{href:`/api/v3/projects/${projId}`},type:{href:'/api/v3/types/8'}}};
-          try{const r=await apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});if(h.id==='brother'&&i===0)brotherParentId=r.id;}catch(e){}
-        }else if(h.id==='brother'&&i===0) brotherParentId=exists.id;
-      }
-    }
-    if(brotherParentId&&d.brotherPaperType){
-      const paperLabel=`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`;
-      const exists=hwWPs.find(wp=>wp.subject===paperLabel);
-      if(!exists){
-        const body={subject:paperLabel,_links:{project:{href:`/api/v3/projects/${projId}`},type:{href:'/api/v3/types/8'},parent:{href:`/api/v3/work_packages/${brotherParentId}`}}};
-        try{await apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});}catch(e){}
-      }
-    }
-
-    showNpResult(`✅ <strong>Projekt erfolgreich aktualisiert!</strong><br><br>${deleted>0?`🗑 ${deleted} Hardware-AP(s) entfernt.<br>`:''}Neue Hardware-APs wurden angelegt.`,'success');
+    showNpResult('&#x2705; <strong>Projekt erfolgreich aktualisiert!</strong>' + (deleted > 0 ? '<br><br>&#x1F5D1; ' + deleted + ' Hardware-AP(s) entfernt.' : ''), 'success');
     loadFromAPI();
-  }catch(e){showNpResult('❌ Fehler: '+e.message,'error');}
-  finally{btn.disabled=false;btn.innerHTML='🚀 Projekt in OpenProject anlegen';}
+  } catch(e) {
+    showNpResult('&#x274C; Fehler: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '&#x1F680; Projekt in OpenProject anlegen';
+  }
 }
 
-/* ── Logo for PDF ── */
-function addLogoToPDF(doc,cb){const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{try{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);const r=img.width/img.height,h=10,w=h*r;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}cb();};img.onerror=()=>cb();img.src='https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';}
+function addLogoToPDF(doc, cb) {
+  var img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    try { var c = document.createElement('canvas'); c.width = img.width; c.height = img.height; c.getContext('2d').drawImage(img,0,0); var r = img.width/img.height, h=10, w=h*r; doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h); } catch(e) {}
+    cb();
+  };
+  img.onerror = function() { cb(); };
+  img.src = 'https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';
+}
 
-/* ── Exports ── */
-function tableData(){return projectData.map(p=>({'Projektname':p.name,'Status':statusLabel(statusKey(p.status)),'Projektverantwortlicher':p.pm||'–','Paket':p.paket||'–','Outlook':p.outlook||'–','AD-Integration':p.adint||'–','AP gesamt':p.wp_total,'AP abgeschlossen':p.wp_closed,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0,'Besonderheiten':(p.besonderheit||'–').substring(0,200)}));}
-function exportExcel(){const ws=XLSX.utils.json_to_sheet(tableData());ws['!cols']=[28,14,22,16,10,12,10,14,8,14,40].map(w=>({wch:w}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Projekte');XLSX.writeFile(wb,'welcome_projekte.xlsx');}
-function exportCSV(){const rows=tableData(),h=Object.keys(rows[0]);const csv=[h.join(';'),...rows.map(r=>h.map(k=>`"${(r[k]+'').replace(/"/g,'""')}"`).join(';'))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_projekte.csv';a.click();}
-function exportPDF(){const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,()=>{doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME – Projektübersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);const cols=['Projektname','Status','Projektverantwortlicher','Paket','Outlook','AD-Integration','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(r=>cols.map(c=>r[c]!==undefined?r[c]:'–')),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:44},8:{halign:'center'}}});doc.save('welcome_projekte.pdf');});}
-function wbTableData(){return warenData.map(w=>({'Projekt':w.projekt||'–','Arbeitspaket':w.titel,'Typ':w.typ,'Status':w.status}));}
-function exportWBExcel(){const ws=XLSX.utils.json_to_sheet(wbTableData());ws['!cols']=[30,40,18,16].map(w=>({wch:w}));const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Warenbestand');XLSX.writeFile(wb,'welcome_warenbestand.xlsx');}
-function exportWBCSV(){const rows=wbTableData(),h=Object.keys(rows[0]);const csv=[h.join(';'),...rows.map(r=>h.map(k=>`"${(r[k]+'').replace(/"/g,'""')}"`).join(';'))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_warenbestand.csv';a.click();}
-function exportWBPDF(){const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,()=>{doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME – Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);const cols=['Projekt','Arbeitspaket','Typ','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(r=>cols.map(c=>r[c]||'–')),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});doc.save('welcome_warenbestand.pdf');});}
+function tableData() {
+  return projectData.map(function(p) {
+    return {'Projektname':p.name,'Status':statusLabel(statusKey(p.status)),'Projektverantwortlicher':p.pm||'–','Paket':p.paket||'–','Outlook':p.outlook||'–','AD-Integration':p.adint||'–','AP gesamt':p.wp_total,'AP abgeschlossen':p.wp_closed,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0,'Besonderheiten':(p.besonderheit||'–').substring(0,200)};
+  });
+}
 
-/* ── Init ── */
+function exportExcel() { var ws=XLSX.utils.json_to_sheet(tableData()); ws['!cols']=[28,14,22,16,10,12,10,14,8,14,40].map(function(w){return{wch:w};}); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Projekte'); XLSX.writeFile(wb,'welcome_projekte.xlsx'); }
+function exportCSV() { var rows=tableData(),h=Object.keys(rows[0]); var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return '"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n'); var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='welcome_projekte.csv'; a.click(); }
+function exportPDF() { var jsPDF=window.jspdf.jsPDF; var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Projektuebersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projektname','Status','Projektverantwortlicher','Paket','Outlook','AD-Integration','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'–';})}),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:44},8:{halign:'center'}}});doc.save('welcome_projekte.pdf');}); }
+
+function wbTableData() { return warenData.map(function(w){return{'Projekt':w.projekt||'–','Arbeitspaket':w.titel,'Typ':w.typ,'Status':w.status};}); }
+function exportWBExcel() { var ws=XLSX.utils.json_to_sheet(wbTableData()); ws['!cols']=[30,40,18,16].map(function(w){return{wch:w};}); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Warenbestand'); XLSX.writeFile(wb,'welcome_warenbestand.xlsx'); }
+function exportWBCSV() { var rows=wbTableData(),h=Object.keys(rows[0]); var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return '"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n'); var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='welcome_warenbestand.csv'; a.click(); }
+function exportWBPDF() { var jsPDF=window.jspdf.jsPDF; var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projekt','Arbeitspaket','Typ','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]||'–';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});doc.save('welcome_warenbestand.pdf');}); }
+
 initHardware();
 initRadios();
 updateWPPreview();
