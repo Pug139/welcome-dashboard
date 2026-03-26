@@ -933,7 +933,15 @@ document.getElementById('np-submit-btn').addEventListener('click', async ()=>{
 
   try{
     // 1. Projekt anlegen
-    const projBody={name: d.name, description:{format:'markdown',raw:buildDescription(d)}};
+    const projBody={
+      name: d.name,
+      description:{format:'markdown',raw:buildDescription(d)},
+      customField11: d.name,
+      customField12: d.standort,
+      customField24: d.ap,
+      customField6:  d.adint,
+      customField4:  d.outlook,
+    };
     const projRes=await fetch(`${api}/projects`,{method:'POST',headers,body:JSON.stringify(projBody)});
     if(!projRes.ok){
       const err=await projRes.json().catch(()=>({}));
