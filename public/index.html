@@ -226,6 +226,15 @@ header p{font-size:.72rem;opacity:.7}
 .np-result.success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
 .np-result.error{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c)}
 .np-result.warning{background:rgba(240,136,62,.1);color:var(--at-risk-c);border:1px solid var(--at-risk-c)}
+.ap-body{max-height:0;overflow:hidden;transition:max-height .3s ease;background:var(--bg);border:1px solid var(--border);border-top:none;border-radius:0 0 6px 6px}
+.ap-body.open{max-height:600px;overflow-y:auto}
+.ap-item{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid var(--border);font-size:.78rem}
+.ap-item:last-child{border-bottom:none}
+.ap-item.ap-closed .ap-name{text-decoration:line-through;opacity:.5}
+.ap-name{flex:1;color:var(--text-sub)}
+.ap-type-badge{font-size:.65rem;padding:1px 6px;border-radius:10px;background:var(--bg3);color:var(--text-muted);flex-shrink:0}
+.ap-status-badge{font-size:.65rem;padding:2px 7px;border-radius:10px;background:rgba(74,144,217,.12);color:var(--brand-light);border:1px solid var(--brand-light);flex-shrink:0;white-space:nowrap}
+.ap-status-badge.done{background:rgba(63,185,80,.12);color:var(--on-track-c);border-color:var(--on-track-c)}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
 @keyframes spin{to{transform:rotate(360deg)}}
 footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 14px}
@@ -756,10 +765,18 @@ function renderCards(projects){
     tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
     const fi=[];if(['beauftragt','gewünscht'].includes((p.outlook||'').toLowerCase().trim()))fi.push({l:'Outlook',v:p.outlook});if(['beauftragt','gewünscht'].includes((p.adint||'').toLowerCase().trim()))fi.push({l:'AD-Integration',v:p.adint});
     const card=document.createElement('div');card.className=`project-card status-${sk}`;card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();
-    card.innerHTML=`<div class="proj-header"><div class="proj-name">${p.name}</div><span class="badge badge-${sk}">${statusLabel(sk)}</span></div><div class="proj-meta">${p.pm?`<div class="meta-item"><strong>👤</strong> ${p.pm}</div>`:''} ${p.paket?`<div class="meta-item"><strong>📦 Paket:</strong> ${p.paket}</div>`:''} ${p.kundennr?`<div class="meta-item"><strong>🔢 Kundennr.:</strong> ${p.kundennr}</div>`:''}<div class="meta-item"><strong>📋</strong> ${p.wp_total} Arbeitspakete</div></div>${p.besonderheit?`<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>⚠️ Besonderheiten:</strong> ${p.besonderheit}</div></div>`:''} ${fi.length?`<div class="feature-badges">${fi.map(x=>`<span class="feature-badge feature-${x.v.toLowerCase().replace(/ü/g,'ue')}">${x.v.toLowerCase()==='beauftragt'?'⏳':'🕐'}<span class="feature-name">${x.l}:</span> ${x.v}</span>`).join('')}</div>`:''}<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>${p.wp_closed}/${p.wp_total} · ${pct}%</span></div><div class="progress-track"><div class="progress-fill ${fill}" style="width:${pct}%"></div></div></div>${p.statusdesc?`<div class="status-desc-wrap"><button class="toggle-btn" data-i="${i}">💬 Statusbeschreibung <span class="arrow">▼</span></button><div class="status-desc-body" id="sd-${i}">${p.statusdesc}</div></div>`:''}`;
+    card.innerHTML=`<div class="proj-header"><div class="proj-name">${p.name}</div><span class="badge badge-${sk}">${statusLabel(sk)}</span></div><div class="proj-meta">${p.pm?`<div class="meta-item"><strong>👤</strong> ${p.pm}</div>`:''} ${p.paket?`<div class="meta-item"><strong>📦 Paket:</strong> ${p.paket}</div>`:''} ${p.kundennr?`<div class="meta-item"><strong>🔢 Kundennr.:</strong> ${p.kundennr}</div>`:''}<div class="meta-item"><strong>📋</strong> ${p.wp_total} Arbeitspakete</div></div>${p.besonderheit?`<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>⚠️ Besonderheiten:</strong> ${p.besonderheit}</div></div>`:''} ${fi.length?`<div class="feature-badges">${fi.map(x=>`<span class="feature-badge feature-${x.v.toLowerCase().replace(/ü/g,'ue')}">${x.v.toLowerCase()==='beauftragt'?'⏳':'🕐'}<span class="feature-name">${x.l}:</span> ${x.v}</span>`).join('')}</div>`:''}<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>${p.wp_closed}/${p.wp_total} · ${pct}%</span></div><div class="progress-track"><div class="progress-fill ${fill}" style="width:${pct}%"></div></div></div>${p.statusdesc?`<div class="status-desc-wrap"><button class="toggle-btn" data-i="${i}">💬 Statusbeschreibung <span class="arrow">▼</span></button><div class="status-desc-body" id="sd-${i}">${p.statusdesc}</div></div>`:''}
+      ${p._id?`<div style="margin-top:8px"><button class="toggle-btn ap-load-btn" data-proj-id="${p._id}" data-open="0">📋 Arbeitspakete anzeigen <span class="arrow">▼</span></button><div class="ap-body" id="ap-body-${p._id}"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">⏳ Wird geladen…</div></div></div>`:''}`;
     wrap.appendChild(card);
   });
-  wrap.querySelectorAll('.toggle-btn').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('open');document.getElementById('sd-'+b.dataset.i).classList.toggle('open');}));
+  wrap.querySelectorAll('.toggle-btn:not(.ap-load-btn)').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('open');document.getElementById('sd-'+b.dataset.i).classList.toggle('open');}));
+  wrap.querySelectorAll('.ap-load-btn').forEach(b=>b.addEventListener('click',()=>{
+    const projId=b.dataset.projId;
+    const body=document.getElementById('ap-body-'+projId);
+    const open=b.dataset.open==='1';
+    if(!open){body.classList.add('open');b.classList.add('open');b.dataset.open='1';loadProjectWPs(projId);}
+    else{body.classList.remove('open');b.classList.remove('open');b.dataset.open='0';}
+  }));
   document.getElementById('s-total').textContent=projects.length;document.getElementById('s-wp').textContent=tw;document.getElementById('s-open').textContent=to;document.getElementById('s-done').textContent=td;
   document.getElementById('stats-row').style.display='flex';document.getElementById('export-bar').style.display='flex';
 }
@@ -916,9 +933,47 @@ async function updateExistingProject(projId){
   const d=getFormData();const btn=document.getElementById('np-submit-btn');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert…';
   try{
+    // Projektfelder aktualisieren
     const projBody={description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
     await apiFetch(`/projects/${projId}`,{method:'PATCH',body:JSON.stringify(projBody)});
-    showNpResult(`✅ <strong>Projekt erfolgreich aktualisiert!</strong>`,'success');loadFromAPI();
+
+    // Hardware-APs: bestehende laden und nicht mehr ausgewählte löschen
+    btn.innerHTML='<span class="spinner"></span> Hardware-APs werden abgeglichen…';
+    const existingWPs=await apiFetch(`/projects/${projId}/work_packages?pageSize=100&filters=`+encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}}])));
+    const hwWPs=existingWPs._embedded?.elements||[];
+    const selectedNames=d.hw.flatMap(h=>Array.from({length:h.qty},(_,i)=>h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name));
+    // Papier-AP Namen auch behalten
+    if(d.brotherPaperType) selectedNames.push(`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`);
+    let deleted=0;
+    for(const wp of hwWPs){
+      if(!selectedNames.includes(wp.subject)){
+        try{await apiFetch(`/work_packages/${wp.id}`,{method:'DELETE'});deleted++;}catch(e){}
+      }
+    }
+
+    // Neue Hardware-APs anlegen die noch nicht existieren
+    let brotherParentId=null;
+    for(const h of d.hw){
+      for(let i=0;i<h.qty;i++){
+        const label=h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name;
+        const exists=hwWPs.find(wp=>wp.subject===label);
+        if(!exists){
+          const body={subject:label,_links:{project:{href:`/api/v3/projects/${projId}`},type:{href:'/api/v3/types/8'}}};
+          try{const r=await apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});if(h.id==='brother'&&i===0)brotherParentId=r.id;}catch(e){}
+        }else if(h.id==='brother'&&i===0) brotherParentId=exists.id;
+      }
+    }
+    if(brotherParentId&&d.brotherPaperType){
+      const paperLabel=`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`;
+      const exists=hwWPs.find(wp=>wp.subject===paperLabel);
+      if(!exists){
+        const body={subject:paperLabel,_links:{project:{href:`/api/v3/projects/${projId}`},type:{href:'/api/v3/types/8'},parent:{href:`/api/v3/work_packages/${brotherParentId}`}}};
+        try{await apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});}catch(e){}
+      }
+    }
+
+    showNpResult(`✅ <strong>Projekt erfolgreich aktualisiert!</strong><br><br>${deleted>0?`🗑 ${deleted} Hardware-AP(s) entfernt.<br>`:''}Neue Hardware-APs wurden angelegt.`,'success');
+    loadFromAPI();
   }catch(e){showNpResult('❌ Fehler: '+e.message,'error');}
   finally{btn.disabled=false;btn.innerHTML='🚀 Projekt in OpenProject anlegen';}
 }
