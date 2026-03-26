@@ -284,6 +284,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <button class="tab-btn active" data-tab="projekte">Projekte</button>
   <button class="tab-btn" data-tab="warenbestand">Warenbestand</button>
   <button class="tab-btn" data-tab="neu">Neues Projekt</button>
+  <button class="tab-btn" data-tab="archiv">Abgeschlossen</button>
 </div>
 
 <div class="main">
@@ -351,7 +352,22 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div id="wb-content"><div class="wb-empty">Daten werden geladen...</div></div>
   </div>
 
-  <div class="tab-panel" id="tab-neu">
+  <div class="tab-panel" id="tab-archiv">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <div>
+        <div class="num" id="archiv-count" style="font-size:1.4rem;font-weight:700;color:var(--text-muted)">-</div>
+        <div style="font-size:.72rem;color:var(--text-muted)">Abgeschlossene Projekte</div>
+      </div>
+      <button class="btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-muted)" id="archiv-load-btn" onclick="loadArchivedProjects()">Laden</button>
+    </div>
+    <div id="archiv-msg" style="padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none"></div>
+    <div class="filter-bar" id="archiv-filter-bar" style="display:none">
+      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="archiv-search" type="text" placeholder="Projekt suchen..."></div>
+      <button class="clear-btn" id="archiv-clear-btn">Reset</button>
+      <span class="filter-count" id="archiv-filter-count"></span>
+    </div>
+    <div id="archiv-cards"><div class="wb-empty">Klick auf "Laden" um abgeschlossene Projekte anzuzeigen.</div></div>
+  </div>
     <div class="np-card">
       <h2>Neues Projekt anlegen</h2>
       <p class="np-sub">Kundendaten eintragen - das Projekt wird per API in OpenProject angelegt.</p>
@@ -1445,6 +1461,84 @@ function updateExistingProject(projId) {
     btn.disabled = false;
     btn.innerHTML = 'Projekt in OpenProject anlegen';
   });
+}
+
+// Abgeschlossene Projekte
+var archivedData = [];
+var archivLoaded = false;
+
+function loadArchivedProjects() {
+  var btn = document.getElementById('archiv-load-btn');
+  var msg = document.getElementById('archiv-msg');
+  btn.disabled = true;
+  btn.textContent = 'Wird geladen...';
+  msg.style.display = 'none';
+
+  // Alle Projekte laden inkl. abgeschlossene
+  apiFetch('/projects?pageSize=200&filters=' + encodeURIComponent(JSON.stringify([{"active":{"operator":"=","values":["f"]}}]))).then(function(data) {
+    var projects = data._embedded && data._embedded.elements ? data._embedded.elements : [];
+    archivedData = projects.filter(function(p) {
+      return isProjectClosed(getLink(p, 'status') || '');
+    }).map(function(p) {
+      return {name: p.name || '', status: getLink(p, 'status') || '', pm: p.customField39 || getLink(p, 'responsible') || '', _id: p.id, identifier: p.identifier};
+    });
+
+    if (!archivedData.length) {
+      document.getElementById('archiv-cards').innerHTML = '<div class="wb-empty">Keine abgeschlossenen Projekte gefunden.</div>';
+      document.getElementById('archiv-count').textContent = '0';
+      btn.disabled = false;
+      btn.textContent = 'Neu laden';
+      return;
+    }
+
+    document.getElementById('archiv-count').textContent = archivedData.length;
+    renderArchivedCards();
+    document.getElementById('archiv-filter-bar').style.display = 'flex';
+    document.getElementById('archiv-search').addEventListener('input', applyArchivFilter);
+    document.getElementById('archiv-clear-btn').addEventListener('click', function() {
+      document.getElementById('archiv-search').value = '';
+      document.getElementById('archiv-filter-count').textContent = '';
+      document.querySelectorAll('#archiv-cards .project-card').forEach(function(c) { c.classList.remove('hidden'); });
+    });
+    archivLoaded = true;
+    btn.disabled = false;
+    btn.textContent = 'Neu laden';
+  }).catch(function(err) {
+    msg.textContent = 'Fehler: ' + err.message;
+    msg.className = 'msg-error';
+    msg.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Neu laden';
+  });
+}
+
+function renderArchivedCards() {
+  var wrap = document.getElementById('archiv-cards');
+  wrap.innerHTML = '';
+  archivedData.forEach(function(p) {
+    var card = document.createElement('div');
+    card.className = 'project-card';
+    card.style.borderLeftColor = 'var(--text-muted)';
+    card.style.opacity = '0.75';
+    card.dataset.name = p.name.toLowerCase();
+    var html = '<div class="proj-header"><div class="proj-name" style="color:var(--text-muted)">' + p.name + '</div>'
+      + '<span class="badge" style="background:var(--bg3);color:var(--text-muted)">' + (p.status || 'Abgeschlossen') + '</span></div>';
+    if (p.pm) html += '<div class="proj-meta"><div class="meta-item"><strong>PM:</strong> ' + p.pm + '</div></div>';
+    html += '<div style="margin-top:8px"><a href="' + OP_URL + '/projects/' + p.identifier + '" target="_blank" style="font-size:.75rem;color:var(--brand-light)">In OpenProject oeffnen</a></div>';
+    card.innerHTML = html;
+    wrap.appendChild(card);
+  });
+}
+
+function applyArchivFilter() {
+  var q = document.getElementById('archiv-search').value.toLowerCase();
+  var v = 0;
+  document.querySelectorAll('#archiv-cards .project-card').forEach(function(c) {
+    var m = !q || c.dataset.name.includes(q);
+    c.classList.toggle('hidden', !m);
+    if (m) v++;
+  });
+  document.getElementById('archiv-filter-count').textContent = v + ' von ' + archivedData.length;
 }
 
 // PDF Logo
