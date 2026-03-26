@@ -468,6 +468,20 @@ const EXCL_PROJ=['demo project','supportfälle','test portl','dräxlmaier main',
 const EXCL_WP_TYPES=['phase','meilenstein'];
 const WAREN_TYPES=['hardware','elo einrichtung'];
 
+/* ── Custom Option IDs ── */
+const OUTLOOK_OPTIONS = {
+  'Nicht Aktiv': '/api/v3/custom_options/10',
+  'Gewünscht':   '/api/v3/custom_options/14',
+  'Beauftragt':  '/api/v3/custom_options/36',
+  'Aktiv':       '/api/v3/custom_options/37',
+};
+const ADINT_OPTIONS = {
+  'Nicht Aktiv': '/api/v3/custom_options/34',
+  'Gewünscht':   '/api/v3/custom_options/35',
+  'Beauftragt':  '/api/v3/custom_options/16',
+  'Aktiv':       '/api/v3/custom_options/17',
+};
+
 /* ── Standard-Arbeitspakete Vorlagen ── */
 const WP_TEMPLATES = {
   basis: [
@@ -941,8 +955,10 @@ document.getElementById('np-submit-btn').addEventListener('click', async ()=>{
       customField11: d.name,
       customField12: d.standort,
       customField24: {format:'plain', raw: d.ap},
-      customField6:  {value: d.adint},
-      customField4:  {value: d.outlook},
+      _links:{
+        customField6: {href: ADINT_OPTIONS[d.adint]},
+        customField4: {href: OUTLOOK_OPTIONS[d.outlook]},
+      }
     };
     const projRes=await fetch(`${api}/projects`,{method:'POST',headers,body:JSON.stringify(projBody)});
     if(!projRes.ok){
