@@ -924,11 +924,12 @@ document.getElementById('np-submit-btn').addEventListener('click', async ()=>{
     return;
   }
 
-  // Per API anlegen
+  // Per API anlegen (über Proxy)
   btn.disabled=true;
   btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt…';
-  const api=(url.startsWith('http')?url:'https://'+url)+'/api/v3';
-  const headers={'Authorization':'Basic '+btoa('apikey:'+key),'Content-Type':'application/json'};
+  const proxyBase=(url.startsWith('http')?url:'https://'+url).replace(/\/$/,'');
+  const api=proxyBase+'/proxy';
+  const headers={'Content-Type':'application/json','X-OP-URL': proxyBase,'X-OP-KEY': key};
 
   try{
     // 1. Projekt anlegen
