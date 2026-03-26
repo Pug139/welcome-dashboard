@@ -1394,13 +1394,12 @@ async function updateExistingProject(projId) {
   }
 }
 
-async function changeWBStatus(idx, e) {
-  e.stopPropagation();
+async function changeWBStatus(idx, evt) {
+  evt.stopPropagation();
   var w = warenData[idx];
   if (!w) return;
-  if (!confirm('Status von "' + w.titel + '" auf "Bestellt" ändern?')) return;
+  if (!confirm('Status von "' + w.titel + '" auf "Bestellt" \u00E4ndern?')) return;
   try {
-    // lockVersion holen
     var wpData = await apiFetch('/work_packages/' + w.raw.id);
     await apiFetch('/work_packages/' + w.raw.id, {
       method: 'PATCH',
@@ -1409,10 +1408,10 @@ async function changeWBStatus(idx, e) {
         _links: {status: {href: '/api/v3/statuses/17'}}
       })
     });
-    alert('✅ Status erfolgreich auf "Bestellt" geändert!');
+    alert('\u2705 Status erfolgreich auf "Bestellt" ge\u00E4ndert!');
     loadFromAPI();
-  } catch(e) {
-    alert('❌ Fehler: ' + e.message);
+  } catch(err) {
+    alert('\u274C Fehler: ' + err.message);
   }
 }
   var img = new Image(); img.crossOrigin = 'anonymous';
