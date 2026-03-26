@@ -282,9 +282,9 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 
 <div class="tab-bar">
   <button class="tab-btn active" data-tab="projekte">Projekte</button>
+  <button class="tab-btn" data-tab="archiv">Abgeschlossen</button>
   <button class="tab-btn" data-tab="warenbestand">Warenbestand</button>
   <button class="tab-btn" data-tab="neu">Neues Projekt</button>
-  <button class="tab-btn" data-tab="archiv">Abgeschlossen</button>
 </div>
 
 <div class="main">
@@ -368,6 +368,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     </div>
     <div id="archiv-cards"><div class="wb-empty">Klick auf "Laden" um abgeschlossene Projekte anzuzeigen.</div></div>
   </div>
+
+  <div class="tab-panel" id="tab-warenbestand">
     <div class="np-card">
       <h2>Neues Projekt anlegen</h2>
       <p class="np-sub">Kundendaten eintragen - das Projekt wird per API in OpenProject angelegt.</p>
@@ -1475,7 +1477,7 @@ function loadArchivedProjects() {
   msg.style.display = 'none';
 
   // Alle Projekte laden inkl. abgeschlossene
-  apiFetch('/projects?pageSize=200&filters=' + encodeURIComponent(JSON.stringify([{"active":{"operator":"=","values":["f"]}}]))).then(function(data) {
+  apiFetch('/projects?pageSize=200').then(function(data) {
     var projects = data._embedded && data._embedded.elements ? data._embedded.elements : [];
     archivedData = projects.filter(function(p) {
       return isProjectClosed(getLink(p, 'status') || '');
