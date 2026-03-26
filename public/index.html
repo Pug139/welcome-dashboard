@@ -396,17 +396,19 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field">
             <label class="np-label">Outlook Add-in</label>
             <div class="np-radio-group" id="np-outlook">
-              <label class="np-radio-label"><input type="radio" name="outlook" value="Ja"> ✅ Ja</label>
-              <label class="np-radio-label"><input type="radio" name="outlook" value="Nein" checked> ❌ Nein</label>
+              <label class="np-radio-label"><input type="radio" name="outlook" value="Nicht Aktiv" checked> ❌ Nicht Aktiv</label>
               <label class="np-radio-label"><input type="radio" name="outlook" value="Gewünscht"> 🕐 Gewünscht</label>
+              <label class="np-radio-label"><input type="radio" name="outlook" value="Beauftragt"> ⏳ Beauftragt</label>
+              <label class="np-radio-label"><input type="radio" name="outlook" value="Aktiv"> ✅ Aktiv</label>
             </div>
           </div>
           <div class="np-field">
             <label class="np-label">AD-Integration</label>
             <div class="np-radio-group" id="np-adint">
-              <label class="np-radio-label"><input type="radio" name="adint" value="Ja"> ✅ Ja</label>
-              <label class="np-radio-label"><input type="radio" name="adint" value="Nein" checked> ❌ Nein</label>
+              <label class="np-radio-label"><input type="radio" name="adint" value="Nicht Aktiv" checked> ❌ Nicht Aktiv</label>
               <label class="np-radio-label"><input type="radio" name="adint" value="Gewünscht"> 🕐 Gewünscht</label>
+              <label class="np-radio-label"><input type="radio" name="adint" value="Beauftragt"> ⏳ Beauftragt</label>
+              <label class="np-radio-label"><input type="radio" name="adint" value="Aktiv"> ✅ Aktiv</label>
             </div>
           </div>
         </div>
@@ -938,9 +940,9 @@ document.getElementById('np-submit-btn').addEventListener('click', async ()=>{
       description:{format:'markdown',raw:buildDescription(d)},
       customField11: d.name,
       customField12: d.standort,
-      customField24: d.ap,
-      customField6:  d.adint,
-      customField4:  d.outlook,
+      customField24: {format:'plain', raw: d.ap},
+      customField6:  {value: d.adint},
+      customField4:  {value: d.outlook},
     };
     const projRes=await fetch(`${api}/projects`,{method:'POST',headers,body:JSON.stringify(projBody)});
     if(!projRes.ok){
