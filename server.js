@@ -3,12 +3,13 @@ const fetch   = require('node-fetch');
 const path    = require('path');
 const app     = express();
 
+app.use(express.json());
+
 // CORS + Teams iframe headers
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Content-Type, X-OP-URL, X-OP-KEY');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  // Allow embedding in Teams/SharePoint
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.header('X-Frame-Options', 'ALLOWALL');
   res.header('Content-Security-Policy', "frame-ancestors 'self' https://teams.microsoft.com https://*.teams.microsoft.com https://*.sharepoint.com https://*.office.com");
   if (req.method === 'OPTIONS') return res.sendStatus(200);
@@ -18,8 +19,8 @@ app.use((req, res, next) => {
 // Serve dashboard HTML
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Proxy endpoint for OpenProject API
-app.get('/proxy/*', async (req, res) => {
+// Proxy endpoint for OpenProject API (GET + POST)
+app.all('/proxy/*', async (req, res) => {
   const opUrl = req.headers['x-op-url'];
   const opKey = req.headers['x-op-key'];
   if (!opUrl || !opKey) return res.status(400).json({ error: 'Missing headers' });
@@ -29,10 +30,12 @@ app.get('/proxy/*', async (req, res) => {
 
   try {
     const response = await fetch(targetUrl, {
+      method: req.method,
       headers: {
         'Authorization': 'Basic ' + Buffer.from('apikey:' + opKey).toString('base64'),
         'Content-Type': 'application/json'
-      }
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
     });
     const data = await response.json();
     res.status(response.status).json(data);
