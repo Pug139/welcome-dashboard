@@ -927,9 +927,9 @@ document.getElementById('np-submit-btn').addEventListener('click', async ()=>{
   // Per API anlegen (über Proxy)
   btn.disabled=true;
   btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt…';
-  const proxyBase=(url.startsWith('http')?url:'https://'+url).replace(/\/$/,'');
-  const api=proxyBase+'/proxy';
-  const headers={'Content-Type':'application/json','X-OP-URL': proxyBase,'X-OP-KEY': key};
+  const opUrl=(url.startsWith('http')?url:'https://'+url).replace(/\/$/,'');
+  const api='/proxy';
+  const headers={'Content-Type':'application/json','X-OP-URL':opUrl,'X-OP-KEY':key};
 
   try{
     // 1. Projekt anlegen
