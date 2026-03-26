@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WELCOME Projekt-Übersicht</title>
+<title>WELCOME Projekt-Uebersicht</title>
 <link rel="icon" type="image/webp" href="https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -79,7 +79,7 @@ header p{font-size:.72rem;opacity:.7}
 .import-both:hover,.import-both.over{border-color:var(--brand-light);background:var(--drop-over)}
 .import-both.loaded{border-color:var(--on-track-c);background:var(--drop-loaded);color:var(--on-track-c);font-weight:600}
 .import-both input{display:none}
-.tab-bar{display:flex;align-items:center;max-width:920px;margin:16px auto 0;padding:0 16px;gap:4px}
+.tab-bar{display:flex;align-items:center;max-width:920px;margin:16px auto 0;padding:0 16px;gap:4px;flex-wrap:wrap}
 .tab-btn{padding:9px 22px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;color:var(--text-muted);background:var(--tab-inactive)}
 .tab-btn.active{background:var(--tab-active);color:white}
 .tab-btn:hover:not(.active){background:var(--bg3);color:var(--text)}
@@ -106,7 +106,7 @@ header p{font-size:.72rem;opacity:.7}
 .ms-option:hover{background:var(--bg3)}
 .ms-option input[type=checkbox]{accent-color:var(--brand-light);width:14px;height:14px;cursor:pointer;flex-shrink:0}
 .ms-count-badge{margin-left:auto;background:var(--bg3);color:var(--text-muted);border-radius:10px;padding:1px 6px;font-size:.68rem;font-weight:600}
-#msg,#msg-wb{padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none}
+#msg{padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none}
 .msg-error{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c)}
 .msg-success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
 .msg-info{background:var(--hint-bg);color:var(--hint-text);border:1px solid var(--hint-border)}
@@ -168,6 +168,8 @@ header p{font-size:.72rem;opacity:.7}
 .ap-status{font-size:.65rem;padding:2px 7px;border-radius:10px;background:rgba(74,144,217,.12);color:var(--brand-light);border:1px solid var(--brand-light);flex-shrink:0;white-space:nowrap}
 .ap-status.done{background:rgba(63,185,80,.12);color:var(--on-track-c);border-color:var(--on-track-c)}
 .no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
+.op-link{font-size:.72rem;color:var(--brand-light);text-decoration:none;display:inline-flex;align-items:center;gap:3px;margin-top:6px;opacity:.8}
+.op-link:hover{opacity:1;text-decoration:underline}
 .wb-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .wb-table{width:100%;border-collapse:collapse;font-size:.83rem}
 .wb-table th{background:var(--brand-dark);color:white;padding:9px 13px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
@@ -184,6 +186,15 @@ header p{font-size:.72rem;opacity:.7}
 .wb-status-pending{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(248,81,73,.15);color:var(--error-c);border:1px solid var(--error-c);cursor:pointer}
 .wb-status-pending:hover{background:rgba(248,81,73,.25)}
 .wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
+/* Archiv */
+.archiv-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.archiv-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;border-left:5px solid var(--text-muted);opacity:.8;transition:opacity .2s}
+.archiv-card:hover{opacity:1}
+.archiv-card.hidden{display:none}
+.archiv-name{font-size:.95rem;font-weight:700;color:var(--text-muted)}
+.archiv-meta{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;font-size:.76rem;color:var(--text-muted)}
+.archiv-pagination{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.8rem;color:var(--text-muted)}
+/* NP */
 .np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
 .np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
 .np-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
@@ -236,7 +247,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 @media(max-width:640px){
   header{padding:10px 12px;gap:8px;flex-wrap:wrap}header img{height:28px}
   .import-panel{width:calc(100vw - 24px);right:-10px}.import-grid{grid-template-columns:1fr}
-  .tab-bar{padding:0 10px;flex-wrap:wrap}.tab-btn{padding:7px 14px;font-size:.8rem}
+  .tab-btn{padding:7px 12px;font-size:.78rem}
   .main{padding:10px 10px 20px}
   .np-grid{grid-template-columns:1fr}.np-field.full{grid-column:1}
   .filter-bar{flex-direction:column;align-items:stretch}
@@ -288,6 +299,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 </div>
 
 <div class="main">
+
+  <!-- PROJEKTE -->
   <div class="tab-panel active" id="tab-projekte">
     <div id="msg"></div>
     <div class="refresh-bar" id="refresh-bar" style="display:none">
@@ -326,8 +339,31 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div id="cards"></div>
   </div>
 
+  <!-- ABGESCHLOSSEN -->
+  <div class="tab-panel" id="tab-archiv">
+    <div id="archiv-msg" style="padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none"></div>
+    <div class="archiv-toolbar">
+      <div class="search-wrap" style="flex:1;min-width:180px"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="archiv-search" type="text" placeholder="Projekt suchen..."></div>
+      <select class="filter-select" id="archiv-sort">
+        <option value="date-desc">Neueste zuerst</option>
+        <option value="date-asc">Aelteste zuerst</option>
+        <option value="name-asc">Name A-Z</option>
+        <option value="name-desc">Name Z-A</option>
+      </select>
+      <select class="filter-select" id="archiv-limit">
+        <option value="10">10 anzeigen</option>
+        <option value="20">20 anzeigen</option>
+        <option value="50">50 anzeigen</option>
+        <option value="0">Alle anzeigen</option>
+      </select>
+      <button class="clear-btn" onclick="loadArchivedProjects()">&#x21BB; Neu laden</button>
+      <span class="filter-count" id="archiv-count"></span>
+    </div>
+    <div id="archiv-cards"><div class="wb-empty">Wird geladen...</div></div>
+  </div>
+
+  <!-- WARENBESTAND -->
   <div class="tab-panel" id="tab-warenbestand">
-    <div id="msg-wb"></div>
     <div class="wb-stats" id="wb-stats">
       <div class="stat-card clickable" id="wb-total-card"><div class="num" id="wb-total">-</div><div class="lbl">Eintraege gesamt (Reset)</div></div>
       <div class="stat-card"><div class="num" id="wb-proj-count">-</div><div class="lbl">Betroffene Projekte</div></div>
@@ -352,24 +388,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div id="wb-content"><div class="wb-empty">Daten werden geladen...</div></div>
   </div>
 
-  <div class="tab-panel" id="tab-archiv">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-      <div>
-        <div class="num" id="archiv-count" style="font-size:1.4rem;font-weight:700;color:var(--text-muted)">-</div>
-        <div style="font-size:.72rem;color:var(--text-muted)">Abgeschlossene Projekte</div>
-      </div>
-      <button class="btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-muted)" id="archiv-load-btn" onclick="loadArchivedProjects()">Laden</button>
-    </div>
-    <div id="archiv-msg" style="padding:10px 16px;border-radius:7px;font-size:.85rem;margin-bottom:14px;display:none"></div>
-    <div class="filter-bar" id="archiv-filter-bar" style="display:none">
-      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="archiv-search" type="text" placeholder="Projekt suchen..."></div>
-      <button class="clear-btn" id="archiv-clear-btn">Reset</button>
-      <span class="filter-count" id="archiv-filter-count"></span>
-    </div>
-    <div id="archiv-cards"><div class="wb-empty">Klick auf "Laden" um abgeschlossene Projekte anzuzeigen.</div></div>
-  </div>
-
-  <div class="tab-panel" id="tab-warenbestand">
+  <!-- NEUES PROJEKT -->
+  <div class="tab-panel" id="tab-neu">
     <div class="np-card">
       <h2>Neues Projekt anlegen</h2>
       <p class="np-sub">Kundendaten eintragen - das Projekt wird per API in OpenProject angelegt.</p>
@@ -447,7 +467,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <div class="np-result" id="np-result"></div>
     </div>
   </div>
-</div>
+
+</div><!-- /main -->
 
 <footer>WELCOME Projekt-Dashboard &middot; EnterSmart GmbH &middot; Alle Daten bleiben lokal im Browser</footer>
 
@@ -461,23 +482,11 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 <script>
 /*
  * OpenProject Custom Field IDs:
- * customField2  = Paket (Liste: S=4, M=5, L=6)
- * customField4  = Outlook (Nicht Aktiv=10, Gewuenscht=14, Beauftragt=36, Aktiv=37)
- * customField6  = AD-Integration (Nicht Aktiv=34, Gewuenscht=35, Beauftragt=16, Aktiv=17)
- * customField10 = Kundennummer
- * customField11 = Kundenname
- * customField12 = Standort
- * customField13 = Homepage des Kunden
- * customField19 = Besonderheiten
- * customField20 = PrintNode Account
- * customField23 = Check-In Geraete
- * customField24 = Ansprechpartner Kunde (Langer Text)
- * customField25 = Access Scanner / Leser
- * customField31 = Funktionen
- * customField36 = Sonstige Hardware
- * customField39 = Projektverantwortlicher
- * AP-Typen: 1=Task, 2=Milestone, 3=Phase, 8=Hardware, 10=ELO Einrichtung
- * WP-Status: 1=Neu, 7=In Bearbeitung, 12=Erledigt, 15=Versendet, 16=Geliefert, 17=Bestellt, 18=Lagernd, 19=Bestellung ausstehend
+ * customField2=Paket(S=4,M=5,L=6) customField4=Outlook customField6=AD-Integration
+ * customField11=Kundenname customField12=Standort customField24=Ansprechpartner(LangerText)
+ * customField39=Projektverantwortlicher
+ * WP-Typen: 1=Task,8=Hardware,10=ELO Einrichtung
+ * WP-Status: 17=Bestellt,19=Bestellung ausstehend
  */
 
 var OP_URL = 'https://entersmart.openproject.com';
@@ -487,13 +496,14 @@ var API_KEY = '';
 var projectData = [];
 var warenData = [];
 var allMemberNames = [];
-var raw = {proj: null, wp: null};
+var archivedData = [];
+var raw = {proj:null, wp:null};
 var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal'];
 var EXCL_WP_TYPES = ['phase','meilenstein'];
 var WAREN_TYPES = ['hardware','elo einrichtung'];
 var PENDING_STATUS = 'bestellung ausstehend';
 
-var PAKET_OPT = {S:'/api/v3/custom_options/4', M:'/api/v3/custom_options/5', L:'/api/v3/custom_options/6'};
+var PAKET_OPT = {S:'/api/v3/custom_options/4',M:'/api/v3/custom_options/5',L:'/api/v3/custom_options/6'};
 var OUTLOOK_OPT = {'Nicht Aktiv':'/api/v3/custom_options/10','Gewuenscht':'/api/v3/custom_options/14','Beauftragt':'/api/v3/custom_options/36','Aktiv':'/api/v3/custom_options/37'};
 var ADINT_OPT = {'Nicht Aktiv':'/api/v3/custom_options/34','Gewuenscht':'/api/v3/custom_options/35','Beauftragt':'/api/v3/custom_options/16','Aktiv':'/api/v3/custom_options/17'};
 
@@ -503,23 +513,14 @@ var HW_ITEMS = [
   {id:'customVKP',name:'Custom VKP800III'},{id:'bodenRM',name:'Bodenstaender RM-System'},
   {id:'tischRM',name:'Tischstaender RM-System'},{id:'bodenWallaby',name:'Bodenstaender Wallaby'}
 ];
+var WP_BASIS = [{name:'Kickoff & Projektplanung'},{name:'Systemeinrichtung'},{name:'Benutzerverwaltung'},{name:'Schulung'},{name:'Go-Live'},{name:'Abnahme & Dokumentation'}];
 
-var WP_BASIS = [
-  {name:'Kickoff & Projektplanung'},{name:'Systemeinrichtung'},{name:'Benutzerverwaltung'},
-  {name:'Schulung'},{name:'Go-Live'},{name:'Abnahme & Dokumentation'}
-];
-
-function apiHdrs() {
-  return {'Content-Type':'application/json','X-OP-URL':OP_URL,'X-OP-KEY':API_KEY};
-}
+function apiHdrs() { return {'Content-Type':'application/json','X-OP-URL':OP_URL,'X-OP-KEY':API_KEY}; }
 
 function apiFetch(path, opts) {
   opts = opts || {};
   var hdrs = apiHdrs();
-  if (opts.headers) {
-    Object.keys(opts.headers).forEach(function(k) { hdrs[k] = opts.headers[k]; });
-  }
-  return fetch(PROXY + path, {method: opts.method || 'GET', headers: hdrs, body: opts.body}).then(function(res) {
+  return fetch(PROXY + path, {method:opts.method||'GET', headers:hdrs, body:opts.body}).then(function(res) {
     return res.json().then(function(data) {
       if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
       return data;
@@ -527,31 +528,56 @@ function apiFetch(path, opts) {
   });
 }
 
+function getLink(obj, key, prop) {
+  prop = prop || 'title';
+  if (obj && obj._links && obj._links[key]) return obj._links[key][prop] || '';
+  return '';
+}
+
+function statusKey(s) {
+  if (!s) return 'default';
+  var l = s.toLowerCase();
+  if (l.includes('plan')||l.includes('on track')||l.includes('zeit')) return 'on_track';
+  if (l.includes('risk')||l.includes('gefaehr')) return 'at_risk';
+  if (l.includes('off')||l.includes('kritisch')||l.includes('verzoeg')) return 'off_track';
+  return 'default';
+}
+function statusLabel(k) {
+  if (k==='on_track') return 'Im Plan';
+  if (k==='at_risk') return 'Gefaehrdet';
+  if (k==='off_track') return 'Kritisch';
+  return 'Kein Status';
+}
+function isProjectClosed(s) {
+  if (!s) return false;
+  var l = s.toLowerCase();
+  return ['abgeschlossen','closed','archiv','fertig','done','beendet','finished'].some(function(x){return l.includes(x);});
+}
+function isWPClosed(st) {
+  var l = (st||'').toLowerCase();
+  return ['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(function(s){return l.includes(s);});
+}
+
 // Login
 document.getElementById('login-btn').addEventListener('click', doLogin);
-document.getElementById('login-token').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
+document.getElementById('login-token').addEventListener('keydown', function(e){if(e.key==='Enter')doLogin();});
 
 function doLogin() {
   var token = document.getElementById('login-token').value.trim();
   if (!token) return;
   var btn = document.getElementById('login-btn');
   var err = document.getElementById('login-err');
-  btn.textContent = 'Pruefe...';
-  btn.disabled = true;
-  err.style.display = 'none';
-  fetch(PROXY + '/projects?pageSize=1', {headers: {'X-OP-URL': OP_URL, 'X-OP-KEY': token}}).then(function(r) {
-    if (!r.ok) throw new Error('unauthorized');
+  btn.textContent = 'Pruefe...'; btn.disabled = true; err.style.display = 'none';
+  fetch(PROXY+'/projects?pageSize=1', {headers:{'X-OP-URL':OP_URL,'X-OP-KEY':token}}).then(function(r){
+    if (!r.ok) throw new Error();
     API_KEY = token;
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('tokenLabel').textContent = 'Verbunden';
     loadFromAPI();
     startRefreshTimer();
-  }).catch(function() {
-    err.style.display = 'block';
-    btn.textContent = 'Anmelden';
-    btn.disabled = false;
+    loadArchivedProjects();
+  }).catch(function(){
+    err.style.display = 'block'; btn.textContent = 'Anmelden'; btn.disabled = false;
   });
 }
 
@@ -564,1093 +590,566 @@ function showRelogin() {
   document.getElementById('loginOverlay').style.display = 'flex';
 }
 
-// Refresh timer
-var refreshTimer = null;
-var refreshSecsLeft = REFRESH_INTERVAL;
-
+// Refresh
+var refreshTimer = null, refreshSecsLeft = REFRESH_INTERVAL;
 function startRefreshTimer() {
   document.getElementById('refresh-bar').style.display = 'flex';
-  clearInterval(refreshTimer);
-  refreshSecsLeft = REFRESH_INTERVAL;
-  refreshTimer = setInterval(function() {
+  clearInterval(refreshTimer); refreshSecsLeft = REFRESH_INTERVAL;
+  refreshTimer = setInterval(function(){
     refreshSecsLeft--;
-    document.getElementById('refresh-progress').style.width = (refreshSecsLeft / REFRESH_INTERVAL * 100) + '%';
-    var m = Math.floor(refreshSecsLeft / 60);
-    var s = refreshSecsLeft % 60;
-    document.getElementById('refresh-label').textContent = 'Aktualisierung in ' + m + ':' + (s < 10 ? '0' : '') + s;
-    if (refreshSecsLeft <= 0) { refreshSecsLeft = REFRESH_INTERVAL; loadFromAPI(); }
-  }, 1000);
+    document.getElementById('refresh-progress').style.width = (refreshSecsLeft/REFRESH_INTERVAL*100)+'%';
+    var m = Math.floor(refreshSecsLeft/60), s = refreshSecsLeft%60;
+    document.getElementById('refresh-label').textContent = 'Aktualisierung in '+m+':'+(s<10?'0':'')+s;
+    if (refreshSecsLeft<=0){refreshSecsLeft=REFRESH_INTERVAL;loadFromAPI();}
+  },1000);
 }
-
-function manualRefresh() { refreshSecsLeft = REFRESH_INTERVAL; loadFromAPI(); }
+function manualRefresh(){refreshSecsLeft=REFRESH_INTERVAL;loadFromAPI();}
 
 // Theme
-document.getElementById('themeBtn').addEventListener('click', function() {
-  var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
-  document.querySelector('.theme-icon').textContent = dark ? '🌙' : '☀️';
-  document.querySelector('.theme-label').textContent = dark ? 'Dark' : 'Light';
+document.getElementById('themeBtn').addEventListener('click',function(){
+  var dark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'light':'dark');
+  document.querySelector('.theme-icon').textContent = dark?'🌙':'☀️';
+  document.querySelector('.theme-label').textContent = dark?'Dark':'Light';
 });
 
 // Import dropdown
-document.getElementById('importTrigger').addEventListener('click', function(e) {
-  e.stopPropagation();
-  document.getElementById('importPanel').classList.toggle('open');
-});
-document.addEventListener('click', function(e) {
-  if (!document.getElementById('importDropdown').contains(e.target)) {
-    document.getElementById('importPanel').classList.remove('open');
-  }
-});
+document.getElementById('importTrigger').addEventListener('click',function(e){e.stopPropagation();document.getElementById('importPanel').classList.toggle('open');});
+document.addEventListener('click',function(e){if(!document.getElementById('importDropdown').contains(e.target))document.getElementById('importPanel').classList.remove('open');});
 
 // Tabs
-document.querySelectorAll('.tab-btn').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+    document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
     btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
   });
 });
 
 // Multi-select
-function initMS(btnId, panelId, onChange) {
-  var btn = document.getElementById(btnId);
-  var panel = document.getElementById(panelId);
-  if (!btn || !panel) return;
-  btn.addEventListener('click', function(e) {
+function initMS(btnId,panelId,onChange){
+  var btn=document.getElementById(btnId),panel=document.getElementById(panelId);
+  if(!btn||!panel)return;
+  btn.addEventListener('click',function(e){
     e.stopPropagation();
-    document.querySelectorAll('.ms-panel.open').forEach(function(p) { if (p !== panel) p.classList.remove('open'); });
+    document.querySelectorAll('.ms-panel.open').forEach(function(p){if(p!==panel)p.classList.remove('open');});
     panel.classList.toggle('open');
-    var arr = btn.querySelector('.ms-arrow');
-    if (arr) arr.style.transform = panel.classList.contains('open') ? 'rotate(180deg)' : '';
+    var arr=btn.querySelector('.ms-arrow');if(arr)arr.style.transform=panel.classList.contains('open')?'rotate(180deg)':'';
   });
-  panel.addEventListener('change', function() { updateMsBtn(btnId, panelId); if (onChange) onChange(); });
+  panel.addEventListener('change',function(){updateMsBtn(btnId,panelId);if(onChange)onChange();});
 }
-
-function updateMsBtn(btnId, panelId) {
-  var btn = document.getElementById(btnId);
-  var panel = document.getElementById(panelId);
-  if (!btn || !panel) return;
-  var n = panel.querySelectorAll('input:checked').length;
-  var base = btn.dataset.base || 'Status';
-  btn.innerHTML = base + (n > 0 ? ' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">' + n + '</span>' : '') + ' <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">&#x25BC;</span>';
-  btn.classList.toggle('has-sel', n > 0);
+function updateMsBtn(btnId,panelId){
+  var btn=document.getElementById(btnId),panel=document.getElementById(panelId);
+  if(!btn||!panel)return;
+  var n=panel.querySelectorAll('input:checked').length;
+  var base=btn.dataset.base||'Status';
+  btn.innerHTML=base+(n>0?' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">'+n+'</span>':'')+' <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">&#x25BC;</span>';
+  btn.classList.toggle('has-sel',n>0);
 }
-
-function getMsValues(panelId) {
-  var p = document.getElementById(panelId);
-  if (!p) return [];
-  return Array.from(p.querySelectorAll('input:checked')).map(function(i) { return i.value; });
-}
-
-function resetMs(btnId, panelId) {
-  var p = document.getElementById(panelId);
-  if (p) p.querySelectorAll('input').forEach(function(i) { i.checked = false; });
-  updateMsBtn(btnId, panelId);
-}
-
-document.addEventListener('click', function() {
-  document.querySelectorAll('.ms-panel.open').forEach(function(p) { p.classList.remove('open'); });
-  document.querySelectorAll('.ms-btn .ms-arrow').forEach(function(a) { a.style.transform = ''; });
-});
+function getMsValues(panelId){var p=document.getElementById(panelId);if(!p)return[];return Array.from(p.querySelectorAll('input:checked')).map(function(i){return i.value;});}
+function resetMs(btnId,panelId){var p=document.getElementById(panelId);if(p)p.querySelectorAll('input').forEach(function(i){i.checked=false;});updateMsBtn(btnId,panelId);}
+document.addEventListener('click',function(){document.querySelectorAll('.ms-panel.open').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.ms-btn .ms-arrow').forEach(function(a){a.style.transform='';});});
 
 // Drop zones
-function setupZone(zoneId, inputId, key) {
-  var zone = document.getElementById(zoneId);
-  var inp = document.getElementById(inputId);
-  zone.addEventListener('click', function() { inp.click(); });
-  inp.addEventListener('change', function() { if (inp.files[0]) parseFile(inp.files[0], key); });
-  ['dragenter','dragover'].forEach(function(ev) {
-    zone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('over'); });
-  });
-  zone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); });
-  zone.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); if (e.dataTransfer.files[0]) parseFile(e.dataTransfer.files[0], key); });
+function setupZone(zoneId,inputId,key){
+  var zone=document.getElementById(zoneId),inp=document.getElementById(inputId);
+  zone.addEventListener('click',function(){inp.click();});
+  inp.addEventListener('change',function(){if(inp.files[0])parseFile(inp.files[0],key);});
+  ['dragenter','dragover'].forEach(function(ev){zone.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();zone.classList.add('over');});});
+  zone.addEventListener('dragleave',function(e){e.preventDefault();e.stopPropagation();zone.classList.remove('over');});
+  zone.addEventListener('drop',function(e){e.preventDefault();e.stopPropagation();zone.classList.remove('over');if(e.dataTransfer.files[0])parseFile(e.dataTransfer.files[0],key);});
 }
-setupZone('dz-proj','f-proj','proj');
-setupZone('dz-wp','f-wp','wp');
+setupZone('dz-proj','f-proj','proj');setupZone('dz-wp','f-wp','wp');
+var dzBoth=document.getElementById('dz-both'),fBoth=document.getElementById('f-both');
+dzBoth.addEventListener('click',function(){fBoth.click();});
+fBoth.addEventListener('change',function(){handleMulti(fBoth.files);});
+['dragenter','dragover'].forEach(function(ev){dzBoth.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();dzBoth.classList.add('over');});});
+dzBoth.addEventListener('dragleave',function(e){e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');});
+dzBoth.addEventListener('drop',function(e){e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');handleMulti(e.dataTransfer.files);});
 
-var dzBoth = document.getElementById('dz-both');
-var fBoth = document.getElementById('f-both');
-dzBoth.addEventListener('click', function() { fBoth.click(); });
-fBoth.addEventListener('change', function() { handleMulti(fBoth.files); });
-['dragenter','dragover'].forEach(function(ev) {
-  dzBoth.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.add('over'); });
-});
-dzBoth.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.remove('over'); });
-dzBoth.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.remove('over'); handleMulti(e.dataTransfer.files); });
-
-function handleMulti(files) {
-  Array.from(files).forEach(function(f) {
-    var r = new FileReader();
-    r.onload = function(ev) {
-      try {
-        var wb = XLSX.read(ev.target.result, {type:'binary',raw:false});
-        var data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
-        if (!data.length) return;
-        var h = Object.keys(data[0]).map(function(k) { return k.toLowerCase(); });
-        var isWP = h.some(function(k) { return k.includes('typ') || k.includes('thema') || k.includes('zugewiesen'); });
-        var key = isWP ? 'wp' : 'proj';
-        raw[key] = data;
-        document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = f.name;
-        document.getElementById(key === 'proj' ? 'dz-proj' : 'dz-wp').classList.add('loaded');
-        document.getElementById('build-btn').disabled = false;
-      } catch(err) { showMsg('Fehler: ' + err.message, 'error'); }
-    };
-    r.readAsBinaryString(f);
+function handleMulti(files){
+  Array.from(files).forEach(function(f){
+    var r=new FileReader();
+    r.onload=function(ev){
+      try{
+        var wb=XLSX.read(ev.target.result,{type:'binary',raw:false});
+        var data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
+        if(!data.length)return;
+        var h=Object.keys(data[0]).map(function(k){return k.toLowerCase();});
+        var isWP=h.some(function(k){return k.includes('typ')||k.includes('thema')||k.includes('zugewiesen');});
+        var key=isWP?'wp':'proj';raw[key]=data;
+        document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent=f.name;
+        document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');
+        document.getElementById('build-btn').disabled=false;
+      }catch(err){showMsg('Fehler: '+err.message,'error');}
+    };r.readAsBinaryString(f);
   });
 }
+document.getElementById('build-btn').addEventListener('click',function(){buildDashboard();document.getElementById('importPanel').classList.remove('open');});
+function parseFile(file,key){var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'binary',raw:false});raw[key]=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent=file.name;document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');document.getElementById('build-btn').disabled=false;}catch(err){showMsg('Fehler: '+err.message,'error');}};r.readAsBinaryString(file);}
 
-document.getElementById('build-btn').addEventListener('click', function() { buildDashboard(); document.getElementById('importPanel').classList.remove('open'); });
-
-function parseFile(file, key) {
-  var r = new FileReader();
-  r.onload = function(ev) {
-    try {
-      var wb = XLSX.read(ev.target.result, {type:'binary',raw:false});
-      raw[key] = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
-      document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = file.name;
-      document.getElementById(key === 'proj' ? 'dz-proj' : 'dz-wp').classList.add('loaded');
-      document.getElementById('build-btn').disabled = false;
-    } catch(err) { showMsg('Fehler: ' + err.message, 'error'); }
-  };
-  r.readAsBinaryString(file);
-}
-
-// Helpers
-function showMsg(txt, type, id) {
-  var el = document.getElementById(id || 'msg');
-  if (!el) return;
-  el.textContent = txt;
-  el.className = 'msg-' + type;
-  el.style.display = 'block';
-}
-
-function getLink(obj, key, prop) {
-  prop = prop || 'title';
-  if (obj && obj._links && obj._links[key]) return obj._links[key][prop] || '';
-  return '';
-}
-
-function statusKey(s) {
-  if (!s) return 'default';
-  var l = s.toLowerCase();
-  if (l.includes('plan') || l.includes('on track') || l.includes('zeit')) return 'on_track';
-  if (l.includes('risk') || l.includes('gefaehr')) return 'at_risk';
-  if (l.includes('off') || l.includes('kritisch') || l.includes('verzoeg')) return 'off_track';
-  return 'default';
-}
-
-function statusLabel(k) {
-  if (k === 'on_track') return 'Im Plan';
-  if (k === 'at_risk') return 'Gefaehrdet';
-  if (k === 'off_track') return 'Kritisch';
-  return 'Kein Status';
-}
-
-function isProjectClosed(s) {
-  if (!s) return false;
-  var l = s.toLowerCase();
-  return ['abgeschlossen','closed','archiv','fertig','done','beendet','finished'].some(function(x) { return l.includes(x); });
-}
-
-function isWPClosed(st) {
-  var l = (st || '').toLowerCase();
-  return ['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(function(s) { return l.includes(s); });
-}
+function showMsg(txt,type,id){var el=document.getElementById(id||'msg');if(!el)return;el.textContent=txt;el.className='msg-'+type;el.style.display='block';}
 
 // Load from API
 function loadFromAPI() {
-  showMsg('Daten werden geladen...', 'info');
-  document.getElementById('msg').style.display = 'block';
-  apiFetch('/projects?pageSize=100').then(function(projData) {
-    var projects = (projData._embedded && projData._embedded.elements ? projData._embedded.elements : []).map(function(p) {
-      var pm = p.customField39 || getLink(p, 'responsible') || '';
-      return {name: p.name || '', status: getLink(p, 'status') || '', pm: pm, paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total:0, wp_closed:0, _id: p.id};
+  showMsg('Daten werden geladen...','info');
+  document.getElementById('msg').style.display='block';
+  apiFetch('/projects?pageSize=100').then(function(projData){
+    var projects=(projData._embedded&&projData._embedded.elements?projData._embedded.elements:[]).map(function(p){
+      var pm=p.customField39||getLink(p,'responsible')||'';
+      return {name:p.name||'',status:getLink(p,'status')||'',pm:pm,paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0,_id:p.id,identifier:p.identifier};
     });
-    var filter_all = encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
-    return Promise.all([
-      apiFetch('/work_packages?pageSize=500&filters=' + filter_all),
-      Promise.resolve(projects)
-    ]);
-  }).then(function(results) {
-    var wpData = results[0];
-    var projects = results[1];
-    var allWPs = wpData._embedded && wpData._embedded.elements ? wpData._embedded.elements : [];
-    var wpByProj = {};
-    allWPs.forEach(function(wp) {
-      var pId = getLink(wp, 'project', 'href');
-      if (pId) pId = pId.split('/').pop();
-      var t = getLink(wp, 'type').toLowerCase();
-      if (EXCL_WP_TYPES.includes(t)) return;
-      if (!wpByProj[pId]) wpByProj[pId] = {total:0, closed:0};
+    var filterAll=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+    return Promise.all([apiFetch('/work_packages?pageSize=500&filters='+filterAll),Promise.resolve(projects)]);
+  }).then(function(results){
+    var wpData=results[0],projects=results[1];
+    var allWPs=wpData._embedded&&wpData._embedded.elements?wpData._embedded.elements:[];
+    var wpByProj={};
+    allWPs.forEach(function(wp){
+      var pId=getLink(wp,'project','href');if(pId)pId=pId.split('/').pop();
+      var t=getLink(wp,'type').toLowerCase();if(EXCL_WP_TYPES.includes(t))return;
+      if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};
       wpByProj[pId].total++;
-      if (isWPClosed(getLink(wp, 'status'))) wpByProj[pId].closed++;
+      if(isWPClosed(getLink(wp,'status')))wpByProj[pId].closed++;
     });
-    projects.forEach(function(p) {
-      var d = wpByProj[String(p._id)];
-      if (d) { p.wp_total = d.total; p.wp_closed = d.closed; }
-    });
-    warenData = [];
-    allWPs.forEach(function(wp) {
-      var t = getLink(wp, 'type').toLowerCase();
-      var st = getLink(wp, 'status') || '';
-      if (WAREN_TYPES.includes(t) && !isWPClosed(st)) {
-        warenData.push({
-          projekt: getLink(wp, 'project') || '-',
-          titel: wp.subject || '-',
-          typ: getLink(wp, 'type') || '-',
-          status: st || '-',
-          raw: {
-            id: wp.id,
-            Projekt: getLink(wp, 'project'),
-            Thema: wp.subject,
-            Typ: getLink(wp, 'type'),
-            Status: st,
-            Zugewiesen: getLink(wp, 'assignee') || '-',
-            Erstellt: wp.createdAt ? wp.createdAt.substring(0,10) : '-'
-          }
-        });
+    projects.forEach(function(p){var d=wpByProj[String(p._id)];if(d){p.wp_total=d.total;p.wp_closed=d.closed;}});
+    warenData=[];
+    allWPs.forEach(function(wp){
+      var t=getLink(wp,'type').toLowerCase(),st=getLink(wp,'status')||'';
+      if(WAREN_TYPES.includes(t)&&!isWPClosed(st)){
+        warenData.push({projekt:getLink(wp,'project')||'-',titel:wp.subject||'-',typ:getLink(wp,'type')||'-',status:st||'-',raw:{id:wp.id,Projekt:getLink(wp,'project'),Thema:wp.subject,Typ:getLink(wp,'type'),Status:st,Zugewiesen:getLink(wp,'assignee')||'-',Erstellt:wp.createdAt?wp.createdAt.substring(0,10):'-'}});
       }
     });
-    var filtered = projects.filter(function(p) {
-      return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status);
-    });
-    projectData = filtered;
-    allMemberNames = [];
-    renderCards(filtered);
-    renderWarenbestand();
-    setupProjFilters();
-    showMsg(filtered.length + ' Projekte geladen.', 'success');
-    setTimeout(function() {
-      var el = document.getElementById('msg');
-      if (el && el.className === 'msg-success') el.style.display = 'none';
-    }, 3000);
+    var filtered=projects.filter(function(p){return !EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status);});
+    projectData=filtered;allMemberNames=[];
+    renderCards(filtered);renderWarenbestand();setupProjFilters();
+    showMsg(filtered.length+' Projekte geladen.','success');
+    setTimeout(function(){var el=document.getElementById('msg');if(el&&el.className==='msg-success')el.style.display='none';},3000);
     // Mitglieder nachladen
-    filtered.forEach(function(p) {
-      if (!p._id) return;
-      var filter = encodeURIComponent(JSON.stringify([{"project":{"operator":"=","values":[String(p._id)]}}]));
-      apiFetch('/memberships?filters=' + filter + '&pageSize=50').then(function(mData) {
-        var members = mData._embedded && mData._embedded.elements ? mData._embedded.elements : [];
-        var el = document.getElementById('proj-members-' + p._id);
-        var card = document.querySelector('[data-proj-id="' + p._id + '"]');
-        if (!el) return;
-        if (!members.length) { el.style.display = 'none'; return; }
-        var names = [];
-        var html = members.map(function(m) {
-          var name = getLink(m, 'principal') || '-';
-          var roles = (m._links && m._links.roles ? m._links.roles : []).map(function(r) { return r.title; }).join(', ');
+    filtered.forEach(function(p){
+      if(!p._id)return;
+      var f=encodeURIComponent(JSON.stringify([{"project":{"operator":"=","values":[String(p._id)]}}]));
+      apiFetch('/memberships?filters='+f+'&pageSize=50').then(function(mData){
+        var members=mData._embedded&&mData._embedded.elements?mData._embedded.elements:[];
+        var el=document.getElementById('proj-members-'+p._id);
+        var card=document.querySelector('[data-proj-id="'+p._id+'"]');
+        if(!el)return;
+        if(!members.length){el.style.display='none';return;}
+        var names=[];
+        var html=members.map(function(m){
+          var name=getLink(m,'principal')||'-';
+          var roles=(m._links&&m._links.roles?m._links.roles:[]).map(function(r){return r.title;}).join(', ');
           names.push(name.toLowerCase());
-          return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)"><strong style="color:var(--text)">' + name + '</strong>' + (roles ? ' <span style="color:var(--text-muted)">(' + roles + ')</span>' : '') + '</span>';
+          return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)"><strong style="color:var(--text)">'+name+'</strong>'+(roles?' <span style="color:var(--text-muted)">('+roles+')</span>':'')+' </span>';
         }).join('');
-        el.innerHTML = html;
-        el.style.display = 'flex';
-        if (card) card.dataset.members = names.join(' ');
+        el.innerHTML=html;el.style.display='flex';
+        if(card)card.dataset.members=names.join(' ');
         updateMemberFilter(names);
-      }).catch(function(err) { console.warn('Mitglieder Projekt ' + p._id + ':', err.message); });
+      }).catch(function(err){console.warn('Mitglieder Projekt '+p._id+':',err.message);});
     });
-  }).catch(function(e) { showMsg('Fehler: ' + e.message, 'error'); });
+  }).catch(function(e){showMsg('Fehler: '+e.message,'error');});
 }
 
-function buildDashboard() {
-  document.getElementById('msg').style.display = 'none';
-  document.getElementById('cards').innerHTML = '';
-  var projects = [];
-  if (raw.proj) {
-    projects = raw.proj.map(function(r) {
-      return {name: r.name || r.Name || '(Unbekannt)', status: r.status || r.Status || '', pm: r.pm || '', paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total:0, wp_closed:0};
-    });
-  }
-  if (!projects.length) { showMsg('Keine Projektdaten.', 'error'); return; }
-  projectData = projects;
-  renderCards(projects);
-  renderWarenbestand();
-  setupProjFilters();
+function buildDashboard(){
+  document.getElementById('msg').style.display='none';document.getElementById('cards').innerHTML='';
+  var projects=[];
+  if(raw.proj)projects=raw.proj.map(function(r){return{name:r.name||r.Name||'(Unbekannt)',status:r.status||r.Status||'',pm:r.pm||'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0};});
+  if(!projects.length){showMsg('Keine Projektdaten.','error');return;}
+  projectData=projects;renderCards(projects);renderWarenbestand();setupProjFilters();
 }
 
-function renderCards(projects) {
-  var wrap = document.getElementById('cards');
-  wrap.innerHTML = '';
-  var tw = 0, to = 0, td = 0;
-  projects.forEach(function(p, i) {
-    var sk = statusKey(p.status);
-    var pct = p.wp_total > 0 ? Math.round((p.wp_closed / p.wp_total) * 100) : 0;
-    var fill = p.wp_total === 0 ? 'fill-none' : pct >= 70 ? 'fill-high' : pct >= 40 ? 'fill-medium' : 'fill-low';
-    tw += p.wp_total; to += p.wp_total - p.wp_closed; td += p.wp_closed;
-    var card = document.createElement('div');
-    card.className = 'project-card status-' + sk;
-    card.dataset.name = p.name.toLowerCase();
-    card.dataset.status = sk;
-    card.dataset.pm = (p.pm || '').toLowerCase();
-    card.dataset.members = '';
-    if (p._id) card.dataset.projId = p._id;
-    var html = '<div class="proj-header"><div class="proj-name">' + p.name + '</div><span class="badge badge-' + sk + '">' + statusLabel(sk) + '</span></div>';
-    html += '<div class="proj-meta">';
-    if (p.pm) html += '<div class="meta-item"><strong>PM:</strong> ' + p.pm + '</div>';
-    if (p.paket) html += '<div class="meta-item"><strong>Paket:</strong> ' + p.paket + '</div>';
-    html += '<div class="meta-item"><strong>APs:</strong> ' + p.wp_total + '</div></div>';
-    if (p._id) html += '<div id="proj-members-' + p._id + '" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>';
-    if (p.besonderheit) html += '<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>Besonderheiten:</strong> ' + p.besonderheit + '</div></div>';
-    html += '<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>' + p.wp_closed + '/' + p.wp_total + ' - ' + pct + '%</span></div><div class="prog-track"><div class="prog-fill ' + fill + '" style="width:' + pct + '%"></div></div></div>';
-    if (p.statusdesc) {
-      html += '<button class="toggle-btn sdesc-btn" data-i="' + i + '">Statusbeschreibung <span class="arrow">&#x25BC;</span></button>';
-      html += '<div class="sdesc-body" id="sd-' + i + '">' + p.statusdesc + '</div>';
-    }
-    if (p._id) {
-      html += '<button class="toggle-btn ap-load-btn" data-proj-id="' + p._id + '">Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button>';
-      html += '<div class="ap-body" id="ap-body-' + p._id + '"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Wird geladen...</div></div>';
-    }
-    card.innerHTML = html;
-    wrap.appendChild(card);
+function renderCards(projects){
+  var wrap=document.getElementById('cards');wrap.innerHTML='';
+  var tw=0,to=0,td=0;
+  projects.forEach(function(p,i){
+    var sk=statusKey(p.status);
+    var pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0;
+    var fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
+    tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
+    var card=document.createElement('div');
+    card.className='project-card status-'+sk;
+    card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();card.dataset.members='';
+    if(p._id)card.dataset.projId=p._id;
+    var html='<div class="proj-header"><div class="proj-name">'+p.name+'</div><span class="badge badge-'+sk+'">'+statusLabel(sk)+'</span></div>';
+    html+='<div class="proj-meta">';
+    if(p.pm)html+='<div class="meta-item"><strong>PM:</strong> '+p.pm+'</div>';
+    if(p.paket)html+='<div class="meta-item"><strong>Paket:</strong> '+p.paket+'</div>';
+    html+='<div class="meta-item"><strong>APs:</strong> '+p.wp_total+'</div></div>';
+    if(p._id)html+='<div id="proj-members-'+p._id+'" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>';
+    if(p.besonderheit)html+='<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>Besonderheiten:</strong> '+p.besonderheit+'</div></div>';
+    html+='<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>'+p.wp_closed+'/'+p.wp_total+' - '+pct+'%</span></div><div class="prog-track"><div class="prog-fill '+fill+'" style="width:'+pct+'%"></div></div></div>';
+    // Link zu OP
+    if(p._id&&p.identifier)html+='<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>';
+    if(p.statusdesc)html+='<button class="toggle-btn sdesc-btn" data-i="'+i+'">Statusbeschreibung <span class="arrow">&#x25BC;</span></button><div class="sdesc-body" id="sd-'+i+'">'+p.statusdesc+'</div>';
+    if(p._id)html+='<button class="toggle-btn ap-load-btn" data-proj-id="'+p._id+'">Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-'+p._id+'"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Wird geladen...</div></div>';
+    card.innerHTML=html;wrap.appendChild(card);
   });
-
-  wrap.querySelectorAll('.sdesc-btn').forEach(function(b) {
-    b.addEventListener('click', function() {
-      b.classList.toggle('open');
-      var el = document.getElementById('sd-' + b.dataset.i);
-      if (el) el.classList.toggle('open');
+  wrap.querySelectorAll('.sdesc-btn').forEach(function(b){b.addEventListener('click',function(){b.classList.toggle('open');var el=document.getElementById('sd-'+b.dataset.i);if(el)el.classList.toggle('open');});});
+  wrap.querySelectorAll('.ap-load-btn').forEach(function(b){
+    b.addEventListener('click',function(e){
+      e.stopPropagation();e.preventDefault();
+      var projId=b.dataset.projId;var body=document.getElementById('ap-body-'+projId);if(!body)return;
+      if(body.classList.contains('open')){body.classList.remove('open');b.classList.remove('open');}
+      else{body.classList.add('open');b.classList.add('open');loadProjectWPs(projId);}
     });
   });
-
-  wrap.querySelectorAll('.ap-load-btn').forEach(function(b) {
-    b.addEventListener('click', function(e) {
-      e.stopPropagation();
-      e.preventDefault();
-      var projId = b.dataset.projId;
-      var body = document.getElementById('ap-body-' + projId);
-      if (!body) return;
-      if (body.classList.contains('open')) {
-        body.classList.remove('open');
-        b.classList.remove('open');
-      } else {
-        body.classList.add('open');
-        b.classList.add('open');
-        loadProjectWPs(projId);
-      }
-    });
-  });
-
-  document.getElementById('s-total').textContent = projects.length;
-  document.getElementById('s-wp').textContent = tw;
-  document.getElementById('s-open').textContent = to;
-  document.getElementById('s-done').textContent = td;
-  document.getElementById('stats-row').style.display = 'flex';
-  document.getElementById('export-bar').style.display = 'flex';
+  document.getElementById('s-total').textContent=projects.length;document.getElementById('s-wp').textContent=tw;document.getElementById('s-open').textContent=to;document.getElementById('s-done').textContent=td;
+  document.getElementById('stats-row').style.display='flex';document.getElementById('export-bar').style.display='flex';
 }
 
-function loadProjectWPs(projId) {
-  var el = document.getElementById('ap-body-' + projId);
-  if (!el || el.dataset.loaded === '1') return;
-  var filter = encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
-  apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + filter).then(function(data) {
-    var wps = data._embedded && data._embedded.elements ? data._embedded.elements : [];
-    wps.sort(function(a, b) {
-      var ac = isWPClosed(getLink(a, 'status')) ? 1 : 0;
-      var bc = isWPClosed(getLink(b, 'status')) ? 1 : 0;
-      return ac - bc;
-    });
-    if (!wps.length) { el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete.</div>'; el.dataset.loaded = '1'; return; }
-    el.innerHTML = wps.map(function(wp) {
-      var status = getLink(wp, 'status') || '-';
-      var type = getLink(wp, 'type') || '-';
-      var closed = isWPClosed(status);
-      return '<div class="ap-item' + (closed ? ' ap-closed' : '') + '"><span class="ap-type">' + type + '</span><span class="ap-name">' + wp.subject + '</span><span class="ap-status' + (closed ? ' done' : '') + '">' + status + '</span></div>';
+function loadProjectWPs(projId){
+  var el=document.getElementById('ap-body-'+projId);if(!el||el.dataset.loaded==='1')return;
+  var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+  apiFetch('/projects/'+projId+'/work_packages?pageSize=100&filters='+f).then(function(data){
+    var wps=data._embedded&&data._embedded.elements?data._embedded.elements:[];
+    wps.sort(function(a,b){return(isWPClosed(getLink(a,'status'))?1:0)-(isWPClosed(getLink(b,'status'))?1:0);});
+    if(!wps.length){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete.</div>';el.dataset.loaded='1';return;}
+    el.innerHTML=wps.map(function(wp){
+      var status=getLink(wp,'status')||'-',type=getLink(wp,'type')||'-',closed=isWPClosed(status);
+      return '<div class="ap-item'+(closed?' ap-closed':'')+'"><span class="ap-type">'+type+'</span><span class="ap-name">'+wp.subject+'</span><span class="ap-status'+(closed?' done':'')+'">'+status+'</span></div>';
     }).join('');
-    el.dataset.loaded = '1';
-  }).catch(function(err) {
-    el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: ' + err.message + '</div>';
-    el.dataset.loaded = '0';
-  });
-}
-
-function setupProjFilters() {
-  var pmF = document.getElementById('proj-pm-filter');
-  pmF.innerHTML = '<option value="">Alle Verantwortlichen</option>';
-  var pms = [];
-  projectData.forEach(function(p) { if (p.pm && !pms.includes(p.pm)) pms.push(p.pm); });
-  pms.sort().forEach(function(pm) {
-    var o = document.createElement('option'); o.value = pm.toLowerCase(); o.textContent = pm; pmF.appendChild(o);
-  });
-  document.getElementById('proj-filter-bar').style.display = 'flex';
-  initMS('proj-status-ms-btn', 'proj-status-ms-panel', applyProjFilter);
-  document.getElementById('proj-search').addEventListener('input', applyProjFilter);
-  pmF.addEventListener('change', applyProjFilter);
-  document.getElementById('proj-member-filter').addEventListener('change', applyProjFilter);
-  document.getElementById('proj-clear-btn').addEventListener('click', clearProjFilter);
-}
-
-function updateMemberFilter(names) {
-  names.forEach(function(n) { if (!allMemberNames.includes(n)) allMemberNames.push(n); });
-  allMemberNames.sort();
-  var sel = document.getElementById('proj-member-filter');
-  if (!sel) return;
-  var cur = sel.value;
-  sel.innerHTML = '<option value="">Alle Mitglieder</option>';
-  allMemberNames.forEach(function(n) {
-    var o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o);
-  });
-  sel.value = cur;
-}
-
-function applyProjFilter() {
-  var q = document.getElementById('proj-search').value.toLowerCase();
-  var statuses = getMsValues('proj-status-ms-panel');
-  var pm = document.getElementById('proj-pm-filter').value;
-  var member = document.getElementById('proj-member-filter').value.toLowerCase();
-  var v = 0;
-  document.querySelectorAll('#cards .project-card').forEach(function(c) {
-    var m = (!q || c.dataset.name.includes(q) || (c.dataset.members || '').includes(q))
-      && (!statuses.length || statuses.includes(c.dataset.status))
-      && (!pm || c.dataset.pm.includes(pm))
-      && (!member || (c.dataset.members || '').includes(member));
-    c.classList.toggle('hidden', !m);
-    if (m) v++;
-  });
-  document.getElementById('no-results').style.display = v === 0 ? 'block' : 'none';
-  document.getElementById('proj-filter-count').textContent = v + ' von ' + projectData.length;
-}
-
-function clearProjFilter() {
-  document.getElementById('proj-search').value = '';
-  document.getElementById('proj-pm-filter').value = '';
-  document.getElementById('proj-member-filter').value = '';
-  resetMs('proj-status-ms-btn', 'proj-status-ms-panel');
-  document.getElementById('proj-filter-count').textContent = '';
-  document.querySelectorAll('#cards .project-card').forEach(function(c) { c.classList.remove('hidden'); });
-  document.getElementById('no-results').style.display = 'none';
-}
-
-function renderWarenbestand() {
-  var content = document.getElementById('wb-content');
-  if (!warenData.length) {
-    content.innerHTML = '<div class="wb-empty">Keine offenen Hardware- oder ELO-Arbeitspakete.</div>';
-    document.getElementById('wb-stats').style.display = 'none';
-    document.getElementById('wb-export-bar').style.display = 'none';
-    document.getElementById('wb-filter-bar').style.display = 'none';
-    return;
-  }
-  // Bestellung ausstehend zuerst
-  warenData.sort(function(a, b) {
-    var aP = (a.status || '').toLowerCase() === PENDING_STATUS ? 0 : 1;
-    var bP = (b.status || '').toLowerCase() === PENDING_STATUS ? 0 : 1;
-    return aP - bP;
-  });
-  var pendingCount = warenData.filter(function(w) { return (w.status || '').toLowerCase() === PENDING_STATUS; }).length;
-  document.getElementById('wb-total').textContent = warenData.length;
-  document.getElementById('wb-proj-count').textContent = (function() {
-    var s = {};
-    warenData.forEach(function(w) { s[w.projekt] = 1; });
-    return Object.keys(s).length;
-  })();
-  document.getElementById('wb-pending-count').textContent = pendingCount;
-  document.getElementById('wb-stats').style.display = 'flex';
-  document.getElementById('wb-export-bar').style.display = 'flex';
-
-  // Klick Gesamt → Filter reset
-  document.getElementById('wb-total-card').onclick = function() { clearWBFilter(); };
-
-  // Klick Pending → Filter setzen
-  document.getElementById('wb-pending-card').onclick = function() {
-    var panel = document.getElementById('wb-status-ms-panel');
-    if (!panel) return;
-    panel.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
-      cb.checked = cb.value === PENDING_STATUS;
-    });
-    updateMsBtn('wb-status-ms-btn', 'wb-status-ms-panel');
-    applyWBFilter();
-  };
-
-  var statusCounts = {};
-  warenData.forEach(function(w) { var s = w.status || '-'; statusCounts[s] = (statusCounts[s] || 0) + 1; });
-
-  var wbPF = document.getElementById('wb-proj-filter');
-  wbPF.innerHTML = '<option value="">Alle Projekte</option>';
-  var projs = [];
-  warenData.forEach(function(w) { if (w.projekt && !projs.includes(w.projekt)) projs.push(w.projekt); });
-  projs.sort().forEach(function(p) { var o = document.createElement('option'); o.value = p.toLowerCase(); o.textContent = p; wbPF.appendChild(o); });
-
-  var wbSPanel = document.getElementById('wb-status-ms-panel');
-  wbSPanel.innerHTML = '';
-  Object.keys(statusCounts).sort().forEach(function(s) {
-    var lbl = document.createElement('label');
-    lbl.className = 'ms-option';
-    lbl.innerHTML = '<input type="checkbox" value="' + s.toLowerCase() + '"> ' + s + ' <span class="ms-count-badge">' + statusCounts[s] + '</span>';
-    wbSPanel.appendChild(lbl);
-  });
-
-  var rows = warenData.map(function(w, i) {
-    var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '-';
-    var isPending = (w.status || '').toLowerCase() === PENDING_STATUS;
-    var statusCell = isPending
-      ? '<span class="wb-status-pending" onclick="changeWBStatus(' + i + ',event)" title="Klick zum Aendern auf Bestellt">&#x26A0; ' + w.status + ' &#x270E;</span>'
-      : (w.status || '-');
-    var search = ((w.titel || '') + ' ' + (w.projekt || '') + ' ' + (w.status || '') + ' ' + zugewiesen).toLowerCase();
-    return '<tr class="wb-row' + (isPending ? ' wb-pending' : '') + '" data-idx="' + i + '" data-proj="' + (w.projekt || '').toLowerCase() + '" data-typ="' + (w.typ || '').toLowerCase() + '" data-status="' + (w.status || '').toLowerCase() + '" data-search="' + search + '">'
-      + '<td class="proj-col">' + (w.projekt || '-') + '</td>'
-      + '<td>' + (w.titel || '-') + '</td>'
-      + '<td><span class="wb-type-badge">' + (w.typ || '-') + '</span></td>'
-      + '<td>' + statusCell + '</td>'
-      + '<td>' + zugewiesen + '</td>'
-      + '<td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
-  }).join('');
-
-  content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table"><thead><tr>'
-    + '<th class="wb-sort-hdr" data-col="proj">Projekt <span class="sort-arrow">&#x21C5;</span></th>'
-    + '<th class="wb-sort-hdr" data-col="titel">Arbeitspaket <span class="sort-arrow">&#x21C5;</span></th>'
-    + '<th>Typ</th>'
-    + '<th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th>'
-    + '<th class="wb-sort-hdr" data-col="zugewiesen">Zugewiesen <span class="sort-arrow">&#x21C5;</span></th>'
-    + '<th></th></tr></thead><tbody id="wb-tbody">' + rows + '</tbody></table>'
-    + '<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Eintraege.</div></div>';
-
-  // Sortierung
-  var wbSortCol = null, wbSortAsc = true;
-  content.querySelectorAll('.wb-sort-hdr').forEach(function(th) {
-    th.addEventListener('click', function() {
-      var c = th.dataset.col;
-      if (wbSortCol === c) { wbSortAsc = !wbSortAsc; } else { wbSortCol = c; wbSortAsc = true; }
-      content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a) { a.innerHTML = '&#x21C5;'; });
-      th.querySelector('.sort-arrow').innerHTML = wbSortAsc ? '&#x2191;' : '&#x2193;';
-      var tbody = document.getElementById('wb-tbody');
-      var rowArr = Array.from(tbody.querySelectorAll('.wb-row'));
-      rowArr.sort(function(a, b) {
-        var av = '', bv = '';
-        if (c === 'proj') { av = a.dataset.proj; bv = b.dataset.proj; }
-        else if (c === 'status') { av = a.dataset.status; bv = b.dataset.status; }
-        else if (c === 'titel') { av = (a.querySelectorAll('td')[1] || {}).textContent || ''; bv = (b.querySelectorAll('td')[1] || {}).textContent || ''; }
-        else if (c === 'zugewiesen') { av = (a.querySelectorAll('td')[4] || {}).textContent || ''; bv = (b.querySelectorAll('td')[4] || {}).textContent || ''; }
-        return wbSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
-      });
-      rowArr.forEach(function(r) { tbody.appendChild(r); });
-    });
-  });
-
-  // Row click modal
-  content.querySelectorAll('.wb-row').forEach(function(row) {
-    row.addEventListener('click', function(e) {
-      if (e.target.classList.contains('wb-status-pending')) return;
-      var w = warenData[+row.dataset.idx];
-      if (!w) return;
-      var fields = Object.entries(w.raw).filter(function(e) { return e[0] !== 'id' && e[1] !== ''; }).map(function(e) {
-        return '<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">' + e[0] + '</div><div style="font-size:.8rem;color:var(--text-sub)">' + e[1] + '</div></div>';
-      }).join('');
-      document.getElementById('wb-modal-content').innerHTML = '<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">' + w.titel + '</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">' + w.projekt + ' - ' + w.typ + '</div>' + fields;
-      document.getElementById('wb-modal').style.display = 'flex';
-    });
-  });
-
-  document.getElementById('wb-modal').addEventListener('click', function(e) {
-    if (e.target === document.getElementById('wb-modal')) document.getElementById('wb-modal').style.display = 'none';
-  });
-
-  document.getElementById('wb-filter-bar').style.display = 'flex';
-  initMS('wb-status-ms-btn', 'wb-status-ms-panel', applyWBFilter);
-  document.getElementById('wb-search').addEventListener('input', applyWBFilter);
-  wbPF.addEventListener('change', applyWBFilter);
-  document.getElementById('wb-type-filter').addEventListener('change', applyWBFilter);
-  document.getElementById('wb-clear-btn').addEventListener('click', clearWBFilter);
-}
-
-function applyWBFilter() {
-  var q = document.getElementById('wb-search').value.toLowerCase();
-  var proj = document.getElementById('wb-proj-filter').value;
-  var typ = document.getElementById('wb-type-filter').value;
-  var statuses = getMsValues('wb-status-ms-panel');
-  var v = 0;
-  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(row) {
-    var m = (!q || row.dataset.search.includes(q))
-      && (!proj || row.dataset.proj === proj)
-      && (!typ || row.dataset.typ === typ)
-      && (!statuses.length || statuses.includes(row.dataset.status));
-    row.classList.toggle('wb-hidden', !m);
-    if (m) v++;
-  });
-  var nr = document.getElementById('wb-no-results');
-  if (nr) nr.style.display = v === 0 ? 'block' : 'none';
-  document.getElementById('wb-filter-count').textContent = v + ' von ' + warenData.length;
-}
-
-function clearWBFilter() {
-  document.getElementById('wb-search').value = '';
-  document.getElementById('wb-proj-filter').value = '';
-  document.getElementById('wb-type-filter').value = '';
-  resetMs('wb-status-ms-btn', 'wb-status-ms-panel');
-  document.getElementById('wb-filter-count').textContent = '';
-  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(r) { r.classList.remove('wb-hidden'); });
-  var nr = document.getElementById('wb-no-results');
-  if (nr) nr.style.display = 'none';
-}
-
-// Status auf Bestellt aendern
-function changeWBStatus(idx, evt) {
-  evt.stopPropagation();
-  var w = warenData[idx];
-  if (!w || !w.raw || !w.raw.id) return;
-  if (!confirm('Status von "' + w.titel + '" auf "Bestellt" aendern?')) return;
-  apiFetch('/work_packages/' + w.raw.id).then(function(wpData) {
-    return apiFetch('/work_packages/' + w.raw.id, {
-      method: 'PATCH',
-      body: JSON.stringify({lockVersion: wpData.lockVersion, _links: {status: {href: '/api/v3/statuses/17'}}})
-    });
-  }).then(function() {
-    alert('Status erfolgreich auf "Bestellt" geaendert!');
-    loadFromAPI();
-  }).catch(function(err) {
-    alert('Fehler: ' + err.message);
-  });
-}
-
-// Hardware
-function initHardware() {
-  var list = document.getElementById('hw-list');
-  list.innerHTML = '';
-  HW_ITEMS.forEach(function(hw) {
-    var row = document.createElement('div');
-    row.className = 'hw-item';
-    row.id = 'hw-row-' + hw.id;
-    row.innerHTML = '<input type="checkbox" id="hw-cb-' + hw.id + '" onchange="hwChanged(\'' + hw.id + '\')">'
-      + '<label class="hw-item-name" for="hw-cb-' + hw.id + '">' + hw.name + '</label>'
-      + '<div class="hw-qty" id="hw-qty-' + hw.id + '" style="display:none">'
-      + '<button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',-1)">-</button>'
-      + '<span class="hw-qty-val" id="hw-qty-val-' + hw.id + '">1</span>'
-      + '<button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',1)">+</button></div>';
-    list.appendChild(row);
-  });
-}
-
-function hwChanged(id) {
-  var cb = document.getElementById('hw-cb-' + id);
-  var row = document.getElementById('hw-row-' + id);
-  var qty = document.getElementById('hw-qty-' + id);
-  row.classList.toggle('selected', cb.checked);
-  if (qty) qty.style.display = cb.checked ? 'flex' : 'none';
-  if (id === 'brother') document.getElementById('brother-extra').classList.toggle('visible', cb.checked);
-  updateWPPreview();
-}
-
-function hwQty(id, delta) {
-  var el = document.getElementById('hw-qty-val-' + id);
-  var v = Math.max(1, (parseInt(el.textContent) || 1) + delta);
-  el.textContent = v;
-  updateWPPreview();
-}
-
-function getHwSelections() {
-  return HW_ITEMS.filter(function(hw) {
-    var cb = document.getElementById('hw-cb-' + hw.id);
-    return cb && cb.checked;
-  }).map(function(hw) {
-    return {id: hw.id, name: hw.name, qty: parseInt(document.getElementById('hw-qty-val-' + hw.id).textContent) || 1};
-  });
-}
-
-function updateWPPreview() {
-  var outlookEl = document.querySelector('input[name="outlook"]:checked');
-  var adintEl = document.querySelector('input[name="adint"]:checked');
-  var outlook = outlookEl ? outlookEl.value : 'Nicht Aktiv';
-  var adint = adintEl ? adintEl.value : 'Nicht Aktiv';
-  var hw = getHwSelections();
-  var paperType = document.getElementById('brother-paper-type').value;
-  var paperQty = document.getElementById('brother-paper-qty').value || 1;
-  var items = WP_BASIS.map(function(w) { return {name: w.name, sub: false}; });
-  if (outlook === 'Beauftragt' || outlook === 'Gewuenscht') items.push({name: 'Outlook Add-in einrichten', sub: false});
-  if (adint === 'Beauftragt' || adint === 'Gewuenscht') items.push({name: 'AD-Integration konfigurieren', sub: false});
-  hw.forEach(function(h) {
-    for (var i = 0; i < h.qty; i++) {
-      var label = h.qty > 1 ? h.name + ' (' + (i+1) + '/' + h.qty + ')' : h.name;
-      items.push({name: label, sub: false});
-      if (h.id === 'brother' && i === 0 && paperType) items.push({name: 'Papier: ' + paperType + ' x ' + paperQty + ' Rollen', sub: true});
-    }
-  });
-  document.getElementById('wp-preview').innerHTML = items.map(function(it) {
-    return '<div class="np-wp-item' + (it.sub ? ' wp-sub' : '') + '"><span class="wp-dot"></span>' + it.name + '</div>';
-  }).join('');
-}
-
-function initRadios() {
-  document.querySelectorAll('.np-radio-group').forEach(function(grp) {
-    grp.querySelectorAll('input[type=radio]').forEach(function(r) {
-      r.addEventListener('change', function() {
-        grp.querySelectorAll('.np-radio-lbl').forEach(function(l) { l.classList.remove('selected'); });
-        r.closest('.np-radio-lbl').classList.add('selected');
-        updateWPPreview();
-      });
-      if (r.checked) r.closest('.np-radio-lbl').classList.add('selected');
-    });
-  });
-}
-
-document.getElementById('brother-paper-type').addEventListener('change', updateWPPreview);
-document.getElementById('brother-paper-qty').addEventListener('input', updateWPPreview);
-
-function getFormData() {
-  var ap = document.getElementById('np-ap').value.trim();
-  var tel = document.getElementById('np-telefon').value.trim();
-  var email = document.getElementById('np-email').value.trim();
-  var parts = [ap];
-  if (tel) parts.push('Tel: ' + tel);
-  if (email) parts.push('E-Mail: ' + email);
-  var outlookEl = document.querySelector('input[name="outlook"]:checked');
-  var adintEl = document.querySelector('input[name="adint"]:checked');
-  return {
-    name: document.getElementById('np-name').value.trim(),
-    standort: document.getElementById('np-standort').value.trim(),
-    ap: parts.join(' | '),
-    paket: document.getElementById('np-paket').value,
-    outlook: outlookEl ? outlookEl.value : 'Nicht Aktiv',
-    adint: adintEl ? adintEl.value : 'Nicht Aktiv',
-    hw: getHwSelections(),
-    paperType: document.getElementById('brother-paper-type').value,
-    paperQty: parseInt(document.getElementById('brother-paper-qty').value) || 1,
-    bemerkung: document.getElementById('np-bemerkung').value.trim()
-  };
-}
-
-function buildDescription(d) {
-  var hwText = d.hw.map(function(h) { return h.qty + 'x ' + h.name; }).join(', ');
-  var lines = ['Kundenname: ' + d.name, 'Standort: ' + d.standort, 'Ansprechpartner: ' + d.ap, 'Paket: ' + d.paket];
-  if (hwText) lines.push('Hardware: ' + hwText);
-  lines.push('Outlook Add-in: ' + d.outlook);
-  lines.push('AD-Integration: ' + d.adint);
-  if (d.bemerkung) lines.push('Bemerkungen: ' + d.bemerkung);
-  return lines.join('\n');
-}
-
-function showNpResult(msg, type) {
-  var el = document.getElementById('np-result');
-  el.innerHTML = msg;
-  el.className = 'np-result ' + type;
-  el.style.display = 'block';
-  el.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-
-function resetForm() {
-  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(function(id) { document.getElementById(id).value = ''; });
-  document.getElementById('np-paket').value = '';
-  document.querySelectorAll('input[name="outlook"]').forEach(function(r) { r.checked = r.value === 'Nicht Aktiv'; });
-  document.querySelectorAll('input[name="adint"]').forEach(function(r) { r.checked = r.value === 'Nicht Aktiv'; });
-  document.querySelectorAll('.np-radio-lbl').forEach(function(l) { var inp = l.querySelector('input'); l.classList.toggle('selected', inp && inp.checked); });
-  HW_ITEMS.forEach(function(hw) { var cb = document.getElementById('hw-cb-' + hw.id); if (cb) cb.checked = false; hwChanged(hw.id); });
-  document.getElementById('brother-paper-type').value = '';
-  document.getElementById('brother-paper-qty').value = 1;
-  document.getElementById('np-result').style.display = 'none';
-  updateWPPreview();
-}
-
-document.getElementById('np-submit-btn').addEventListener('click', function() {
-  var d = getFormData();
-  var btn = document.getElementById('np-submit-btn');
-  var valid = true;
-  ['np-name','np-standort','np-ap'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el.value.trim()) { el.classList.add('invalid'); valid = false; } else el.classList.remove('invalid');
-  });
-  if (!d.paket) { document.getElementById('np-paket').classList.add('invalid'); valid = false; } else document.getElementById('np-paket').classList.remove('invalid');
-  if (!valid) { showNpResult('Bitte alle Pflichtfelder ausfuellen.', 'error'); return; }
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Wird geprueft...';
-
-  var searchFilter = encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}]));
-  apiFetch('/projects?filters=' + searchFilter).then(function(searchData) {
-    var elements = searchData._embedded && searchData._embedded.elements ? searchData._embedded.elements : [];
-    var existing = elements.filter(function(p) { return p.name.toLowerCase() === d.name.toLowerCase(); })[0];
-    if (existing) {
-      btn.disabled = false;
-      btn.innerHTML = 'Projekt in OpenProject anlegen';
-      showNpResult('Ein Projekt mit dem Namen "' + d.name + '" existiert bereits!<br><br>'
-        + '<a href="' + OP_URL + '/projects/' + existing.identifier + '" target="_blank">Bestehendes Projekt oeffnen</a><br><br>'
-        + '<button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">Anderen Namen verwenden</button>'
-        + '<button onclick="updateExistingProject(\'' + existing.id + '\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">Bestehendes Projekt aktualisieren</button>',
-        'warning');
-      return null;
-    }
-    btn.innerHTML = '<span class="spinner"></span> Projekt wird angelegt...';
-    var links = {};
-    if (PAKET_OPT[d.paket]) links.customField2 = {href: PAKET_OPT[d.paket]};
-    if (ADINT_OPT[d.adint]) links.customField6 = {href: ADINT_OPT[d.adint]};
-    if (OUTLOOK_OPT[d.outlook]) links.customField4 = {href: OUTLOOK_OPT[d.outlook]};
-    var projBody = {
-      name: d.name,
-      description: {format:'markdown', raw: buildDescription(d)},
-      customField11: d.name,
-      customField12: d.standort,
-      customField24: {format:'plain', raw: d.ap},
-      _links: links
-    };
-    return apiFetch('/projects', {method:'POST', body: JSON.stringify(projBody)});
-  }).then(function(proj) {
-    if (!proj) return;
-    var projId = proj.id;
-    btn.innerHTML = '<span class="spinner"></span> Arbeitspakete werden angelegt...';
-    var wpCount = 0, wpOk = 0;
-
-    function makeWP(subject, parentId, isHW) {
-      wpCount++;
-      var body = {subject: subject, _links: {project: {href: '/api/v3/projects/' + projId}}};
-      if (isHW) body._links.type = {href: '/api/v3/types/8'};
-      if (parentId) body._links.parent = {href: '/api/v3/work_packages/' + parentId};
-      return apiFetch('/work_packages', {method:'POST', body: JSON.stringify(body)}).then(function(r) { wpOk++; return r.id; }).catch(function() { return null; });
-    }
-
-    var chain = Promise.resolve();
-    WP_BASIS.forEach(function(wp) {
-      chain = chain.then(function() { return makeWP(wp.name, null, false); });
-    });
-    if (d.outlook === 'Beauftragt' || d.outlook === 'Gewuenscht') {
-      chain = chain.then(function() { return makeWP('Outlook Add-in einrichten', null, false); });
-    }
-    if (d.adint === 'Beauftragt' || d.adint === 'Gewuenscht') {
-      chain = chain.then(function() { return makeWP('AD-Integration konfigurieren', null, false); });
-    }
-    var brotherParentId = null;
-    d.hw.forEach(function(h) {
-      for (var qi = 0; qi < h.qty; qi++) {
-        (function(hwItem, idx) {
-          chain = chain.then(function() {
-            var label = hwItem.qty > 1 ? hwItem.name + ' (' + (idx+1) + '/' + hwItem.qty + ')' : hwItem.name;
-            return makeWP(label, null, true).then(function(wid) {
-              if (hwItem.id === 'brother' && idx === 0) brotherParentId = wid;
-              return wid;
-            });
-          });
-        })(h, qi);
-      }
-    });
-    if (d.paperType) {
-      chain = chain.then(function() {
-        if (brotherParentId) return makeWP('Papier: ' + d.paperType + ' x ' + d.paperQty + ' Rollen', brotherParentId, true);
-      });
-    }
-    return chain.then(function() {
-      showNpResult('Projekt erfolgreich angelegt!<br><br>'
-        + 'Name: ' + d.name + '<br>'
-        + 'Projekt-ID: ' + projId + '<br>'
-        + 'Arbeitspakete: ' + wpCount + ' angelegt (' + wpOk + ' erfolgreich)<br><br>'
-        + '<a href="' + OP_URL + '/projects/' + proj.identifier + '" target="_blank">In OpenProject oeffnen</a>',
-        'success');
-      loadFromAPI();
-    });
-  }).catch(function(err) {
-    showNpResult('Fehler: ' + err.message, 'error');
-  }).then(function() {
-    btn.disabled = false;
-    btn.innerHTML = 'Projekt in OpenProject anlegen';
-  });
-});
-
-function updateExistingProject(projId) {
-  var d = getFormData();
-  var btn = document.getElementById('np-submit-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Wird aktualisiert...';
-  var links = {};
-  if (PAKET_OPT[d.paket]) links.customField2 = {href: PAKET_OPT[d.paket]};
-  if (ADINT_OPT[d.adint]) links.customField6 = {href: ADINT_OPT[d.adint]};
-  if (OUTLOOK_OPT[d.outlook]) links.customField4 = {href: OUTLOOK_OPT[d.outlook]};
-  var projBody = {
-    description: {format:'markdown', raw: buildDescription(d)},
-    customField11: d.name,
-    customField12: d.standort,
-    customField24: {format:'plain', raw: d.ap},
-    _links: links
-  };
-  apiFetch('/projects/' + projId, {method:'PATCH', body: JSON.stringify(projBody)}).then(function() {
-    showNpResult('Projekt erfolgreich aktualisiert!', 'success');
-    loadFromAPI();
-  }).catch(function(err) {
-    showNpResult('Fehler: ' + err.message, 'error');
-  }).then(function() {
-    btn.disabled = false;
-    btn.innerHTML = 'Projekt in OpenProject anlegen';
-  });
+    el.dataset.loaded='1';
+  }).catch(function(err){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: '+err.message+'</div>';el.dataset.loaded='0';});
 }
 
 // Abgeschlossene Projekte
-var archivedData = [];
-var archivLoaded = false;
-
-function loadArchivedProjects() {
-  var btn = document.getElementById('archiv-load-btn');
-  var msg = document.getElementById('archiv-msg');
-  btn.disabled = true;
-  btn.textContent = 'Wird geladen...';
-  msg.style.display = 'none';
-
-  // Alle Projekte laden inkl. abgeschlossene
-  apiFetch('/projects?pageSize=200').then(function(data) {
-    var projects = data._embedded && data._embedded.elements ? data._embedded.elements : [];
-    archivedData = projects.filter(function(p) {
-      return isProjectClosed(getLink(p, 'status') || '');
-    }).map(function(p) {
-      return {name: p.name || '', status: getLink(p, 'status') || '', pm: p.customField39 || getLink(p, 'responsible') || '', _id: p.id, identifier: p.identifier};
+function loadArchivedProjects(){
+  var wrap=document.getElementById('archiv-cards');
+  wrap.innerHTML='<div class="wb-empty">Wird geladen...</div>';
+  apiFetch('/projects?pageSize=200').then(function(data){
+    var all=data._embedded&&data._embedded.elements?data._embedded.elements:[];
+    archivedData=all.filter(function(p){return isProjectClosed(getLink(p,'status')||'');}).map(function(p){
+      return {name:p.name||'',status:getLink(p,'status')||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,updatedAt:p.updatedAt||''};
     });
-
-    if (!archivedData.length) {
-      document.getElementById('archiv-cards').innerHTML = '<div class="wb-empty">Keine abgeschlossenen Projekte gefunden.</div>';
-      document.getElementById('archiv-count').textContent = '0';
-      btn.disabled = false;
-      btn.textContent = 'Neu laden';
-      return;
-    }
-
-    document.getElementById('archiv-count').textContent = archivedData.length;
     renderArchivedCards();
-    document.getElementById('archiv-filter-bar').style.display = 'flex';
-    document.getElementById('archiv-search').addEventListener('input', applyArchivFilter);
-    document.getElementById('archiv-clear-btn').addEventListener('click', function() {
-      document.getElementById('archiv-search').value = '';
-      document.getElementById('archiv-filter-count').textContent = '';
-      document.querySelectorAll('#archiv-cards .project-card').forEach(function(c) { c.classList.remove('hidden'); });
-    });
-    archivLoaded = true;
-    btn.disabled = false;
-    btn.textContent = 'Neu laden';
-  }).catch(function(err) {
-    msg.textContent = 'Fehler: ' + err.message;
-    msg.className = 'msg-error';
-    msg.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = 'Neu laden';
-  });
+  }).catch(function(err){wrap.innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
 }
 
-function renderArchivedCards() {
-  var wrap = document.getElementById('archiv-cards');
-  wrap.innerHTML = '';
-  archivedData.forEach(function(p) {
-    var card = document.createElement('div');
-    card.className = 'project-card';
-    card.style.borderLeftColor = 'var(--text-muted)';
-    card.style.opacity = '0.75';
-    card.dataset.name = p.name.toLowerCase();
-    var html = '<div class="proj-header"><div class="proj-name" style="color:var(--text-muted)">' + p.name + '</div>'
-      + '<span class="badge" style="background:var(--bg3);color:var(--text-muted)">' + (p.status || 'Abgeschlossen') + '</span></div>';
-    if (p.pm) html += '<div class="proj-meta"><div class="meta-item"><strong>PM:</strong> ' + p.pm + '</div></div>';
-    html += '<div style="margin-top:8px"><a href="' + OP_URL + '/projects/' + p.identifier + '" target="_blank" style="font-size:.75rem;color:var(--brand-light)">In OpenProject oeffnen</a></div>';
-    card.innerHTML = html;
-    wrap.appendChild(card);
+function renderArchivedCards(){
+  var q=(document.getElementById('archiv-search').value||'').toLowerCase();
+  var sort=document.getElementById('archiv-sort').value;
+  var limit=parseInt(document.getElementById('archiv-limit').value)||0;
+  var data=archivedData.slice();
+  // Filter
+  if(q)data=data.filter(function(p){return p.name.toLowerCase().includes(q)||p.pm.toLowerCase().includes(q);});
+  // Sort
+  data.sort(function(a,b){
+    if(sort==='date-desc')return b.updatedAt.localeCompare(a.updatedAt);
+    if(sort==='date-asc')return a.updatedAt.localeCompare(b.updatedAt);
+    if(sort==='name-asc')return a.name.localeCompare(b.name);
+    if(sort==='name-desc')return b.name.localeCompare(a.name);
+    return 0;
   });
+  var total=data.length;
+  if(limit>0)data=data.slice(0,limit);
+  document.getElementById('archiv-count').textContent=data.length+' von '+total+' abgeschlossenen Projekten';
+  var wrap=document.getElementById('archiv-cards');
+  if(!data.length){wrap.innerHTML='<div class="wb-empty">Keine abgeschlossenen Projekte gefunden.</div>';return;}
+  wrap.innerHTML=data.map(function(p){
+    var date=p.updatedAt?p.updatedAt.substring(0,10):'';
+    return '<div class="archiv-card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'
+      +'<div class="archiv-name">'+p.name+'</div>'
+      +'<span class="badge" style="background:var(--bg3);color:var(--text-muted)">'+p.status+'</span></div>'
+      +'<div class="archiv-meta">'
+      +(p.pm?'<span>PM: '+p.pm+'</span>':'')
+      +(date?'<span>Zuletzt geaendert: '+date+'</span>':'')
+      +'</div>'
+      +(p.identifier?'<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>':'')
+      +'</div>';
+  }).join('');
 }
 
-function applyArchivFilter() {
-  var q = document.getElementById('archiv-search').value.toLowerCase();
-  var v = 0;
-  document.querySelectorAll('#archiv-cards .project-card').forEach(function(c) {
-    var m = !q || c.dataset.name.includes(q);
-    c.classList.toggle('hidden', !m);
-    if (m) v++;
-  });
-  document.getElementById('archiv-filter-count').textContent = v + ' von ' + archivedData.length;
+// Archiv-Filter Events
+document.getElementById('archiv-search').addEventListener('input',renderArchivedCards);
+document.getElementById('archiv-sort').addEventListener('change',renderArchivedCards);
+document.getElementById('archiv-limit').addEventListener('change',renderArchivedCards);
+
+function setupProjFilters(){
+  var pmF=document.getElementById('proj-pm-filter');pmF.innerHTML='<option value="">Alle Verantwortlichen</option>';
+  var pms=[];projectData.forEach(function(p){if(p.pm&&!pms.includes(p.pm))pms.push(p.pm);});
+  pms.sort().forEach(function(pm){var o=document.createElement('option');o.value=pm.toLowerCase();o.textContent=pm;pmF.appendChild(o);});
+  document.getElementById('proj-filter-bar').style.display='flex';
+  initMS('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
+  document.getElementById('proj-search').addEventListener('input',applyProjFilter);
+  pmF.addEventListener('change',applyProjFilter);
+  document.getElementById('proj-member-filter').addEventListener('change',applyProjFilter);
+  document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
 }
 
-// PDF Logo
-function addLogoToPDF(doc, cb) {
-  var img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = function() {
-    try {
-      var c = document.createElement('canvas');
-      c.width = img.width; c.height = img.height;
-      c.getContext('2d').drawImage(img, 0, 0);
-      var ratio = img.width / img.height, h = 10, w = h * ratio;
-      doc.addImage(c.toDataURL('image/png'), 'PNG', doc.internal.pageSize.getWidth() - w - 12, 6, w, h);
-    } catch(e) {}
-    cb();
+function updateMemberFilter(names){
+  names.forEach(function(n){if(!allMemberNames.includes(n))allMemberNames.push(n);});
+  allMemberNames.sort();
+  var sel=document.getElementById('proj-member-filter');if(!sel)return;
+  var cur=sel.value;sel.innerHTML='<option value="">Alle Mitglieder</option>';
+  allMemberNames.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+  sel.value=cur;
+}
+
+function applyProjFilter(){
+  var q=document.getElementById('proj-search').value.toLowerCase();
+  var statuses=getMsValues('proj-status-ms-panel');
+  var pm=document.getElementById('proj-pm-filter').value;
+  var member=document.getElementById('proj-member-filter').value.toLowerCase();
+  var v=0;
+  document.querySelectorAll('#cards .project-card').forEach(function(c){
+    var m=(!q||c.dataset.name.includes(q)||(c.dataset.members||'').includes(q))&&(!statuses.length||statuses.includes(c.dataset.status))&&(!pm||c.dataset.pm.includes(pm))&&(!member||(c.dataset.members||'').includes(member));
+    c.classList.toggle('hidden',!m);if(m)v++;
+  });
+  document.getElementById('no-results').style.display=v===0?'block':'none';
+  document.getElementById('proj-filter-count').textContent=v+' von '+projectData.length;
+}
+
+function clearProjFilter(){
+  document.getElementById('proj-search').value='';document.getElementById('proj-pm-filter').value='';document.getElementById('proj-member-filter').value='';
+  resetMs('proj-status-ms-btn','proj-status-ms-panel');document.getElementById('proj-filter-count').textContent='';
+  document.querySelectorAll('#cards .project-card').forEach(function(c){c.classList.remove('hidden');});
+  document.getElementById('no-results').style.display='none';
+}
+
+function renderWarenbestand(){
+  var content=document.getElementById('wb-content');
+  if(!warenData.length){content.innerHTML='<div class="wb-empty">Keine offenen Hardware- oder ELO-Arbeitspakete.</div>';document.getElementById('wb-stats').style.display='none';document.getElementById('wb-export-bar').style.display='none';document.getElementById('wb-filter-bar').style.display='none';return;}
+  warenData.sort(function(a,b){var aP=(a.status||'').toLowerCase()===PENDING_STATUS?0:1,bP=(b.status||'').toLowerCase()===PENDING_STATUS?0:1;return aP-bP;});
+  var pendingCount=warenData.filter(function(w){return(w.status||'').toLowerCase()===PENDING_STATUS;}).length;
+  document.getElementById('wb-total').textContent=warenData.length;
+  document.getElementById('wb-proj-count').textContent=(function(){var s={};warenData.forEach(function(w){s[w.projekt]=1;});return Object.keys(s).length;})();
+  document.getElementById('wb-pending-count').textContent=pendingCount;
+  document.getElementById('wb-stats').style.display='flex';document.getElementById('wb-export-bar').style.display='flex';
+  document.getElementById('wb-total-card').onclick=function(){clearWBFilter();};
+  document.getElementById('wb-pending-card').onclick=function(){
+    var panel=document.getElementById('wb-status-ms-panel');if(!panel)return;
+    panel.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=cb.value===PENDING_STATUS;});
+    updateMsBtn('wb-status-ms-btn','wb-status-ms-panel');applyWBFilter();
   };
-  img.onerror = function() { cb(); };
-  img.src = 'https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';
+  var statusCounts={};warenData.forEach(function(w){var s=w.status||'-';statusCounts[s]=(statusCounts[s]||0)+1;});
+  var wbPF=document.getElementById('wb-proj-filter');wbPF.innerHTML='<option value="">Alle Projekte</option>';
+  var projs=[];warenData.forEach(function(w){if(w.projekt&&!projs.includes(w.projekt))projs.push(w.projekt);});
+  projs.sort().forEach(function(p){var o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);});
+  var wbSPanel=document.getElementById('wb-status-ms-panel');wbSPanel.innerHTML='';
+  Object.keys(statusCounts).sort().forEach(function(s){var lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML='<input type="checkbox" value="'+s.toLowerCase()+'"> '+s+' <span class="ms-count-badge">'+statusCounts[s]+'</span>';wbSPanel.appendChild(lbl);});
+  var rows=warenData.map(function(w,i){
+    var zugewiesen=(w.raw&&w.raw.Zugewiesen)?w.raw.Zugewiesen:'-';
+    var isPending=(w.status||'').toLowerCase()===PENDING_STATUS;
+    var statusCell=isPending?'<span class="wb-status-pending" onclick="changeWBStatus('+i+',event)" title="Klick zum Aendern auf Bestellt">&#x26A0; '+w.status+' &#x270E;</span>':(w.status||'-');
+    var search=((w.titel||'')+' '+(w.projekt||'')+' '+(w.status||'')+' '+zugewiesen).toLowerCase();
+    return '<tr class="wb-row'+(isPending?' wb-pending':'')+'" data-idx="'+i+'" data-proj="'+(w.projekt||'').toLowerCase()+'" data-typ="'+(w.typ||'').toLowerCase()+'" data-status="'+(w.status||'').toLowerCase()+'" data-search="'+search+'">'
+      +'<td class="proj-col">'+(w.projekt||'-')+'</td><td>'+(w.titel||'-')+'</td>'
+      +'<td><span class="wb-type-badge">'+(w.typ||'-')+'</span></td>'
+      +'<td>'+statusCell+'</td><td>'+zugewiesen+'</td>'
+      +'<td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
+  }).join('');
+  content.innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr>'
+    +'<th class="wb-sort-hdr" data-col="proj">Projekt <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th class="wb-sort-hdr" data-col="titel">Arbeitspaket <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th>Typ</th><th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th class="wb-sort-hdr" data-col="zugewiesen">Zugewiesen <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th></th></tr></thead><tbody id="wb-tbody">'+rows+'</tbody></table>'
+    +'<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Eintraege.</div></div>';
+  var wbSortCol=null,wbSortAsc=true;
+  content.querySelectorAll('.wb-sort-hdr').forEach(function(th){
+    th.addEventListener('click',function(){
+      var c=th.dataset.col;if(wbSortCol===c){wbSortAsc=!wbSortAsc;}else{wbSortCol=c;wbSortAsc=true;}
+      content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a){a.innerHTML='&#x21C5;';});
+      th.querySelector('.sort-arrow').innerHTML=wbSortAsc?'&#x2191;':'&#x2193;';
+      var tbody=document.getElementById('wb-tbody');
+      var rowArr=Array.from(tbody.querySelectorAll('.wb-row'));
+      rowArr.sort(function(a,b){
+        var av='',bv='';
+        if(c==='proj'){av=a.dataset.proj;bv=b.dataset.proj;}
+        else if(c==='status'){av=a.dataset.status;bv=b.dataset.status;}
+        else if(c==='titel'){av=(a.querySelectorAll('td')[1]||{}).textContent||'';bv=(b.querySelectorAll('td')[1]||{}).textContent||'';}
+        else if(c==='zugewiesen'){av=(a.querySelectorAll('td')[4]||{}).textContent||'';bv=(b.querySelectorAll('td')[4]||{}).textContent||'';}
+        return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);
+      });
+      rowArr.forEach(function(r){tbody.appendChild(r);});
+    });
+  });
+  content.querySelectorAll('.wb-row').forEach(function(row){
+    row.addEventListener('click',function(e){
+      if(e.target.classList.contains('wb-status-pending'))return;
+      var w=warenData[+row.dataset.idx];if(!w)return;
+      var fields=Object.entries(w.raw).filter(function(e){return e[0]!=='id'&&e[1]!=='';}).map(function(e){return '<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">'+e[0]+'</div><div style="font-size:.8rem;color:var(--text-sub)">'+e[1]+'</div></div>';}).join('');
+      document.getElementById('wb-modal-content').innerHTML='<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">'+w.titel+'</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">'+w.projekt+' - '+w.typ+'</div>'+fields;
+      document.getElementById('wb-modal').style.display='flex';
+    });
+  });
+  document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
+  document.getElementById('wb-filter-bar').style.display='flex';
+  initMS('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);
+  document.getElementById('wb-search').addEventListener('input',applyWBFilter);
+  wbPF.addEventListener('change',applyWBFilter);
+  document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);
+  document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
 }
 
-// Exports
-function tableData() {
-  return projectData.map(function(p) {
-    return {
-      Projektname: p.name, Status: statusLabel(statusKey(p.status)),
-      Projektverantwortlicher: p.pm || '-', Paket: p.paket || '-',
-      'AP gesamt': p.wp_total, 'AP abgeschlossen': p.wp_closed,
-      'AP offen': p.wp_total - p.wp_closed,
-      'Fortschritt (%)': p.wp_total > 0 ? Math.round((p.wp_closed / p.wp_total) * 100) : 0
-    };
+function applyWBFilter(){
+  var q=document.getElementById('wb-search').value.toLowerCase();var proj=document.getElementById('wb-proj-filter').value;var typ=document.getElementById('wb-type-filter').value;var statuses=getMsValues('wb-status-ms-panel');var v=0;
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(row){var m=(!q||row.dataset.search.includes(q))&&(!proj||row.dataset.proj===proj)&&(!typ||row.dataset.typ===typ)&&(!statuses.length||statuses.includes(row.dataset.status));row.classList.toggle('wb-hidden',!m);if(m)v++;});
+  var nr=document.getElementById('wb-no-results');if(nr)nr.style.display=v===0?'block':'none';
+  document.getElementById('wb-filter-count').textContent=v+' von '+warenData.length;
+}
+
+function clearWBFilter(){
+  document.getElementById('wb-search').value='';document.getElementById('wb-proj-filter').value='';document.getElementById('wb-type-filter').value='';
+  resetMs('wb-status-ms-btn','wb-status-ms-panel');document.getElementById('wb-filter-count').textContent='';
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(r){r.classList.remove('wb-hidden');});
+  var nr=document.getElementById('wb-no-results');if(nr)nr.style.display='none';
+}
+
+function changeWBStatus(idx,evt){
+  evt.stopPropagation();
+  var w=warenData[idx];if(!w||!w.raw||!w.raw.id)return;
+  if(!confirm('Status von "'+w.titel+'" auf "Bestellt" aendern?'))return;
+  apiFetch('/work_packages/'+w.raw.id).then(function(wpData){
+    return apiFetch('/work_packages/'+w.raw.id,{method:'PATCH',body:JSON.stringify({lockVersion:wpData.lockVersion,_links:{status:{href:'/api/v3/statuses/17'}}})});
+  }).then(function(){alert('Status erfolgreich auf "Bestellt" geaendert!');loadFromAPI();}).catch(function(err){alert('Fehler: '+err.message);});
+}
+
+// Hardware
+function initHardware(){
+  var list=document.getElementById('hw-list');list.innerHTML='';
+  HW_ITEMS.forEach(function(hw){
+    var row=document.createElement('div');row.className='hw-item';row.id='hw-row-'+hw.id;
+    row.innerHTML='<input type="checkbox" id="hw-cb-'+hw.id+'" onchange="hwChanged(\''+hw.id+'\')">'
+      +'<label class="hw-item-name" for="hw-cb-'+hw.id+'">'+hw.name+'</label>'
+      +'<div class="hw-qty" id="hw-qty-'+hw.id+'" style="display:none">'
+      +'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',-1)">-</button>'
+      +'<span class="hw-qty-val" id="hw-qty-val-'+hw.id+'">1</span>'
+      +'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',1)">+</button></div>';
+    list.appendChild(row);
   });
 }
+function hwChanged(id){var cb=document.getElementById('hw-cb-'+id),row=document.getElementById('hw-row-'+id),qty=document.getElementById('hw-qty-'+id);row.classList.toggle('selected',cb.checked);if(qty)qty.style.display=cb.checked?'flex':'none';if(id==='brother')document.getElementById('brother-extra').classList.toggle('visible',cb.checked);updateWPPreview();}
+function hwQty(id,delta){var el=document.getElementById('hw-qty-val-'+id);el.textContent=Math.max(1,(parseInt(el.textContent)||1)+delta);updateWPPreview();}
+function getHwSelections(){return HW_ITEMS.filter(function(hw){var cb=document.getElementById('hw-cb-'+hw.id);return cb&&cb.checked;}).map(function(hw){return{id:hw.id,name:hw.name,qty:parseInt(document.getElementById('hw-qty-val-'+hw.id).textContent)||1};});}
 
-function exportExcel() {
-  var ws = XLSX.utils.json_to_sheet(tableData());
-  var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Projekte');
-  XLSX.writeFile(wb, 'welcome_projekte.xlsx');
+function updateWPPreview(){
+  var outlookEl=document.querySelector('input[name="outlook"]:checked'),adintEl=document.querySelector('input[name="adint"]:checked');
+  var outlook=outlookEl?outlookEl.value:'Nicht Aktiv',adint=adintEl?adintEl.value:'Nicht Aktiv';
+  var hw=getHwSelections(),paperType=document.getElementById('brother-paper-type').value,paperQty=document.getElementById('brother-paper-qty').value||1;
+  var items=WP_BASIS.map(function(w){return{name:w.name,sub:false};});
+  if(outlook==='Beauftragt'||outlook==='Gewuenscht')items.push({name:'Outlook Add-in einrichten',sub:false});
+  if(adint==='Beauftragt'||adint==='Gewuenscht')items.push({name:'AD-Integration konfigurieren',sub:false});
+  hw.forEach(function(h){for(var i=0;i<h.qty;i++){var label=h.qty>1?h.name+' ('+(i+1)+'/'+h.qty+')':h.name;items.push({name:label,sub:false});if(h.id==='brother'&&i===0&&paperType)items.push({name:'Papier: '+paperType+' x '+paperQty+' Rollen',sub:true});}});
+  document.getElementById('wp-preview').innerHTML=items.map(function(it){return '<div class="np-wp-item'+(it.sub?' wp-sub':'')+'"><span class="wp-dot"></span>'+it.name+'</div>';}).join('');
 }
 
-function exportCSV() {
-  var rows = tableData();
-  var h = Object.keys(rows[0]);
-  var csv = [h.join(';')].concat(rows.map(function(r) {
-    return h.map(function(k) { return '"' + (r[k] + '').replace(/"/g, '""') + '"'; }).join(';');
-  })).join('\n');
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'}));
-  a.download = 'welcome_projekte.csv';
-  a.click();
-}
-
-function exportPDF() {
-  var jsPDF = window.jspdf.jsPDF;
-  var doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
-  addLogoToPDF(doc, function() {
-    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(0,51,102);
-    doc.text('WELCOME - Projektuebersicht', 14, 14);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(130);
-    doc.text('Erstellt: ' + new Date().toLocaleDateString('de-DE'), 14, 20);
-    var cols = ['Projektname','Status','Projektverantwortlicher','Paket','AP gesamt','AP offen','Fortschritt (%)'];
-    doc.autoTable({startY:24, head:[cols], body: tableData().map(function(r) { return cols.map(function(c) { return r[c] !== undefined ? r[c] : '-'; }); }),
-      styles:{fontSize:7.5,cellPadding:2.5}, headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},
-      alternateRowStyles:{fillColor:[244,246,249]}, columnStyles:{0:{cellWidth:44}}});
-    doc.save('welcome_projekte.pdf');
+function initRadios(){
+  document.querySelectorAll('.np-radio-group').forEach(function(grp){
+    grp.querySelectorAll('input[type=radio]').forEach(function(r){
+      r.addEventListener('change',function(){grp.querySelectorAll('.np-radio-lbl').forEach(function(l){l.classList.remove('selected');});r.closest('.np-radio-lbl').classList.add('selected');updateWPPreview();});
+      if(r.checked)r.closest('.np-radio-lbl').classList.add('selected');
+    });
   });
 }
+document.getElementById('brother-paper-type').addEventListener('change',updateWPPreview);
+document.getElementById('brother-paper-qty').addEventListener('input',updateWPPreview);
 
-function wbTableData() {
-  return warenData.map(function(w) {
-    return {Projekt: w.projekt || '-', Arbeitspaket: w.titel, Typ: w.typ, Status: w.status, Zugewiesen: (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '-'};
-  });
+function getFormData(){
+  var ap=document.getElementById('np-ap').value.trim(),tel=document.getElementById('np-telefon').value.trim(),email=document.getElementById('np-email').value.trim();
+  var parts=[ap];if(tel)parts.push('Tel: '+tel);if(email)parts.push('E-Mail: '+email);
+  var outlookEl=document.querySelector('input[name="outlook"]:checked'),adintEl=document.querySelector('input[name="adint"]:checked');
+  return{name:document.getElementById('np-name').value.trim(),standort:document.getElementById('np-standort').value.trim(),ap:parts.join(' | '),paket:document.getElementById('np-paket').value,outlook:outlookEl?outlookEl.value:'Nicht Aktiv',adint:adintEl?adintEl.value:'Nicht Aktiv',hw:getHwSelections(),paperType:document.getElementById('brother-paper-type').value,paperQty:parseInt(document.getElementById('brother-paper-qty').value)||1,bemerkung:document.getElementById('np-bemerkung').value.trim()};
 }
 
-function exportWBExcel() {
-  var ws = XLSX.utils.json_to_sheet(wbTableData());
-  var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Warenbestand');
-  XLSX.writeFile(wb, 'welcome_warenbestand.xlsx');
+function buildDescription(d){
+  var hwText=d.hw.map(function(h){return h.qty+'x '+h.name;}).join(', ');
+  var lines=['Kundenname: '+d.name,'Standort: '+d.standort,'Ansprechpartner: '+d.ap,'Paket: '+d.paket];
+  if(hwText)lines.push('Hardware: '+hwText);
+  lines.push('Outlook Add-in: '+d.outlook,'AD-Integration: '+d.adint);
+  if(d.bemerkung)lines.push('Bemerkungen: '+d.bemerkung);
+  return lines.join('\n');
 }
 
-function exportWBCSV() {
-  var rows = wbTableData();
-  var h = Object.keys(rows[0]);
-  var csv = [h.join(';')].concat(rows.map(function(r) {
-    return h.map(function(k) { return '"' + (r[k] + '').replace(/"/g, '""') + '"'; }).join(';');
-  })).join('\n');
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'}));
-  a.download = 'welcome_warenbestand.csv';
-  a.click();
+function showNpResult(msg,type){var el=document.getElementById('np-result');el.innerHTML=msg;el.className='np-result '+type;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+
+function resetForm(){
+  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('np-paket').value='';
+  document.querySelectorAll('input[name="outlook"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
+  document.querySelectorAll('input[name="adint"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
+  document.querySelectorAll('.np-radio-lbl').forEach(function(l){var inp=l.querySelector('input');l.classList.toggle('selected',inp&&inp.checked);});
+  HW_ITEMS.forEach(function(hw){var cb=document.getElementById('hw-cb-'+hw.id);if(cb)cb.checked=false;hwChanged(hw.id);});
+  document.getElementById('brother-paper-type').value='';document.getElementById('brother-paper-qty').value=1;
+  document.getElementById('np-result').style.display='none';updateWPPreview();
 }
 
-function exportWBPDF() {
-  var jsPDF = window.jspdf.jsPDF;
-  var doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
-  addLogoToPDF(doc, function() {
-    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(0,51,102);
-    doc.text('WELCOME - Warenbestand', 14, 14);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(130);
-    doc.text('Erstellt: ' + new Date().toLocaleDateString('de-DE'), 14, 20);
-    var cols = ['Projekt','Arbeitspaket','Typ','Status','Zugewiesen'];
-    doc.autoTable({startY:24, head:[cols], body: wbTableData().map(function(r) { return cols.map(function(c) { return r[c] || '-'; }); }),
-      styles:{fontSize:8,cellPadding:3}, headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},
-      alternateRowStyles:{fillColor:[244,246,249]}, columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});
-    doc.save('welcome_warenbestand.pdf');
-  });
+document.getElementById('np-submit-btn').addEventListener('click',function(){
+  var d=getFormData();var btn=document.getElementById('np-submit-btn');var valid=true;
+  ['np-name','np-standort','np-ap'].forEach(function(id){var el=document.getElementById(id);if(!el.value.trim()){el.classList.add('invalid');valid=false;}else el.classList.remove('invalid');});
+  if(!d.paket){document.getElementById('np-paket').classList.add('invalid');valid=false;}else document.getElementById('np-paket').classList.remove('invalid');
+  if(!valid){showNpResult('Bitte alle Pflichtfelder ausfuellen.','error');return;}
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird geprueft...';
+  var sf=encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}]));
+  apiFetch('/projects?filters='+sf).then(function(searchData){
+    var elements=searchData._embedded&&searchData._embedded.elements?searchData._embedded.elements:[];
+    var existing=elements.filter(function(p){return p.name.toLowerCase()===d.name.toLowerCase();})[0];
+    if(existing){
+      btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';
+      showNpResult('Ein Projekt mit dem Namen "'+d.name+'" existiert bereits!<br><br>'
+        +'<a href="'+OP_URL+'/projects/'+existing.identifier+'" target="_blank">Bestehendes Projekt oeffnen</a><br><br>'
+        +'<button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">Anderen Namen verwenden</button>'
+        +'<button onclick="updateExistingProject(\''+existing.id+'\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">Bestehendes Projekt aktualisieren</button>',
+        'warning');
+      return null;
+    }
+    btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt...';
+    var links={};
+    if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};
+    if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};
+    if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
+    var projBody={name:d.name,description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links};
+    return apiFetch('/projects',{method:'POST',body:JSON.stringify(projBody)});
+  }).then(function(proj){
+    if(!proj)return;
+    var projId=proj.id;btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
+    var wpCount=0,wpOk=0;
+    function makeWP(subject,parentId,isHW){
+      wpCount++;
+      var body={subject:subject,_links:{project:{href:'/api/v3/projects/'+projId}}};
+      if(isHW)body._links.type={href:'/api/v3/types/8'};
+      if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};
+      return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)}).then(function(r){wpOk++;return r.id;}).catch(function(){return null;});
+    }
+    var chain=Promise.resolve();
+    WP_BASIS.forEach(function(wp){chain=chain.then(function(){return makeWP(wp.name,null,false);});});
+    if(d.outlook==='Beauftragt'||d.outlook==='Gewuenscht')chain=chain.then(function(){return makeWP('Outlook Add-in einrichten',null,false);});
+    if(d.adint==='Beauftragt'||d.adint==='Gewuenscht')chain=chain.then(function(){return makeWP('AD-Integration konfigurieren',null,false);});
+    var brotherParentId=null;
+    d.hw.forEach(function(h){for(var qi=0;qi<h.qty;qi++){(function(hwItem,idx){chain=chain.then(function(){var label=hwItem.qty>1?hwItem.name+' ('+(idx+1)+'/'+hwItem.qty+')':hwItem.name;return makeWP(label,null,true).then(function(wid){if(hwItem.id==='brother'&&idx===0)brotherParentId=wid;return wid;});});})(h,qi);}});
+    if(d.paperType)chain=chain.then(function(){if(brotherParentId)return makeWP('Papier: '+d.paperType+' x '+d.paperQty+' Rollen',brotherParentId,true);});
+    return chain.then(function(){
+      showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>Projekt-ID: '+projId+'<br>Arbeitspakete: '+wpCount+' angelegt ('+wpOk+' erfolgreich)<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>','success');
+      loadFromAPI();
+    });
+  }).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
+});
+
+function updateExistingProject(projId){
+  var d=getFormData();var btn=document.getElementById('np-submit-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert...';
+  var links={};
+  if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};
+  if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};
+  if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
+  var projBody={description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links};
+  apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify(projBody)}).then(function(){showNpResult('Projekt erfolgreich aktualisiert!','success');loadFromAPI();}).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
 }
 
-// Init
+function addLogoToPDF(doc,cb){var img=new Image();img.crossOrigin='anonymous';img.onload=function(){try{var c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);var ratio=img.width/img.height,h=10,w=h*ratio;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}cb();};img.onerror=function(){cb();};img.src='https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';}
+
+function tableData(){return projectData.map(function(p){return{Projektname:p.name,Status:statusLabel(statusKey(p.status)),Projektverantwortlicher:p.pm||'-',Paket:p.paket||'-','AP gesamt':p.wp_total,'AP abgeschlossen':p.wp_closed,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0};});}
+function exportExcel(){var ws=XLSX.utils.json_to_sheet(tableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Projekte');XLSX.writeFile(wb,'welcome_projekte.xlsx');}
+function exportCSV(){var rows=tableData(),h=Object.keys(rows[0]);var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return'"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_projekte.csv';a.click();}
+function exportPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Projektuebersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projektname','Status','Projektverantwortlicher','Paket','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:44}}});doc.save('welcome_projekte.pdf');});}
+
+function wbTableData(){return warenData.map(function(w){return{Projekt:w.projekt||'-',Arbeitspaket:w.titel,Typ:w.typ,Status:w.status,Zugewiesen:(w.raw&&w.raw.Zugewiesen)?w.raw.Zugewiesen:'-'};});}
+function exportWBExcel(){var ws=XLSX.utils.json_to_sheet(wbTableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Warenbestand');XLSX.writeFile(wb,'welcome_warenbestand.xlsx');}
+function exportWBCSV(){var rows=wbTableData(),h=Object.keys(rows[0]);var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return'"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_warenbestand.csv';a.click();}
+function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projekt','Arbeitspaket','Typ','Status','Zugewiesen'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]||'-';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});doc.save('welcome_warenbestand.pdf');});}
+
 initHardware();
 initRadios();
 updateWPPreview();
