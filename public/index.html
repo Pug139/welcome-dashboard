@@ -42,8 +42,8 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);mi
 .login-box h2{font-size:1.1rem;font-weight:700;margin-bottom:6px}
 .login-box p{font-size:.8rem;color:var(--text-muted);margin-bottom:20px;line-height:1.5}
 .login-lbl{display:block;font-size:.78rem;font-weight:600;color:var(--text-sub);margin-bottom:5px}
-.login-box input{width:100%;padding:10px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.9rem;margin-bottom:12px}
-.login-box input:focus{outline:none;border-color:var(--brand-light)}
+.login-inp{width:100%;padding:10px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.9rem;margin-bottom:12px}
+.login-inp:focus{outline:none;border-color:var(--brand-light)}
 .login-btn{width:100%;padding:11px;background:var(--brand);color:white;border:none;border-radius:7px;font-size:.9rem;font-weight:700;cursor:pointer}
 .login-btn:hover{background:var(--brand-dark)}
 .login-err{color:var(--error-c);font-size:.8rem;margin-top:8px;display:none}
@@ -51,8 +51,8 @@ body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);mi
 .token-badge{display:flex;align-items:center;gap:6px;background:rgba(63,185,80,.15);border:1px solid var(--on-track-c);border-radius:20px;padding:5px 12px;font-size:.75rem;color:var(--on-track-c);font-weight:600;cursor:pointer}
 .token-badge:hover{background:rgba(63,185,80,.25)}
 .refresh-bar{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--text-muted);margin-bottom:12px}
-.refresh-bar .prog-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
-.refresh-bar .prog-fill{height:100%;background:var(--brand-light);border-radius:2px;transition:width 1s linear}
+.prog-track{flex:1;height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:var(--brand-light);border-radius:2px;transition:width 1s linear}
 .refresh-btn{padding:4px 10px;border:1px solid var(--border);border-radius:5px;background:none;color:var(--text-muted);font-size:.75rem;cursor:pointer}
 .refresh-btn:hover{border-color:var(--brand-light);color:var(--brand-light)}
 header{background:var(--brand-dark);color:white;padding:12px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.4);position:sticky;top:0;z-index:200}
@@ -61,10 +61,10 @@ header .title{flex:1}
 header h1{font-size:1.1rem;font-weight:700}
 header p{font-size:.72rem;opacity:.7}
 .header-actions{display:flex;align-items:center;gap:8px}
-.theme-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;transition:background .2s;white-space:nowrap}
+.theme-toggle{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;white-space:nowrap}
 .theme-toggle:hover{background:rgba(255,255,255,.2)}
 .import-dropdown{position:relative}
-.import-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;transition:background .2s;white-space:nowrap}
+.import-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;white-space:nowrap}
 .import-trigger:hover{background:rgba(255,255,255,.2)}
 .import-panel{position:absolute;top:calc(100% + 8px);right:0;width:420px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:300;display:none}
 .import-panel.open{display:block}
@@ -112,6 +112,8 @@ header p{font-size:.72rem;opacity:.7}
 .msg-info{background:var(--hint-bg);color:var(--hint-text);border:1px solid var(--hint-border)}
 .stats-row,.wb-stats{display:none;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .stat-card{background:var(--stat-bg);border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:120px;text-align:center}
+.stat-card.clickable{cursor:pointer;transition:border-color .2s}
+.stat-card.clickable:hover{border-color:var(--brand-light)}
 .stat-card .num{font-size:1.7rem;font-weight:700;color:var(--brand-light)}
 .stat-card .lbl{font-size:.72rem;color:var(--text-muted);margin-top:2px}
 .export-bar,.wb-export-bar{display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -141,8 +143,6 @@ header p{font-size:.72rem;opacity:.7}
 .meta-item strong{color:var(--text)}
 .progress-section{margin-top:12px}
 .progress-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text-muted);margin-bottom:4px}
-.prog-track{background:var(--bg3);border-radius:20px;height:12px;overflow:hidden}
-.prog-fill{height:100%;border-radius:20px;transition:width .7s ease}
 .fill-high{background:linear-gradient(90deg,#1d7a45,#3fb950)}
 .fill-medium{background:linear-gradient(90deg,#0055a5,#4a90d9)}
 .fill-low{background:linear-gradient(90deg,#003366,#0055a5)}
@@ -171,15 +171,19 @@ header p{font-size:.72rem;opacity:.7}
 .wb-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .wb-table{width:100%;border-collapse:collapse;font-size:.83rem}
 .wb-table th{background:var(--brand-dark);color:white;padding:9px 13px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.wb-sort-hdr{cursor:pointer;user-select:none}
+.wb-sort-hdr:hover{background:#004080}
 .wb-table td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:middle}
 .wb-table tr:last-child td{border-bottom:none}
 .wb-table tr.wb-row:hover td{background:var(--bg3);cursor:pointer}
 .wb-table tr.wb-hidden{display:none}
-.wb-table .proj-col{color:var(--brand-light);font-weight:600}
-.wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
 .wb-table tr.wb-pending td{background:rgba(248,81,73,.06)}
 .wb-table tr.wb-pending td:first-child{border-left:3px solid var(--error-c)}
-.wb-status-pending{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(248,81,73,.15);color:var(--error-c);border:1px solid var(--error-c)}
+.wb-table .proj-col{color:var(--brand-light);font-weight:600}
+.wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
+.wb-status-pending{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(248,81,73,.15);color:var(--error-c);border:1px solid var(--error-c);cursor:pointer}
+.wb-status-pending:hover{background:rgba(248,81,73,.25)}
+.wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
 .np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
 .np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
 .np-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
@@ -246,29 +250,29 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <div class="login-box">
     <img src="https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp" alt="WELCOME">
     <h2>Willkommen im Projekt-Dashboard</h2>
-    <p>Bitte gib deinen OpenProject API-Token ein um fortzufahren. Der Token wird nur für diese Sitzung gespeichert.</p>
+    <p>Bitte gib deinen OpenProject API-Token ein um fortzufahren.</p>
     <label class="login-lbl">API Token</label>
-    <input type="password" id="login-token" placeholder="opapi-xxxxxxxxxxxxxxxx" autocomplete="off">
-    <button class="login-btn" id="login-btn">&#x1F510; Anmelden</button>
-    <div class="login-err" id="login-err">&#x274C; Token ungültig. Bitte prüfen und erneut versuchen.</div>
-    <p class="login-hint">&#x1F512; Der Token wird nicht gespeichert und ist nur für diese Sitzung aktiv.</p>
+    <input type="password" class="login-inp" id="login-token" placeholder="opapi-xxxxxxxxxxxxxxxx" autocomplete="off">
+    <button class="login-btn" id="login-btn">Anmelden</button>
+    <div class="login-err" id="login-err">Token ungueltig. Bitte pruefen.</div>
+    <p class="login-hint">Der Token wird nicht gespeichert und ist nur fuer diese Sitzung aktiv.</p>
   </div>
 </div>
 
 <header>
   <img src="https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp" alt="WELCOME">
-  <div class="title"><h1>Projekt-Übersicht</h1><p>EnterSmart GmbH · entersmart.openproject.com</p></div>
+  <div class="title"><h1>Projekt-Uebersicht</h1><p>EnterSmart GmbH &middot; entersmart.openproject.com</p></div>
   <div class="header-actions">
     <div class="import-dropdown" id="importDropdown">
-      <button class="import-trigger" id="importTrigger">&#x1F4E5; CSV Import &#x25BC;</button>
+      <button class="import-trigger" id="importTrigger">Import</button>
       <div class="import-panel" id="importPanel">
-        <h3>&#x1F4E5; Daten aus CSV importieren</h3>
+        <h3>Daten aus CSV importieren</h3>
         <div class="import-grid">
           <div class="import-zone" id="dz-proj"><div class="dz-icon">&#x1F4C1;</div><div>Projekte-CSV</div><p id="lbl-proj" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p><input type="file" id="f-proj" accept=".csv,.xlsx"></div>
           <div class="import-zone" id="dz-wp"><div class="dz-icon">&#x1F4E6;</div><div>Arbeitspakete-CSV</div><p id="lbl-wp" style="margin-top:4px;font-size:.7rem">Ablegen oder klicken</p><input type="file" id="f-wp" accept=".csv,.xlsx"></div>
         </div>
-        <div class="import-both" id="dz-both"><span style="font-size:1.1rem">&#x1F4C2;&#x1F4C2;</span>&nbsp;<span id="lbl-both">Beide CSVs gleichzeitig ablegen oder klicken</span><input type="file" id="f-both" accept=".csv,.xlsx" multiple></div>
-        <button class="btn btn-primary btn-full" id="build-btn" disabled>&#x1F680; Dashboard aus CSV erstellen</button>
+        <div class="import-both" id="dz-both"><span id="lbl-both">Beide CSVs ablegen oder klicken</span><input type="file" id="f-both" accept=".csv,.xlsx" multiple></div>
+        <button class="btn btn-primary btn-full" id="build-btn" disabled>Dashboard aus CSV erstellen</button>
       </div>
     </div>
     <div class="token-badge" id="tokenBadge" onclick="showRelogin()">&#x1F511; <span id="tokenLabel">Verbunden</span></div>
@@ -277,9 +281,9 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 </header>
 
 <div class="tab-bar">
-  <button class="tab-btn active" data-tab="projekte">&#x1F4CB; Projekte</button>
-  <button class="tab-btn" data-tab="warenbestand">&#x1F4E6; Warenbestand</button>
-  <button class="tab-btn" data-tab="neu">&#x2795; Neues Projekt</button>
+  <button class="tab-btn active" data-tab="projekte">Projekte</button>
+  <button class="tab-btn" data-tab="warenbestand">Warenbestand</button>
+  <button class="tab-btn" data-tab="neu">Neues Projekt</button>
 </div>
 
 <div class="main">
@@ -288,91 +292,85 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div class="refresh-bar" id="refresh-bar" style="display:none">
       <span id="refresh-label">Aktualisierung in 5:00</span>
       <div class="prog-track"><div class="prog-fill" id="refresh-progress" style="width:100%"></div></div>
-      <button class="refresh-btn" onclick="manualRefresh()">&#x21BB; Jetzt</button>
+      <button class="refresh-btn" onclick="manualRefresh()">Jetzt</button>
     </div>
     <div class="stats-row" id="stats-row">
-      <div class="stat-card"><div class="num" id="s-total">–</div><div class="lbl">Projekte</div></div>
-      <div class="stat-card"><div class="num" id="s-wp">–</div><div class="lbl">Arbeitspakete</div></div>
-      <div class="stat-card"><div class="num" id="s-open">–</div><div class="lbl">Offen</div></div>
-      <div class="stat-card"><div class="num" id="s-done">–</div><div class="lbl">Abgeschlossen</div></div>
+      <div class="stat-card"><div class="num" id="s-total">-</div><div class="lbl">Projekte</div></div>
+      <div class="stat-card"><div class="num" id="s-wp">-</div><div class="lbl">Arbeitspakete</div></div>
+      <div class="stat-card"><div class="num" id="s-open">-</div><div class="lbl">Offen</div></div>
+      <div class="stat-card"><div class="num" id="s-done">-</div><div class="lbl">Abgeschlossen</div></div>
     </div>
     <div class="export-bar" id="export-bar">
-      <button class="btn btn-excel" onclick="exportExcel()">&#x2B07; Excel</button>
-      <button class="btn btn-pdf" onclick="exportPDF()">&#x2B07; PDF</button>
-      <button class="btn btn-csv" onclick="exportCSV()">&#x2B07; CSV</button>
+      <button class="btn btn-excel" onclick="exportExcel()">Excel</button>
+      <button class="btn btn-pdf" onclick="exportPDF()">PDF</button>
+      <button class="btn btn-csv" onclick="exportCSV()">CSV</button>
     </div>
     <div class="filter-bar" id="proj-filter-bar" style="display:none">
-      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="proj-search" type="text" placeholder="Projekt suchen…"></div>
-      <div class="ms-wrap" id="proj-status-ms">
+      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="proj-search" type="text" placeholder="Projekt suchen..."></div>
+      <div class="ms-wrap">
         <button class="ms-btn" id="proj-status-ms-btn" data-base="Status">Status <span class="ms-arrow">&#x25BC;</span></button>
         <div class="ms-panel" id="proj-status-ms-panel">
           <label class="ms-option"><input type="checkbox" value="on_track"> Im Plan</label>
-          <label class="ms-option"><input type="checkbox" value="at_risk"> Gefährdet</label>
+          <label class="ms-option"><input type="checkbox" value="at_risk"> Gefaehrdet</label>
           <label class="ms-option"><input type="checkbox" value="off_track"> Kritisch</label>
           <label class="ms-option"><input type="checkbox" value="default"> Kein Status</label>
         </div>
       </div>
       <select class="filter-select" id="proj-pm-filter"><option value="">Alle Verantwortlichen</option></select>
       <select class="filter-select" id="proj-member-filter"><option value="">Alle Mitglieder</option></select>
-      <button class="clear-btn" id="proj-clear-btn">&#x2715; Reset</button>
+      <button class="clear-btn" id="proj-clear-btn">Reset</button>
       <span class="filter-count" id="proj-filter-count"></span>
     </div>
-    <div id="no-results" class="no-results">&#x1F50D; Keine Projekte gefunden.</div>
+    <div id="no-results" class="no-results">Keine Projekte gefunden.</div>
     <div id="cards"></div>
   </div>
 
   <div class="tab-panel" id="tab-warenbestand">
     <div id="msg-wb"></div>
     <div class="wb-stats" id="wb-stats">
-      <div class="stat-card" id="wb-total-card" style="cursor:pointer" title="Klick zum Zurücksetzen aller Filter">
-        <div class="num" id="wb-total">–</div>
-        <div class="lbl">Einträge gesamt &#x2715;</div>
-      </div>
-      <div class="stat-card"><div class="num" id="wb-proj-count">–</div><div class="lbl">Betroffene Projekte</div></div>
-      <div class="stat-card" id="wb-pending-card" style="cursor:pointer" title="Klick zum Filtern">
-        <div class="num" id="wb-pending-count" style="color:var(--error-c)">–</div>
-        <div class="lbl">Bestellung ausstehend &#x1F50D;</div>
-      </div>
+      <div class="stat-card clickable" id="wb-total-card"><div class="num" id="wb-total">-</div><div class="lbl">Eintraege gesamt (Reset)</div></div>
+      <div class="stat-card"><div class="num" id="wb-proj-count">-</div><div class="lbl">Betroffene Projekte</div></div>
+      <div class="stat-card clickable" id="wb-pending-card"><div class="num" id="wb-pending-count" style="color:var(--error-c)">-</div><div class="lbl">Bestellung ausstehend</div></div>
     </div>
     <div class="wb-export-bar" id="wb-export-bar">
-      <button class="btn btn-excel" onclick="exportWBExcel()">&#x2B07; Excel</button>
-      <button class="btn btn-pdf" onclick="exportWBPDF()">&#x2B07; PDF</button>
-      <button class="btn btn-csv" onclick="exportWBCSV()">&#x2B07; CSV</button>
+      <button class="btn btn-excel" onclick="exportWBExcel()">Excel</button>
+      <button class="btn btn-pdf" onclick="exportWBPDF()">PDF</button>
+      <button class="btn btn-csv" onclick="exportWBCSV()">CSV</button>
     </div>
     <div class="filter-bar" id="wb-filter-bar" style="display:none">
-      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen…"></div>
+      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen..."></div>
       <select class="filter-select" id="wb-proj-filter"><option value="">Alle Projekte</option></select>
       <select class="filter-select" id="wb-type-filter"><option value="">Alle Typen</option><option value="hardware">Hardware</option><option value="elo einrichtung">ELO Einrichtung</option></select>
-      <div class="ms-wrap" id="wb-status-ms">
+      <div class="ms-wrap">
         <button class="ms-btn" id="wb-status-ms-btn" data-base="Status">Status <span class="ms-arrow">&#x25BC;</span></button>
         <div class="ms-panel" id="wb-status-ms-panel"></div>
       </div>
-      <button class="clear-btn" id="wb-clear-btn">&#x2715; Reset</button>
+      <button class="clear-btn" id="wb-clear-btn">Reset</button>
       <span class="filter-count" id="wb-filter-count"></span>
     </div>
-    <div id="wb-content"><div class="wb-empty">&#x23F3; Daten werden geladen…</div></div>
+    <div id="wb-content"><div class="wb-empty">Daten werden geladen...</div></div>
   </div>
 
   <div class="tab-panel" id="tab-neu">
     <div class="np-card">
-      <h2>&#x2795; Neues Projekt anlegen</h2>
-      <p class="np-sub">Kundendaten vom Vertrieb eintragen – das Projekt wird per API direkt in OpenProject angelegt.</p>
+      <h2>Neues Projekt anlegen</h2>
+      <p class="np-sub">Kundendaten eintragen - das Projekt wird per API in OpenProject angelegt.</p>
       <div class="np-section">
-        <div class="np-sec-title">&#x1F464; Kundendaten</div>
+        <div class="np-sec-title">Kundendaten</div>
         <div class="np-grid">
           <div class="np-field"><label class="np-label">Kundenname / Projektname <span class="req">*</span></label><input class="np-input" id="np-name" type="text" placeholder="z.B. Mustermann GmbH"></div>
-          <div class="np-field"><label class="np-label">Standort <span class="req">*</span></label><input class="np-input" id="np-standort" type="text" placeholder="z.B. München"></div>
-          <div class="np-field"><label class="np-label">Ansprechpartner (Kunde) <span class="req">*</span></label><input class="np-input" id="np-ap" type="text" placeholder="Vor- und Nachname"></div>
+          <div class="np-field"><label class="np-label">Standort <span class="req">*</span></label><input class="np-input" id="np-standort" type="text" placeholder="z.B. Muenchen"></div>
+          <div class="np-field"><label class="np-label">Ansprechpartner <span class="req">*</span></label><input class="np-input" id="np-ap" type="text" placeholder="Vor- und Nachname"></div>
           <div class="np-field"><label class="np-label">Telefon</label><input class="np-input" id="np-telefon" type="text" placeholder="+49 89 ..."></div>
           <div class="np-field"><label class="np-label">E-Mail</label><input class="np-input" id="np-email" type="text" placeholder="name@firma.de"></div>
         </div>
       </div>
       <div class="np-section">
-        <div class="np-sec-title">&#x1F4E6; Gebuchtes Paket &amp; Features</div>
+        <div class="np-sec-title">Paket und Features</div>
         <div class="np-grid">
           <div class="np-field"><label class="np-label">Paket <span class="req">*</span></label>
             <select class="np-select" id="np-paket">
-              <option value="">– Bitte wählen –</option>
+              <option value="">Bitte waehlen</option>
               <option value="S">S</option>
               <option value="M">M</option>
               <option value="L">L</option>
@@ -382,34 +380,34 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         <div class="np-grid" style="margin-top:12px">
           <div class="np-field"><label class="np-label">Outlook Add-in <span class="req">*</span></label>
             <div class="np-radio-group" id="np-outlook">
-              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Nicht Aktiv" checked> &#x274C; Nicht Aktiv</label>
-              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Gewünscht"> &#x1F550; Gewünscht</label>
-              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Beauftragt"> &#x23F3; Beauftragt</label>
-              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Aktiv"> &#x2705; Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Nicht Aktiv" checked> Nicht Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Gewuenscht"> Gewuenscht</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Beauftragt"> Beauftragt</label>
+              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Aktiv"> Aktiv</label>
             </div>
           </div>
           <div class="np-field"><label class="np-label">AD-Integration <span class="req">*</span></label>
             <div class="np-radio-group" id="np-adint">
-              <label class="np-radio-lbl"><input type="radio" name="adint" value="Nicht Aktiv" checked> &#x274C; Nicht Aktiv</label>
-              <label class="np-radio-lbl"><input type="radio" name="adint" value="Gewünscht"> &#x1F550; Gewünscht</label>
-              <label class="np-radio-lbl"><input type="radio" name="adint" value="Beauftragt"> &#x23F3; Beauftragt</label>
-              <label class="np-radio-lbl"><input type="radio" name="adint" value="Aktiv"> &#x2705; Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Nicht Aktiv" checked> Nicht Aktiv</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Gewuenscht"> Gewuenscht</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Beauftragt"> Beauftragt</label>
+              <label class="np-radio-lbl"><input type="radio" name="adint" value="Aktiv"> Aktiv</label>
             </div>
           </div>
         </div>
       </div>
       <div class="np-section">
-        <div class="np-sec-title">&#x1F5A5;&#xFE0F; Eingesetzte Hardware</div>
+        <div class="np-sec-title">Eingesetzte Hardware</div>
         <div class="hw-list" id="hw-list"></div>
         <div class="brother-extra" id="brother-extra">
-          <div class="brother-extra-title">&#x1F5A8;&#xFE0F; Brother 820NWB – Papier / Etiketten</div>
+          <div class="brother-extra-title">Brother 820NWB - Papier</div>
           <div class="brother-paper-row">
             <div class="np-field"><label class="np-label">Papiertyp</label>
               <select class="np-select" id="brother-paper-type">
-                <option value="">– Bitte wählen –</option>
-                <option value="DK-N55224 Endlospapierrolle (nicht klebend) 54mm 30,48m">DK-N55224 – Endlospapierrolle (nicht klebend) 54mm</option>
-                <option value="DK-44205 Endlosetiketten (Papier) 62mm 30,48m wiederablösbar">DK-44205 – Endlosetiketten 62mm, wiederablösbar</option>
-                <option value="DK-22251 Endlosetiketten schwarz-rot 62mm 15,24m">DK-22251 – Endlosetiketten schwarz-rot 62mm</option>
+                <option value="">Bitte waehlen</option>
+                <option value="DK-N55224 Endlospapierrolle 54mm 30.48m">DK-N55224 Endlospapierrolle 54mm</option>
+                <option value="DK-44205 Endlosetiketten 62mm 30.48m wiederabloesbar">DK-44205 Endlosetiketten 62mm wiederabloesbar</option>
+                <option value="DK-22251 Endlosetiketten schwarz-rot 62mm 15.24m">DK-22251 Endlosetiketten schwarz-rot 62mm</option>
               </select>
             </div>
             <div class="np-field" style="min-width:100px"><label class="np-label">Menge (Rollen)</label><input class="np-input" id="brother-paper-qty" type="number" min="1" value="1"></div>
@@ -417,23 +415,23 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         </div>
       </div>
       <div class="np-section">
-        <div class="np-sec-title">&#x1F4DD; Weitere Infos</div>
-        <div class="np-field"><label class="np-label">Bemerkungen / Besonderheiten</label><textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen, Hinweise vom Vertrieb…"></textarea></div>
+        <div class="np-sec-title">Weitere Infos</div>
+        <div class="np-field"><label class="np-label">Bemerkungen</label><textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen..."></textarea></div>
       </div>
       <div class="np-section">
-        <div class="np-sec-title">&#x1F4CB; Arbeitspakete (Vorschau)</div>
+        <div class="np-sec-title">Arbeitspakete (Vorschau)</div>
         <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="wp-preview"></div></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-        <button class="btn btn-success" id="np-submit-btn" style="flex:1;min-width:200px;justify-content:center">&#x1F680; Projekt in OpenProject anlegen</button>
-        <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="resetForm()">&#x1F5D1; Formular leeren</button>
+        <button class="btn btn-success" id="np-submit-btn" style="flex:1;min-width:200px;justify-content:center">Projekt in OpenProject anlegen</button>
+        <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="resetForm()">Formular leeren</button>
       </div>
       <div class="np-result" id="np-result"></div>
     </div>
   </div>
 </div>
 
-<footer>WELCOME Projekt-Dashboard · EnterSmart GmbH · Alle Daten bleiben lokal in eurem Browser</footer>
+<footer>WELCOME Projekt-Dashboard &middot; EnterSmart GmbH &middot; Alle Daten bleiben lokal im Browser</footer>
 
 <div id="wb-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:560px;width:100%;padding:24px;position:relative;max-height:80vh;overflow-y:auto">
@@ -443,127 +441,101 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 </div>
 
 <script>
+/*
+ * OpenProject Custom Field IDs:
+ * customField2  = Paket (Liste: S=4, M=5, L=6)
+ * customField4  = Outlook (Nicht Aktiv=10, Gewuenscht=14, Beauftragt=36, Aktiv=37)
+ * customField6  = AD-Integration (Nicht Aktiv=34, Gewuenscht=35, Beauftragt=16, Aktiv=17)
+ * customField10 = Kundennummer
+ * customField11 = Kundenname
+ * customField12 = Standort
+ * customField13 = Homepage des Kunden
+ * customField19 = Besonderheiten
+ * customField20 = PrintNode Account
+ * customField23 = Check-In Geraete
+ * customField24 = Ansprechpartner Kunde (Langer Text)
+ * customField25 = Access Scanner / Leser
+ * customField31 = Funktionen
+ * customField36 = Sonstige Hardware
+ * customField39 = Projektverantwortlicher
+ * AP-Typen: 1=Task, 2=Milestone, 3=Phase, 8=Hardware, 10=ELO Einrichtung
+ * WP-Status: 1=Neu, 7=In Bearbeitung, 12=Erledigt, 15=Versendet, 16=Geliefert, 17=Bestellt, 18=Lagernd, 19=Bestellung ausstehend
+ */
+
 var OP_URL = 'https://entersmart.openproject.com';
 var PROXY = '/proxy';
 var REFRESH_INTERVAL = 300;
-
 var API_KEY = '';
-window.API_KEY = API_KEY;
 var projectData = [];
 var warenData = [];
+var allMemberNames = [];
 var raw = {proj: null, wp: null};
 var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal'];
 var EXCL_WP_TYPES = ['phase','meilenstein'];
 var WAREN_TYPES = ['hardware','elo einrichtung'];
+var PENDING_STATUS = 'bestellung ausstehend';
 
-/*
- * ── OpenProject Custom Field IDs ──────────────────────────────
- * Projekt-Felder:
- *   customField2  = Paket              (Liste: S=4, M=5, L=6)
- *   customField4  = Outlook            (Liste: s.u.)
- *   customField6  = AD-Integration     (Liste: s.u.)
- *   customField10 = Kundennummer
- *   customField11 = Kundenname
- *   customField12 = Standort
- *   customField13 = Homepage des Kunden
- *   customField19 = Besonderheiten
- *   customField20 = PrintNode Account
- *   customField23 = Check-In Geräte
- *   customField24 = Ansprechpartner Kunde  (Langer Text)
- *   customField25 = Access Scanner / Leser
- *   customField31 = Funktionen
- *   customField36 = Sonstige Hardware
- *   customField39 = Projektverantwortlicher
- *
- * Arbeitspaket-Typen:
- *   ID 1  = Task
- *   ID 2  = Milestone
- *   ID 3  = Phase
- *   ID 8  = Hardware
- *   ID 10 = ELO Einrichtung
- *
- * Custom Options (Listenwerte):
- *   Paket:          S=4,  M=5,  L=6
- *   Outlook:        Nicht Aktiv=10, Gewünscht=14, Beauftragt=36, Aktiv=37
- *   AD-Integration: Nicht Aktiv=34, Gewünscht=35, Beauftragt=16, Aktiv=17
- * ──────────────────────────────────────────────────────────────
- */
-var PAKET_OPTIONS = {};
-PAKET_OPTIONS['S'] = '/api/v3/custom_options/4';
-PAKET_OPTIONS['M'] = '/api/v3/custom_options/5';
-PAKET_OPTIONS['L'] = '/api/v3/custom_options/6';
-
-var OUTLOOK_OPTIONS = {};
-OUTLOOK_OPTIONS['Nicht Aktiv'] = '/api/v3/custom_options/10';
-OUTLOOK_OPTIONS['Gew\u00FCnscht'] = '/api/v3/custom_options/14';
-OUTLOOK_OPTIONS['Beauftragt'] = '/api/v3/custom_options/36';
-OUTLOOK_OPTIONS['Aktiv'] = '/api/v3/custom_options/37';
-
-var ADINT_OPTIONS = {};
-ADINT_OPTIONS['Nicht Aktiv'] = '/api/v3/custom_options/34';
-ADINT_OPTIONS['Gew\u00FCnscht'] = '/api/v3/custom_options/35';
-ADINT_OPTIONS['Beauftragt'] = '/api/v3/custom_options/16';
-ADINT_OPTIONS['Aktiv'] = '/api/v3/custom_options/17';
+var PAKET_OPT = {S:'/api/v3/custom_options/4', M:'/api/v3/custom_options/5', L:'/api/v3/custom_options/6'};
+var OUTLOOK_OPT = {'Nicht Aktiv':'/api/v3/custom_options/10','Gewuenscht':'/api/v3/custom_options/14','Beauftragt':'/api/v3/custom_options/36','Aktiv':'/api/v3/custom_options/37'};
+var ADINT_OPT = {'Nicht Aktiv':'/api/v3/custom_options/34','Gewuenscht':'/api/v3/custom_options/35','Beauftragt':'/api/v3/custom_options/16','Aktiv':'/api/v3/custom_options/17'};
 
 var HW_ITEMS = [
-  {id:'elo22', name:'ELO 22"'},
-  {id:'elo15', name:'ELO 15"'},
-  {id:'brother', name:'Brother 820NWB'},
-  {id:'magicard600', name:'MagiCard 600'},
-  {id:'magiCardPronto', name:'MagiCard Pronto'},
-  {id:'customVKP', name:'Custom VKP800III'},
-  {id:'bodenRM', name:'Bodenst\u00E4nder RM-System'},
-  {id:'tischRM', name:'Tischst\u00E4nder RM-System'},
-  {id:'bodenWallaby', name:'Bodenst\u00E4nder Wallaby'}
+  {id:'elo22',name:'ELO 22"'},{id:'elo15',name:'ELO 15"'},{id:'brother',name:'Brother 820NWB'},
+  {id:'magicard600',name:'MagiCard 600'},{id:'magiCardPronto',name:'MagiCard Pronto'},
+  {id:'customVKP',name:'Custom VKP800III'},{id:'bodenRM',name:'Bodenstaender RM-System'},
+  {id:'tischRM',name:'Tischstaender RM-System'},{id:'bodenWallaby',name:'Bodenstaender Wallaby'}
 ];
 
 var WP_BASIS = [
-  {name:'Kickoff & Projektplanung'},
-  {name:'Systemeinrichtung'},
-  {name:'Benutzerverwaltung'},
-  {name:'Schulung'},
-  {name:'Go-Live'},
-  {name:'Abnahme & Dokumentation'}
+  {name:'Kickoff & Projektplanung'},{name:'Systemeinrichtung'},{name:'Benutzerverwaltung'},
+  {name:'Schulung'},{name:'Go-Live'},{name:'Abnahme & Dokumentation'}
 ];
 
-function apiHeaders() {
+function apiHdrs() {
   return {'Content-Type':'application/json','X-OP-URL':OP_URL,'X-OP-KEY':API_KEY};
 }
 
-async function apiFetch(path, opts) {
+function apiFetch(path, opts) {
   opts = opts || {};
-  var res = await fetch(PROXY + path, Object.assign({}, opts, {headers: Object.assign({}, apiHeaders(), opts.headers || {})}));
-  var data = await res.json();
-  if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
-  return data;
+  var hdrs = apiHdrs();
+  if (opts.headers) {
+    Object.keys(opts.headers).forEach(function(k) { hdrs[k] = opts.headers[k]; });
+  }
+  return fetch(PROXY + path, {method: opts.method || 'GET', headers: hdrs, body: opts.body}).then(function(res) {
+    return res.json().then(function(data) {
+      if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
+      return data;
+    });
+  });
 }
 
-async function doLogin() {
+// Login
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('login-token').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogin() {
   var token = document.getElementById('login-token').value.trim();
   if (!token) return;
   var btn = document.getElementById('login-btn');
   var err = document.getElementById('login-err');
-  btn.textContent = 'Prüfe Token…';
+  btn.textContent = 'Pruefe...';
   btn.disabled = true;
   err.style.display = 'none';
-  try {
-    var r = await fetch(PROXY + '/projects?pageSize=1', {headers: {'X-OP-URL': OP_URL, 'X-OP-KEY': token}});
-    if (!r.ok) throw new Error();
+  fetch(PROXY + '/projects?pageSize=1', {headers: {'X-OP-URL': OP_URL, 'X-OP-KEY': token}}).then(function(r) {
+    if (!r.ok) throw new Error('unauthorized');
     API_KEY = token;
-    window.API_KEY = token;
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('tokenLabel').textContent = 'Verbunden';
     loadFromAPI();
     startRefreshTimer();
-  } catch(e) {
+  }).catch(function() {
     err.style.display = 'block';
     btn.textContent = 'Anmelden';
     btn.disabled = false;
-  }
+  });
 }
-
-document.getElementById('login-btn').addEventListener('click', doLogin);
-document.getElementById('login-token').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 
 function showRelogin() {
   API_KEY = '';
@@ -574,25 +546,27 @@ function showRelogin() {
   document.getElementById('loginOverlay').style.display = 'flex';
 }
 
+// Refresh timer
 var refreshTimer = null;
-var refreshSecondsLeft = REFRESH_INTERVAL;
+var refreshSecsLeft = REFRESH_INTERVAL;
 
 function startRefreshTimer() {
   document.getElementById('refresh-bar').style.display = 'flex';
   clearInterval(refreshTimer);
-  refreshSecondsLeft = REFRESH_INTERVAL;
+  refreshSecsLeft = REFRESH_INTERVAL;
   refreshTimer = setInterval(function() {
-    refreshSecondsLeft--;
-    document.getElementById('refresh-progress').style.width = (refreshSecondsLeft / REFRESH_INTERVAL * 100) + '%';
-    var m = Math.floor(refreshSecondsLeft / 60);
-    var s = refreshSecondsLeft % 60;
+    refreshSecsLeft--;
+    document.getElementById('refresh-progress').style.width = (refreshSecsLeft / REFRESH_INTERVAL * 100) + '%';
+    var m = Math.floor(refreshSecsLeft / 60);
+    var s = refreshSecsLeft % 60;
     document.getElementById('refresh-label').textContent = 'Aktualisierung in ' + m + ':' + (s < 10 ? '0' : '') + s;
-    if (refreshSecondsLeft <= 0) { refreshSecondsLeft = REFRESH_INTERVAL; loadFromAPI(); }
+    if (refreshSecsLeft <= 0) { refreshSecsLeft = REFRESH_INTERVAL; loadFromAPI(); }
   }, 1000);
 }
 
-function manualRefresh() { refreshSecondsLeft = REFRESH_INTERVAL; loadFromAPI(); }
+function manualRefresh() { refreshSecsLeft = REFRESH_INTERVAL; loadFromAPI(); }
 
+// Theme
 document.getElementById('themeBtn').addEventListener('click', function() {
   var dark = document.documentElement.getAttribute('data-theme') === 'dark';
   document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
@@ -600,11 +574,18 @@ document.getElementById('themeBtn').addEventListener('click', function() {
   document.querySelector('.theme-label').textContent = dark ? 'Dark' : 'Light';
 });
 
-var importTrigger = document.getElementById('importTrigger');
-var importPanel = document.getElementById('importPanel');
-importTrigger.addEventListener('click', function(e) { e.stopPropagation(); importPanel.classList.toggle('open'); });
-document.addEventListener('click', function(e) { if (!document.getElementById('importDropdown').contains(e.target)) importPanel.classList.remove('open'); });
+// Import dropdown
+document.getElementById('importTrigger').addEventListener('click', function(e) {
+  e.stopPropagation();
+  document.getElementById('importPanel').classList.toggle('open');
+});
+document.addEventListener('click', function(e) {
+  if (!document.getElementById('importDropdown').contains(e.target)) {
+    document.getElementById('importPanel').classList.remove('open');
+  }
+});
 
+// Tabs
 document.querySelectorAll('.tab-btn').forEach(function(btn) {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -614,6 +595,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn) {
   });
 });
 
+// Multi-select
 function initMS(btnId, panelId, onChange) {
   var btn = document.getElementById(btnId);
   var panel = document.getElementById(panelId);
@@ -622,9 +604,10 @@ function initMS(btnId, panelId, onChange) {
     e.stopPropagation();
     document.querySelectorAll('.ms-panel.open').forEach(function(p) { if (p !== panel) p.classList.remove('open'); });
     panel.classList.toggle('open');
-    btn.querySelector('.ms-arrow').style.transform = panel.classList.contains('open') ? 'rotate(180deg)' : '';
+    var arr = btn.querySelector('.ms-arrow');
+    if (arr) arr.style.transform = panel.classList.contains('open') ? 'rotate(180deg)' : '';
   });
-  panel.addEventListener('change', function() { updateMsBtn(btnId, panelId); onChange(); });
+  panel.addEventListener('change', function() { updateMsBtn(btnId, panelId); if (onChange) onChange(); });
 }
 
 function updateMsBtn(btnId, panelId) {
@@ -654,16 +637,18 @@ document.addEventListener('click', function() {
   document.querySelectorAll('.ms-btn .ms-arrow').forEach(function(a) { a.style.transform = ''; });
 });
 
+// Drop zones
 function setupZone(zoneId, inputId, key) {
   var zone = document.getElementById(zoneId);
   var inp = document.getElementById(inputId);
   zone.addEventListener('click', function() { inp.click(); });
   inp.addEventListener('change', function() { if (inp.files[0]) parseFile(inp.files[0], key); });
-  ['dragenter','dragover'].forEach(function(ev) { zone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('over'); }); });
+  ['dragenter','dragover'].forEach(function(ev) {
+    zone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('over'); });
+  });
   zone.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); });
   zone.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); if (e.dataTransfer.files[0]) parseFile(e.dataTransfer.files[0], key); });
 }
-
 setupZone('dz-proj','f-proj','proj');
 setupZone('dz-wp','f-wp','wp');
 
@@ -671,43 +656,42 @@ var dzBoth = document.getElementById('dz-both');
 var fBoth = document.getElementById('f-both');
 dzBoth.addEventListener('click', function() { fBoth.click(); });
 fBoth.addEventListener('change', function() { handleMulti(fBoth.files); });
-['dragenter','dragover'].forEach(function(ev) { dzBoth.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.add('over'); }); });
+['dragenter','dragover'].forEach(function(ev) {
+  dzBoth.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.add('over'); });
+});
 dzBoth.addEventListener('dragleave', function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.remove('over'); });
 dzBoth.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); dzBoth.classList.remove('over'); handleMulti(e.dataTransfer.files); });
 
 function handleMulti(files) {
   Array.from(files).forEach(function(f) {
     var r = new FileReader();
-    r.onload = function(e) {
+    r.onload = function(ev) {
       try {
-        var wb = XLSX.read(e.target.result, {type:'binary',raw:false});
+        var wb = XLSX.read(ev.target.result, {type:'binary',raw:false});
         var data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
         if (!data.length) return;
         var h = Object.keys(data[0]).map(function(k) { return k.toLowerCase(); });
-        var isWP = h.some(function(k) { return k.includes('typ') || k.includes('thema') || k.includes('betreff') || k.includes('zugewiesen'); });
+        var isWP = h.some(function(k) { return k.includes('typ') || k.includes('thema') || k.includes('zugewiesen'); });
         var key = isWP ? 'wp' : 'proj';
         raw[key] = data;
-        document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = '✅ ' + f.name;
+        document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = f.name;
         document.getElementById(key === 'proj' ? 'dz-proj' : 'dz-wp').classList.add('loaded');
         document.getElementById('build-btn').disabled = false;
-        var loaded = [raw.proj ? 'Projekte' : '', raw.wp ? 'Arbeitspakete' : ''].filter(Boolean);
-        document.getElementById('lbl-both').textContent = loaded.length === 2 ? '✅ Beide Dateien erkannt!' : '✅ ' + loaded.join(', ') + ' – zweite noch ausstehend';
-        dzBoth.classList.toggle('loaded', loaded.length === 2);
       } catch(err) { showMsg('Fehler: ' + err.message, 'error'); }
     };
     r.readAsBinaryString(f);
   });
 }
 
-document.getElementById('build-btn').addEventListener('click', function() { buildDashboard(); importPanel.classList.remove('open'); });
+document.getElementById('build-btn').addEventListener('click', function() { buildDashboard(); document.getElementById('importPanel').classList.remove('open'); });
 
 function parseFile(file, key) {
   var r = new FileReader();
-  r.onload = function(e) {
+  r.onload = function(ev) {
     try {
-      var wb = XLSX.read(e.target.result, {type:'binary',raw:false});
+      var wb = XLSX.read(ev.target.result, {type:'binary',raw:false});
       raw[key] = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {defval:''});
-      document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = '✅ ' + file.name;
+      document.getElementById(key === 'proj' ? 'lbl-proj' : 'lbl-wp').textContent = file.name;
       document.getElementById(key === 'proj' ? 'dz-proj' : 'dz-wp').classList.add('loaded');
       document.getElementById('build-btn').disabled = false;
     } catch(err) { showMsg('Fehler: ' + err.message, 'error'); }
@@ -715,22 +699,18 @@ function parseFile(file, key) {
   r.readAsBinaryString(file);
 }
 
+// Helpers
 function showMsg(txt, type, id) {
-  id = id || 'msg';
-  var el = document.getElementById(id);
+  var el = document.getElementById(id || 'msg');
   if (!el) return;
   el.textContent = txt;
   el.className = 'msg-' + type;
   el.style.display = 'block';
 }
 
-function col(row) {
-  var keys = Array.from(arguments).slice(1);
-  var rk = Object.keys(row).map(function(k) { return k.trim(); });
-  for (var i = 0; i < keys.length; i++) {
-    var f = rk.find(function(r) { return r.toLowerCase().includes(keys[i].toLowerCase()); });
-    if (f) return row[f] || '';
-  }
+function getLink(obj, key, prop) {
+  prop = prop || 'title';
+  if (obj && obj._links && obj._links[key]) return obj._links[key][prop] || '';
   return '';
 }
 
@@ -738,14 +718,16 @@ function statusKey(s) {
   if (!s) return 'default';
   var l = s.toLowerCase();
   if (l.includes('plan') || l.includes('on track') || l.includes('zeit')) return 'on_track';
-  if (l.includes('risk') || l.includes('gef\u00E4hr')) return 'at_risk';
-  if (l.includes('off') || l.includes('kritisch') || l.includes('verz\u00F6g')) return 'off_track';
+  if (l.includes('risk') || l.includes('gefaehr')) return 'at_risk';
+  if (l.includes('off') || l.includes('kritisch') || l.includes('verzoeg')) return 'off_track';
   return 'default';
 }
 
 function statusLabel(k) {
-  var map = {on_track:'Im Plan', at_risk:'Gef\u00E4hrdet', off_track:'Kritisch', 'default':'Kein Status'};
-  return map[k] || k;
+  if (k === 'on_track') return 'Im Plan';
+  if (k === 'at_risk') return 'Gefaehrdet';
+  if (k === 'off_track') return 'Kritisch';
+  return 'Kein Status';
 }
 
 function isProjectClosed(s) {
@@ -755,29 +737,37 @@ function isProjectClosed(s) {
 }
 
 function isWPClosed(st) {
-  return ['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(function(s) { return st.includes(s); });
+  var l = (st || '').toLowerCase();
+  return ['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(function(s) { return l.includes(s); });
 }
 
-async function loadFromAPI() {
-  showMsg('Daten werden geladen…', 'info');
+// Load from API
+function loadFromAPI() {
+  showMsg('Daten werden geladen...', 'info');
   document.getElementById('msg').style.display = 'block';
-  try {
-    var projData = await apiFetch('/projects?pageSize=100');
+  apiFetch('/projects?pageSize=100').then(function(projData) {
     var projects = (projData._embedded && projData._embedded.elements ? projData._embedded.elements : []).map(function(p) {
-      return {name: p.name || '', status: (p._links && p._links.status ? p._links.status.title : '') || '', pm: (p._links && p._links.responsible ? p._links.responsible.title : '') || '', paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total:0, wp_closed:0, _id: p.id};
+      var pm = p.customField39 || getLink(p, 'responsible') || '';
+      return {name: p.name || '', status: getLink(p, 'status') || '', pm: pm, paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total:0, wp_closed:0, _id: p.id};
     });
-    var wpOpen = await apiFetch('/work_packages?pageSize=500');
-    var wpClosed = await apiFetch('/work_packages?pageSize=500&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"c","values":[]}}])));
-    var wpAll = await apiFetch('/work_packages?pageSize=500&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}])));
-    var allWPs = wpAll._embedded && wpAll._embedded.elements ? wpAll._embedded.elements : [];
+    var filter_all = encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+    return Promise.all([
+      apiFetch('/work_packages?pageSize=500&filters=' + filter_all),
+      Promise.resolve(projects)
+    ]);
+  }).then(function(results) {
+    var wpData = results[0];
+    var projects = results[1];
+    var allWPs = wpData._embedded && wpData._embedded.elements ? wpData._embedded.elements : [];
     var wpByProj = {};
     allWPs.forEach(function(wp) {
-      var pId = wp._links && wp._links.project ? wp._links.project.href.split('/').pop() : null;
-      var t = (wp._links && wp._links.type ? wp._links.type.title : '').toLowerCase();
+      var pId = getLink(wp, 'project', 'href');
+      if (pId) pId = pId.split('/').pop();
+      var t = getLink(wp, 'type').toLowerCase();
       if (EXCL_WP_TYPES.includes(t)) return;
       if (!wpByProj[pId]) wpByProj[pId] = {total:0, closed:0};
       wpByProj[pId].total++;
-      if (isWPClosed((wp._links && wp._links.status ? wp._links.status.title : '').toLowerCase())) wpByProj[pId].closed++;
+      if (isWPClosed(getLink(wp, 'status'))) wpByProj[pId].closed++;
     });
     projects.forEach(function(p) {
       var d = wpByProj[String(p._id)];
@@ -785,63 +775,63 @@ async function loadFromAPI() {
     });
     warenData = [];
     allWPs.forEach(function(wp) {
-      var t = (wp._links && wp._links.type ? wp._links.type.title : '').toLowerCase();
-      var st = wp._links && wp._links.status ? wp._links.status.title : '';
-      if (WAREN_TYPES.includes(t) && !isWPClosed(st.toLowerCase())) {
-        warenData.push({projekt: (wp._links && wp._links.project ? wp._links.project.title : '') || '–', titel: wp.subject || '–', typ: (wp._links && wp._links.type ? wp._links.type.title : '') || '–', status: st || '–', raw: {id: wp.id, Projekt: wp._links && wp._links.project ? wp._links.project.title : '', Thema: wp.subject, Typ: wp._links && wp._links.type ? wp._links.type.title : '', Status: st, Zugewiesen: wp._links && wp._links.assignee ? wp._links.assignee.title : '–', Erstellt: wp.createdAt ? wp.createdAt.substring(0,10) : '–'}});
+      var t = getLink(wp, 'type').toLowerCase();
+      var st = getLink(wp, 'status') || '';
+      if (WAREN_TYPES.includes(t) && !isWPClosed(st)) {
+        warenData.push({
+          projekt: getLink(wp, 'project') || '-',
+          titel: wp.subject || '-',
+          typ: getLink(wp, 'type') || '-',
+          status: st || '-',
+          raw: {
+            id: wp.id,
+            Projekt: getLink(wp, 'project'),
+            Thema: wp.subject,
+            Typ: getLink(wp, 'type'),
+            Status: st,
+            Zugewiesen: getLink(wp, 'assignee') || '-',
+            Erstellt: wp.createdAt ? wp.createdAt.substring(0,10) : '-'
+          }
+        });
       }
     });
-    var filtered = projects.filter(function(p) { return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status); });
+    var filtered = projects.filter(function(p) {
+      return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status);
+    });
     projectData = filtered;
+    allMemberNames = [];
     renderCards(filtered);
     renderWarenbestand();
     setupProjFilters();
-    showMsg('✅ ' + filtered.length + ' Projekte geladen.', 'success');
-    setTimeout(function() { var el = document.getElementById('msg'); if (el && el.className === 'msg-success') el.style.display = 'none'; }, 3000);
-
-  // Klick auf Gesamt-Karte → alle Filter zurücksetzen
-  var totalCard = document.getElementById('wb-total-card');
-  if (totalCard) totalCard.addEventListener('click', function() { clearWBFilter(); });
-
-  // Klick auf Pending-Karte → Filter setzen
-  var pendingCard = document.getElementById('wb-pending-card');
-  if (pendingCard) {
-    pendingCard.addEventListener('click', function() {
-      var panel = document.getElementById('wb-status-ms-panel');
-      if (!panel) return;
-      panel.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
-        cb.checked = cb.value === 'bestellung ausstehend';
-      });
-      updateMsBtn('wb-status-ms-btn', 'wb-status-ms-panel');
-      applyWBFilter();
-    });
-  }
-
-  // Mitglieder nachladen
-  filtered.forEach(function(p) {
+    showMsg(filtered.length + ' Projekte geladen.', 'success');
+    setTimeout(function() {
+      var el = document.getElementById('msg');
+      if (el && el.className === 'msg-success') el.style.display = 'none';
+    }, 3000);
+    // Mitglieder nachladen
+    filtered.forEach(function(p) {
       if (!p._id) return;
-      apiFetch('/projects/' + p._id + '/memberships?pageSize=50').then(function(data) {
-        var members = (data._embedded && data._embedded.elements ? data._embedded.elements : []);
+      var filter = encodeURIComponent(JSON.stringify([{"project":{"operator":"=","values":[String(p._id)]}}]));
+      apiFetch('/memberships?filters=' + filter + '&pageSize=50').then(function(mData) {
+        var members = mData._embedded && mData._embedded.elements ? mData._embedded.elements : [];
         var el = document.getElementById('proj-members-' + p._id);
-        var card = document.querySelector('.project-card[data-proj-id="' + p._id + '"]');
+        var card = document.querySelector('[data-proj-id="' + p._id + '"]');
         if (!el) return;
         if (!members.length) { el.style.display = 'none'; return; }
-        var memberNames = [];
+        var names = [];
         var html = members.map(function(m) {
-          var name = m._links && m._links.principal ? m._links.principal.title : '–';
+          var name = getLink(m, 'principal') || '-';
           var roles = (m._links && m._links.roles ? m._links.roles : []).map(function(r) { return r.title; }).join(', ');
-          memberNames.push(name.toLowerCase());
-          return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)">&#x1F464; <strong style="color:var(--text)">' + name + '</strong>' + (roles ? ' <span style="color:var(--text-muted)">· ' + roles + '</span>' : '') + '</span>';
+          names.push(name.toLowerCase());
+          return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)"><strong style="color:var(--text)">' + name + '</strong>' + (roles ? ' <span style="color:var(--text-muted)">(' + roles + ')</span>' : '') + '</span>';
         }).join('');
         el.innerHTML = html;
         el.style.display = 'flex';
-        // Mitglieder im dataset speichern für Suche/Filter
-        if (card) card.dataset.members = memberNames.join(' ');
-        // PM-Filter befüllen
-        updateMemberFilter(memberNames);
-      }).catch(function(e) { console.warn('Mitglieder Fehler Projekt ' + p._id + ':', e.message); });
+        if (card) card.dataset.members = names.join(' ');
+        updateMemberFilter(names);
+      }).catch(function(err) { console.warn('Mitglieder Projekt ' + p._id + ':', err.message); });
     });
-  } catch(e) { showMsg('❌ Fehler: ' + e.message, 'error'); }
+  }).catch(function(e) { showMsg('Fehler: ' + e.message, 'error'); });
 }
 
 function buildDashboard() {
@@ -850,48 +840,14 @@ function buildDashboard() {
   var projects = [];
   if (raw.proj) {
     projects = raw.proj.map(function(r) {
-      return {name: col(r,'name','bezeichnung','projekt','title') || '(Unbekannt)', status: col(r,'status','zustand','state'), pm: col(r,'projektverantwortlicher','verantwortlich','responsible','manager','projektleiter','owner'), paket: col(r,'paket','package','paketname'), kundennr: col(r,'kundennummer','kunden-nr','kundennr','kd-nr'), besonderheit: col(r,'besonderheiten','besonderheit','hinweis','anmerkung','notes'), statusdesc: col(r,'statusbeschreibung','status beschreibung','statuskommentar','statusinfo'), outlook: col(r,'outlook'), adint: col(r,'ad-integration','ad integration','active directory'), wp_total:0, wp_closed:0};
+      return {name: r.name || r.Name || '(Unbekannt)', status: r.status || r.Status || '', pm: r.pm || '', paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total:0, wp_closed:0};
     });
   }
-  warenData = [];
-  if (raw.wp) {
-    var s0 = raw.wp[0] || {};
-    var stCol = Object.keys(s0).find(function(k) { return k.toLowerCase().includes('status'); }) || '';
-    var prCol = Object.keys(s0).find(function(k) { return k.toLowerCase().includes('projekt') || k.toLowerCase().includes('project'); }) || '';
-    var tyCol = Object.keys(s0).find(function(k) { return k.toLowerCase() === 'typ' || k.toLowerCase() === 'type'; }) || '';
-    var tiCol = Object.keys(s0).find(function(k) { return ['thema','betreff','subject','titel','title'].some(function(x) { return k.toLowerCase().includes(x); }); }) || '';
-    var wpByProj = {};
-    raw.wp.forEach(function(wp) {
-      var t = (tyCol ? (wp[tyCol] || '') : '').toString().trim().toLowerCase();
-      var pName = (prCol ? (wp[prCol] || '') : '').trim();
-      var stRaw = stCol ? (wp[stCol] || '') : '';
-      var st = stRaw.toLowerCase();
-      var closed = isWPClosed(st);
-      if (WAREN_TYPES.includes(t) && !closed) warenData.push({projekt: pName, titel: tiCol ? (wp[tiCol] || '–') : '–', typ: wp[tyCol] || '–', status: stRaw || '–', raw: wp});
-      if (EXCL_WP_TYPES.includes(t)) return;
-      if (!wpByProj[pName]) wpByProj[pName] = {total:0, closed:0};
-      wpByProj[pName].total++;
-      if (closed) wpByProj[pName].closed++;
-    });
-    if (!projects.length) {
-      projects = Object.keys(wpByProj).filter(Boolean).map(function(n) { return {name:n, status:'', pm:'', paket:'', kundennr:'', besonderheit:'', statusdesc:'', outlook:'', adint:'', wp_total: wpByProj[n].total, wp_closed: wpByProj[n].closed}; });
-    } else {
-      projects.forEach(function(p) {
-        var ex = wpByProj[p.name];
-        if (ex) { p.wp_total = ex.total; p.wp_closed = ex.closed; return; }
-        var fz = Object.keys(wpByProj).find(function(k) { return k.toLowerCase().includes(p.name.toLowerCase()) || p.name.toLowerCase().includes(k.toLowerCase()); });
-        if (fz) { p.wp_total = wpByProj[fz].total; p.wp_closed = wpByProj[fz].closed; }
-      });
-    }
-  }
-  if (!projects.length) { showMsg('Keine Projektdaten gefunden.', 'error'); return; }
-  var before = projects.length;
-  projects = projects.filter(function(p) { return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status); });
+  if (!projects.length) { showMsg('Keine Projektdaten.', 'error'); return; }
   projectData = projects;
   renderCards(projects);
   renderWarenbestand();
   setupProjFilters();
-  showMsg('✅ ' + projects.length + ' Projekte geladen' + (before - projects.length > 0 ? ' (' + (before - projects.length) + ' ausgeblendet)' : '') + '.', 'success');
 }
 
 function renderCards(projects) {
@@ -903,9 +859,6 @@ function renderCards(projects) {
     var pct = p.wp_total > 0 ? Math.round((p.wp_closed / p.wp_total) * 100) : 0;
     var fill = p.wp_total === 0 ? 'fill-none' : pct >= 70 ? 'fill-high' : pct >= 40 ? 'fill-medium' : 'fill-low';
     tw += p.wp_total; to += p.wp_total - p.wp_closed; td += p.wp_closed;
-    var fi = [];
-    if (['beauftragt','gew\u00FCnscht'].includes((p.outlook || '').toLowerCase().trim())) fi.push({l:'Outlook', v: p.outlook});
-    if (['beauftragt','gew\u00FCnscht'].includes((p.adint || '').toLowerCase().trim())) fi.push({l:'AD-Integration', v: p.adint});
     var card = document.createElement('div');
     card.className = 'project-card status-' + sk;
     card.dataset.name = p.name.toLowerCase();
@@ -915,22 +868,20 @@ function renderCards(projects) {
     if (p._id) card.dataset.projId = p._id;
     var html = '<div class="proj-header"><div class="proj-name">' + p.name + '</div><span class="badge badge-' + sk + '">' + statusLabel(sk) + '</span></div>';
     html += '<div class="proj-meta">';
-    if (p.pm) html += '<div class="meta-item"><strong>&#x1F464;</strong> ' + p.pm + '</div>';
-    if (p.paket) html += '<div class="meta-item"><strong>&#x1F4E6; Paket:</strong> ' + p.paket + '</div>';
-    if (p.kundennr) html += '<div class="meta-item"><strong>&#x1F522; Kundennr.:</strong> ' + p.kundennr + '</div>';
-    html += '<div class="meta-item"><strong>&#x1F4CB;</strong> ' + p.wp_total + ' Arbeitspakete</div></div>';
-    if (p.besonderheit) html += '<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>&#x26A0;&#xFE0F; Besonderheiten:</strong> ' + p.besonderheit + '</div></div>';
-    if (fi.length) {
-      html += '<div class="feature-badges">' + fi.map(function(x) {
-        var cls = x.v.toLowerCase() === 'beauftragt' ? 'feature-beauftragt' : 'feature-gewuenscht';
-        var icon = x.v.toLowerCase() === 'beauftragt' ? '&#x23F3;' : '&#x1F550;';
-        return '<span class="feature-badge ' + cls + '">' + icon + '<span class="feature-name">' + x.l + ':</span> ' + x.v + '</span>';
-      }).join('') + '</div>';
-    }
+    if (p.pm) html += '<div class="meta-item"><strong>PM:</strong> ' + p.pm + '</div>';
+    if (p.paket) html += '<div class="meta-item"><strong>Paket:</strong> ' + p.paket + '</div>';
+    html += '<div class="meta-item"><strong>APs:</strong> ' + p.wp_total + '</div></div>';
     if (p._id) html += '<div id="proj-members-' + p._id + '" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>';
-    html += '<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>' + p.wp_closed + '/' + p.wp_total + ' · ' + pct + '%</span></div><div class="prog-track"><div class="prog-fill ' + fill + '" style="width:' + pct + '%"></div></div></div>';
-    if (p.statusdesc) html += '<button class="toggle-btn sdesc-btn" data-i="' + i + '">&#x1F4AC; Statusbeschreibung <span class="arrow">&#x25BC;</span></button><div class="sdesc-body" id="sd-' + i + '">' + p.statusdesc + '</div>';
-    if (p._id) html += '<button class="toggle-btn ap-load-btn" data-proj-id="' + p._id + '">&#x1F4CB; Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-' + p._id + '"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">&#x23F3; Wird geladen…</div></div>';
+    if (p.besonderheit) html += '<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>Besonderheiten:</strong> ' + p.besonderheit + '</div></div>';
+    html += '<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>' + p.wp_closed + '/' + p.wp_total + ' - ' + pct + '%</span></div><div class="prog-track"><div class="prog-fill ' + fill + '" style="width:' + pct + '%"></div></div></div>';
+    if (p.statusdesc) {
+      html += '<button class="toggle-btn sdesc-btn" data-i="' + i + '">Statusbeschreibung <span class="arrow">&#x25BC;</span></button>';
+      html += '<div class="sdesc-body" id="sd-' + i + '">' + p.statusdesc + '</div>';
+    }
+    if (p._id) {
+      html += '<button class="toggle-btn ap-load-btn" data-proj-id="' + p._id + '">Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button>';
+      html += '<div class="ap-body" id="ap-body-' + p._id + '"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Wird geladen...</div></div>';
+    }
     card.innerHTML = html;
     wrap.appendChild(card);
   });
@@ -938,7 +889,8 @@ function renderCards(projects) {
   wrap.querySelectorAll('.sdesc-btn').forEach(function(b) {
     b.addEventListener('click', function() {
       b.classList.toggle('open');
-      document.getElementById('sd-' + b.dataset.i).classList.toggle('open');
+      var el = document.getElementById('sd-' + b.dataset.i);
+      if (el) el.classList.toggle('open');
     });
   });
 
@@ -968,35 +920,37 @@ function renderCards(projects) {
   document.getElementById('export-bar').style.display = 'flex';
 }
 
-async function loadProjectWPs(projId) {
+function loadProjectWPs(projId) {
   var el = document.getElementById('ap-body-' + projId);
   if (!el || el.dataset.loaded === '1') return;
-  try {
-    var data = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}])));
+  var filter = encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+  apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + filter).then(function(data) {
     var wps = data._embedded && data._embedded.elements ? data._embedded.elements : [];
     wps.sort(function(a, b) {
-      var aClosed = isWPClosed((a._links && a._links.status ? a._links.status.title : '').toLowerCase()) ? 1 : 0;
-      var bClosed = isWPClosed((b._links && b._links.status ? b._links.status.title : '').toLowerCase()) ? 1 : 0;
-      return aClosed - bClosed;
+      var ac = isWPClosed(getLink(a, 'status')) ? 1 : 0;
+      var bc = isWPClosed(getLink(b, 'status')) ? 1 : 0;
+      return ac - bc;
     });
-    if (!wps.length) { el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete gefunden.</div>'; el.dataset.loaded = '1'; return; }
+    if (!wps.length) { el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete.</div>'; el.dataset.loaded = '1'; return; }
     el.innerHTML = wps.map(function(wp) {
-      var status = wp._links && wp._links.status ? wp._links.status.title : '–';
-      var type = wp._links && wp._links.type ? wp._links.type.title : '–';
-      var closed = isWPClosed(status.toLowerCase());
+      var status = getLink(wp, 'status') || '-';
+      var type = getLink(wp, 'type') || '-';
+      var closed = isWPClosed(status);
       return '<div class="ap-item' + (closed ? ' ap-closed' : '') + '"><span class="ap-type">' + type + '</span><span class="ap-name">' + wp.subject + '</span><span class="ap-status' + (closed ? ' done' : '') + '">' + status + '</span></div>';
     }).join('');
     el.dataset.loaded = '1';
-  } catch(e) {
-    el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">&#x274C; Fehler: ' + e.message + '</div>';
+  }).catch(function(err) {
+    el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: ' + err.message + '</div>';
     el.dataset.loaded = '0';
-  }
+  });
 }
 
 function setupProjFilters() {
   var pmF = document.getElementById('proj-pm-filter');
   pmF.innerHTML = '<option value="">Alle Verantwortlichen</option>';
-  Array.from(new Set(projectData.map(function(p) { return p.pm; }).filter(Boolean))).sort().forEach(function(pm) {
+  var pms = [];
+  projectData.forEach(function(p) { if (p.pm && !pms.includes(p.pm)) pms.push(p.pm); });
+  pms.sort().forEach(function(pm) {
     var o = document.createElement('option'); o.value = pm.toLowerCase(); o.textContent = pm; pmF.appendChild(o);
   });
   document.getElementById('proj-filter-bar').style.display = 'flex';
@@ -1007,6 +961,19 @@ function setupProjFilters() {
   document.getElementById('proj-clear-btn').addEventListener('click', clearProjFilter);
 }
 
+function updateMemberFilter(names) {
+  names.forEach(function(n) { if (!allMemberNames.includes(n)) allMemberNames.push(n); });
+  allMemberNames.sort();
+  var sel = document.getElementById('proj-member-filter');
+  if (!sel) return;
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">Alle Mitglieder</option>';
+  allMemberNames.forEach(function(n) {
+    var o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o);
+  });
+  sel.value = cur;
+}
+
 function applyProjFilter() {
   var q = document.getElementById('proj-search').value.toLowerCase();
   var statuses = getMsValues('proj-status-ms-panel');
@@ -1014,10 +981,10 @@ function applyProjFilter() {
   var member = document.getElementById('proj-member-filter').value.toLowerCase();
   var v = 0;
   document.querySelectorAll('#cards .project-card').forEach(function(c) {
-    var m = (!q || c.dataset.name.includes(q) || c.dataset.members.includes(q))
+    var m = (!q || c.dataset.name.includes(q) || (c.dataset.members || '').includes(q))
       && (!statuses.length || statuses.includes(c.dataset.status))
       && (!pm || c.dataset.pm.includes(pm))
-      && (!member || c.dataset.members.includes(member));
+      && (!member || (c.dataset.members || '').includes(member));
     c.classList.toggle('hidden', !m);
     if (m) v++;
   });
@@ -1035,110 +1002,129 @@ function clearProjFilter() {
   document.getElementById('no-results').style.display = 'none';
 }
 
-var allMemberNames = [];
-function updateMemberFilter(names) {
-  names.forEach(function(n) { if (!allMemberNames.includes(n)) allMemberNames.push(n); });
-  allMemberNames.sort();
-  var sel = document.getElementById('proj-member-filter');
-  if (!sel) return;
-  var current = sel.value;
-  sel.innerHTML = '<option value="">Alle Mitglieder</option>';
-  allMemberNames.forEach(function(n) {
-    var o = document.createElement('option');
-    o.value = n; o.textContent = n.charAt(0).toUpperCase() + n.slice(1);
-    sel.appendChild(o);
-  });
-  sel.value = current;
-}
-
 function renderWarenbestand() {
   var content = document.getElementById('wb-content');
   if (!warenData.length) {
-    content.innerHTML = '<div class="wb-empty">&#x1F4ED; Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';
+    content.innerHTML = '<div class="wb-empty">Keine offenen Hardware- oder ELO-Arbeitspakete.</div>';
     document.getElementById('wb-stats').style.display = 'none';
     document.getElementById('wb-export-bar').style.display = 'none';
     document.getElementById('wb-filter-bar').style.display = 'none';
     return;
   }
-  var PENDING_STATUS = ['bestellung ausstehend'];
+  // Bestellung ausstehend zuerst
   warenData.sort(function(a, b) {
-    var aP = PENDING_STATUS.some(function(s) { return (a.status||'').toLowerCase().includes(s); }) ? 0 : 1;
-    var bP = PENDING_STATUS.some(function(s) { return (b.status||'').toLowerCase().includes(s); }) ? 0 : 1;
+    var aP = (a.status || '').toLowerCase() === PENDING_STATUS ? 0 : 1;
+    var bP = (b.status || '').toLowerCase() === PENDING_STATUS ? 0 : 1;
     return aP - bP;
   });
+  var pendingCount = warenData.filter(function(w) { return (w.status || '').toLowerCase() === PENDING_STATUS; }).length;
   document.getElementById('wb-total').textContent = warenData.length;
-  document.getElementById('wb-proj-count').textContent = new Set(warenData.map(function(w) { return w.projekt; })).size;
-  var pendingCount = warenData.filter(function(w) { return PENDING_STATUS.some(function(s) { return (w.status||'').toLowerCase().includes(s); }); }).length;
-  var pendingEl = document.getElementById('wb-pending-count');
-  if (pendingEl) pendingEl.textContent = pendingCount;
+  document.getElementById('wb-proj-count').textContent = (function() {
+    var s = {};
+    warenData.forEach(function(w) { s[w.projekt] = 1; });
+    return Object.keys(s).length;
+  })();
+  document.getElementById('wb-pending-count').textContent = pendingCount;
   document.getElementById('wb-stats').style.display = 'flex';
   document.getElementById('wb-export-bar').style.display = 'flex';
+
+  // Klick Gesamt → Filter reset
+  document.getElementById('wb-total-card').onclick = function() { clearWBFilter(); };
+
+  // Klick Pending → Filter setzen
+  document.getElementById('wb-pending-card').onclick = function() {
+    var panel = document.getElementById('wb-status-ms-panel');
+    if (!panel) return;
+    panel.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+      cb.checked = cb.value === PENDING_STATUS;
+    });
+    updateMsBtn('wb-status-ms-btn', 'wb-status-ms-panel');
+    applyWBFilter();
+  };
+
   var statusCounts = {};
-  warenData.forEach(function(w) { statusCounts[w.status] = (statusCounts[w.status] || 0) + 1; });
+  warenData.forEach(function(w) { var s = w.status || '-'; statusCounts[s] = (statusCounts[s] || 0) + 1; });
+
   var wbPF = document.getElementById('wb-proj-filter');
   wbPF.innerHTML = '<option value="">Alle Projekte</option>';
-  Array.from(new Set(warenData.map(function(w) { return w.projekt; }).filter(Boolean))).sort().forEach(function(p) {
-    var o = document.createElement('option'); o.value = p.toLowerCase(); o.textContent = p; wbPF.appendChild(o);
-  });
+  var projs = [];
+  warenData.forEach(function(w) { if (w.projekt && !projs.includes(w.projekt)) projs.push(w.projekt); });
+  projs.sort().forEach(function(p) { var o = document.createElement('option'); o.value = p.toLowerCase(); o.textContent = p; wbPF.appendChild(o); });
+
   var wbSPanel = document.getElementById('wb-status-ms-panel');
   wbSPanel.innerHTML = '';
-  Object.entries(statusCounts).sort(function(a, b) { return a[0].localeCompare(b[0]); }).forEach(function(entry) {
+  Object.keys(statusCounts).sort().forEach(function(s) {
     var lbl = document.createElement('label');
     lbl.className = 'ms-option';
-    lbl.innerHTML = '<input type="checkbox" value="' + entry[0].toLowerCase() + '"> ' + entry[0] + ' <span class="ms-count-badge">' + entry[1] + '</span>';
+    lbl.innerHTML = '<input type="checkbox" value="' + s.toLowerCase() + '"> ' + s + ' <span class="ms-count-badge">' + statusCounts[s] + '</span>';
     wbSPanel.appendChild(lbl);
   });
-  var PENDING_STATUS = ['bestellung ausstehend','ausstehend','bestellt','in bestellung'];
+
   var rows = warenData.map(function(w, i) {
-    var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '–';
-    var isPending = w.status === 'Bestellung ausstehend';
+    var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '-';
+    var isPending = (w.status || '').toLowerCase() === PENDING_STATUS;
     var statusCell = isPending
-      ? '<span class="wb-status-pending" style="cursor:pointer" onclick="changeWBStatus(' + i + ', event)" title="Klick zum Ändern auf Bestellt">&#x26A0;&#xFE0F; ' + w.status + ' &#x270E;</span>'
-      : w.status;
-    return '<tr class="wb-row' + (isPending ? ' wb-pending' : '') + '" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status + ' ' + zugewiesen).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + statusCell + '</td><td>' + zugewiesen + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
+      ? '<span class="wb-status-pending" onclick="changeWBStatus(' + i + ',event)" title="Klick zum Aendern auf Bestellt">&#x26A0; ' + w.status + ' &#x270E;</span>'
+      : (w.status || '-');
+    var search = ((w.titel || '') + ' ' + (w.projekt || '') + ' ' + (w.status || '') + ' ' + zugewiesen).toLowerCase();
+    return '<tr class="wb-row' + (isPending ? ' wb-pending' : '') + '" data-idx="' + i + '" data-proj="' + (w.projekt || '').toLowerCase() + '" data-typ="' + (w.typ || '').toLowerCase() + '" data-status="' + (w.status || '').toLowerCase() + '" data-search="' + search + '">'
+      + '<td class="proj-col">' + (w.projekt || '-') + '</td>'
+      + '<td>' + (w.titel || '-') + '</td>'
+      + '<td><span class="wb-type-badge">' + (w.typ || '-') + '</span></td>'
+      + '<td>' + statusCell + '</td>'
+      + '<td>' + zugewiesen + '</td>'
+      + '<td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
   }).join('');
-  content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table" id="wb-table"><thead><tr>' +
-    '<th class="wb-sort-hdr" data-col="proj" style="cursor:pointer">Projekt <span class="sort-arrow">&#x21C5;</span></th>' +
-    '<th class="wb-sort-hdr" data-col="titel" style="cursor:pointer">Arbeitspaket <span class="sort-arrow">&#x21C5;</span></th>' +
-    '<th>Typ</th>' +
-    '<th class="wb-sort-hdr" data-col="status" style="cursor:pointer">Status <span class="sort-arrow">&#x21C5;</span></th>' +
-    '<th class="wb-sort-hdr" data-col="zugewiesen" style="cursor:pointer">Zugewiesen <span class="sort-arrow">&#x21C5;</span></th>' +
-    '<th></th></tr></thead>' +
-    '<tbody id="wb-tbody">' + rows + '</tbody></table>' +
-    '<div class="wb-no-results" id="wb-no-results" style="display:none">&#x1F50D; Keine Einträge gefunden.</div></div>';
+
+  content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table"><thead><tr>'
+    + '<th class="wb-sort-hdr" data-col="proj">Projekt <span class="sort-arrow">&#x21C5;</span></th>'
+    + '<th class="wb-sort-hdr" data-col="titel">Arbeitspaket <span class="sort-arrow">&#x21C5;</span></th>'
+    + '<th>Typ</th>'
+    + '<th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th>'
+    + '<th class="wb-sort-hdr" data-col="zugewiesen">Zugewiesen <span class="sort-arrow">&#x21C5;</span></th>'
+    + '<th></th></tr></thead><tbody id="wb-tbody">' + rows + '</tbody></table>'
+    + '<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Eintraege.</div></div>';
 
   // Sortierung
   var wbSortCol = null, wbSortAsc = true;
   content.querySelectorAll('.wb-sort-hdr').forEach(function(th) {
     th.addEventListener('click', function() {
-      var col = th.dataset.col;
-      if (wbSortCol === col) { wbSortAsc = !wbSortAsc; } else { wbSortCol = col; wbSortAsc = true; }
+      var c = th.dataset.col;
+      if (wbSortCol === c) { wbSortAsc = !wbSortAsc; } else { wbSortCol = c; wbSortAsc = true; }
       content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a) { a.innerHTML = '&#x21C5;'; });
       th.querySelector('.sort-arrow').innerHTML = wbSortAsc ? '&#x2191;' : '&#x2193;';
       var tbody = document.getElementById('wb-tbody');
-      var rowsArr = Array.from(tbody.querySelectorAll('.wb-row'));
-      rowsArr.sort(function(a, b) {
-        var aVal = '', bVal = '';
-        if (col === 'proj') { aVal = a.dataset.proj; bVal = b.dataset.proj; }
-        else if (col === 'status') { aVal = a.dataset.status; bVal = b.dataset.status; }
-        else if (col === 'titel') { aVal = a.querySelectorAll('td')[1].textContent.toLowerCase(); bVal = b.querySelectorAll('td')[1].textContent.toLowerCase(); }
-        else if (col === 'zugewiesen') { aVal = a.querySelectorAll('td')[4].textContent.toLowerCase(); bVal = b.querySelectorAll('td')[4].textContent.toLowerCase(); }
-        return wbSortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      var rowArr = Array.from(tbody.querySelectorAll('.wb-row'));
+      rowArr.sort(function(a, b) {
+        var av = '', bv = '';
+        if (c === 'proj') { av = a.dataset.proj; bv = b.dataset.proj; }
+        else if (c === 'status') { av = a.dataset.status; bv = b.dataset.status; }
+        else if (c === 'titel') { av = (a.querySelectorAll('td')[1] || {}).textContent || ''; bv = (b.querySelectorAll('td')[1] || {}).textContent || ''; }
+        else if (c === 'zugewiesen') { av = (a.querySelectorAll('td')[4] || {}).textContent || ''; bv = (b.querySelectorAll('td')[4] || {}).textContent || ''; }
+        return wbSortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
       });
-      rowsArr.forEach(function(r) { tbody.appendChild(r); });
+      rowArr.forEach(function(r) { tbody.appendChild(r); });
     });
   });
+
+  // Row click modal
   content.querySelectorAll('.wb-row').forEach(function(row) {
-    row.addEventListener('click', function() {
+    row.addEventListener('click', function(e) {
+      if (e.target.classList.contains('wb-status-pending')) return;
       var w = warenData[+row.dataset.idx];
-      var fields = Object.entries(w.raw).filter(function(e) { return e[1] !== ''; }).map(function(e) {
+      if (!w) return;
+      var fields = Object.entries(w.raw).filter(function(e) { return e[0] !== 'id' && e[1] !== ''; }).map(function(e) {
         return '<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">' + e[0] + '</div><div style="font-size:.8rem;color:var(--text-sub)">' + e[1] + '</div></div>';
       }).join('');
-      document.getElementById('wb-modal-content').innerHTML = '<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">' + w.titel + '</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">' + w.projekt + ' · <span style="color:var(--at-risk-c)">' + w.typ + '</span></div>' + fields;
+      document.getElementById('wb-modal-content').innerHTML = '<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">' + w.titel + '</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">' + w.projekt + ' - ' + w.typ + '</div>' + fields;
       document.getElementById('wb-modal').style.display = 'flex';
     });
   });
-  document.getElementById('wb-modal').addEventListener('click', function(e) { if (e.target === document.getElementById('wb-modal')) document.getElementById('wb-modal').style.display = 'none'; });
+
+  document.getElementById('wb-modal').addEventListener('click', function(e) {
+    if (e.target === document.getElementById('wb-modal')) document.getElementById('wb-modal').style.display = 'none';
+  });
+
   document.getElementById('wb-filter-bar').style.display = 'flex';
   initMS('wb-status-ms-btn', 'wb-status-ms-panel', applyWBFilter);
   document.getElementById('wb-search').addEventListener('input', applyWBFilter);
@@ -1154,7 +1140,10 @@ function applyWBFilter() {
   var statuses = getMsValues('wb-status-ms-panel');
   var v = 0;
   document.querySelectorAll('#wb-tbody .wb-row').forEach(function(row) {
-    var m = (!q || row.dataset.search.includes(q)) && (!proj || row.dataset.proj === proj) && (!typ || row.dataset.typ === typ) && (!statuses.length || statuses.includes(row.dataset.status));
+    var m = (!q || row.dataset.search.includes(q))
+      && (!proj || row.dataset.proj === proj)
+      && (!typ || row.dataset.typ === typ)
+      && (!statuses.length || statuses.includes(row.dataset.status));
     row.classList.toggle('wb-hidden', !m);
     if (m) v++;
   });
@@ -1174,6 +1163,26 @@ function clearWBFilter() {
   if (nr) nr.style.display = 'none';
 }
 
+// Status auf Bestellt aendern
+function changeWBStatus(idx, evt) {
+  evt.stopPropagation();
+  var w = warenData[idx];
+  if (!w || !w.raw || !w.raw.id) return;
+  if (!confirm('Status von "' + w.titel + '" auf "Bestellt" aendern?')) return;
+  apiFetch('/work_packages/' + w.raw.id).then(function(wpData) {
+    return apiFetch('/work_packages/' + w.raw.id, {
+      method: 'PATCH',
+      body: JSON.stringify({lockVersion: wpData.lockVersion, _links: {status: {href: '/api/v3/statuses/17'}}})
+    });
+  }).then(function() {
+    alert('Status erfolgreich auf "Bestellt" geaendert!');
+    loadFromAPI();
+  }).catch(function(err) {
+    alert('Fehler: ' + err.message);
+  });
+}
+
+// Hardware
 function initHardware() {
   var list = document.getElementById('hw-list');
   list.innerHTML = '';
@@ -1181,7 +1190,12 @@ function initHardware() {
     var row = document.createElement('div');
     row.className = 'hw-item';
     row.id = 'hw-row-' + hw.id;
-    row.innerHTML = '<input type="checkbox" id="hw-cb-' + hw.id + '" onchange="hwChanged(\'' + hw.id + '\')"><label class="hw-item-name" for="hw-cb-' + hw.id + '">' + hw.name + '</label><div class="hw-qty" id="hw-qty-' + hw.id + '" style="display:none"><button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',-1)">&#x2212;</button><span class="hw-qty-val" id="hw-qty-val-' + hw.id + '">1</span><button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',1)">+</button></div>';
+    row.innerHTML = '<input type="checkbox" id="hw-cb-' + hw.id + '" onchange="hwChanged(\'' + hw.id + '\')">'
+      + '<label class="hw-item-name" for="hw-cb-' + hw.id + '">' + hw.name + '</label>'
+      + '<div class="hw-qty" id="hw-qty-' + hw.id + '" style="display:none">'
+      + '<button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',-1)">-</button>'
+      + '<span class="hw-qty-val" id="hw-qty-val-' + hw.id + '">1</span>'
+      + '<button class="hw-qty-btn" onclick="hwQty(\'' + hw.id + '\',1)">+</button></div>';
     list.appendChild(row);
   });
 }
@@ -1204,25 +1218,30 @@ function hwQty(id, delta) {
 }
 
 function getHwSelections() {
-  return HW_ITEMS.filter(function(hw) { return document.getElementById('hw-cb-' + hw.id) && document.getElementById('hw-cb-' + hw.id).checked; }).map(function(hw) {
+  return HW_ITEMS.filter(function(hw) {
+    var cb = document.getElementById('hw-cb-' + hw.id);
+    return cb && cb.checked;
+  }).map(function(hw) {
     return {id: hw.id, name: hw.name, qty: parseInt(document.getElementById('hw-qty-val-' + hw.id).textContent) || 1};
   });
 }
 
 function updateWPPreview() {
-  var outlook = (document.querySelector('input[name="outlook"]:checked') || {}).value || 'Nicht Aktiv';
-  var adint = (document.querySelector('input[name="adint"]:checked') || {}).value || 'Nicht Aktiv';
+  var outlookEl = document.querySelector('input[name="outlook"]:checked');
+  var adintEl = document.querySelector('input[name="adint"]:checked');
+  var outlook = outlookEl ? outlookEl.value : 'Nicht Aktiv';
+  var adint = adintEl ? adintEl.value : 'Nicht Aktiv';
   var hw = getHwSelections();
-  var brotherPaperType = document.getElementById('brother-paper-type').value;
-  var brotherPaperQty = document.getElementById('brother-paper-qty').value || 1;
+  var paperType = document.getElementById('brother-paper-type').value;
+  var paperQty = document.getElementById('brother-paper-qty').value || 1;
   var items = WP_BASIS.map(function(w) { return {name: w.name, sub: false}; });
-  if (outlook === 'Beauftragt' || outlook === 'Gew\u00FCnscht') items.push({name: 'Outlook Add-in einrichten', sub: false});
-  if (adint === 'Beauftragt' || adint === 'Gew\u00FCnscht') items.push({name: 'AD-Integration konfigurieren', sub: false});
+  if (outlook === 'Beauftragt' || outlook === 'Gewuenscht') items.push({name: 'Outlook Add-in einrichten', sub: false});
+  if (adint === 'Beauftragt' || adint === 'Gewuenscht') items.push({name: 'AD-Integration konfigurieren', sub: false});
   hw.forEach(function(h) {
     for (var i = 0; i < h.qty; i++) {
       var label = h.qty > 1 ? h.name + ' (' + (i+1) + '/' + h.qty + ')' : h.name;
       items.push({name: label, sub: false});
-      if (h.id === 'brother' && i === 0 && brotherPaperType) items.push({name: 'Papier: ' + brotherPaperType + ' x ' + brotherPaperQty + ' Rollen', sub: true});
+      if (h.id === 'brother' && i === 0 && paperType) items.push({name: 'Papier: ' + paperType + ' x ' + paperQty + ' Rollen', sub: true});
     }
   });
   document.getElementById('wp-preview').innerHTML = items.map(function(it) {
@@ -1253,29 +1272,29 @@ function getFormData() {
   var parts = [ap];
   if (tel) parts.push('Tel: ' + tel);
   if (email) parts.push('E-Mail: ' + email);
-  var apFull = parts.join(' | ');
+  var outlookEl = document.querySelector('input[name="outlook"]:checked');
+  var adintEl = document.querySelector('input[name="adint"]:checked');
   return {
     name: document.getElementById('np-name').value.trim(),
     standort: document.getElementById('np-standort').value.trim(),
-    ap: apFull,
-    apName: ap,
+    ap: parts.join(' | '),
     paket: document.getElementById('np-paket').value,
-    outlook: (document.querySelector('input[name="outlook"]:checked') || {}).value || 'Nicht Aktiv',
-    adint: (document.querySelector('input[name="adint"]:checked') || {}).value || 'Nicht Aktiv',
+    outlook: outlookEl ? outlookEl.value : 'Nicht Aktiv',
+    adint: adintEl ? adintEl.value : 'Nicht Aktiv',
     hw: getHwSelections(),
-    brotherPaperType: document.getElementById('brother-paper-type').value,
-    brotherPaperQty: parseInt(document.getElementById('brother-paper-qty').value) || 1,
+    paperType: document.getElementById('brother-paper-type').value,
+    paperQty: parseInt(document.getElementById('brother-paper-qty').value) || 1,
     bemerkung: document.getElementById('np-bemerkung').value.trim()
   };
 }
 
 function buildDescription(d) {
   var hwText = d.hw.map(function(h) { return h.qty + 'x ' + h.name; }).join(', ');
-  var lines = ['**Kundenname:** ' + d.name, '**Standort:** ' + d.standort, '**Ansprechpartner:** ' + d.ap, '**Paket:** ' + d.paket];
-  if (hwText) lines.push('**Hardware:** ' + hwText);
-  lines.push('**Outlook Add-in:** ' + d.outlook);
-  lines.push('**AD-Integration:** ' + d.adint);
-  if (d.bemerkung) lines.push('\n**Bemerkungen:** ' + d.bemerkung);
+  var lines = ['Kundenname: ' + d.name, 'Standort: ' + d.standort, 'Ansprechpartner: ' + d.ap, 'Paket: ' + d.paket];
+  if (hwText) lines.push('Hardware: ' + hwText);
+  lines.push('Outlook Add-in: ' + d.outlook);
+  lines.push('AD-Integration: ' + d.adint);
+  if (d.bemerkung) lines.push('Bemerkungen: ' + d.bemerkung);
   return lines.join('\n');
 }
 
@@ -1292,7 +1311,7 @@ function resetForm() {
   document.getElementById('np-paket').value = '';
   document.querySelectorAll('input[name="outlook"]').forEach(function(r) { r.checked = r.value === 'Nicht Aktiv'; });
   document.querySelectorAll('input[name="adint"]').forEach(function(r) { r.checked = r.value === 'Nicht Aktiv'; });
-  document.querySelectorAll('.np-radio-lbl').forEach(function(l) { l.classList.toggle('selected', l.querySelector('input') && l.querySelector('input').checked); });
+  document.querySelectorAll('.np-radio-lbl').forEach(function(l) { var inp = l.querySelector('input'); l.classList.toggle('selected', inp && inp.checked); });
   HW_ITEMS.forEach(function(hw) { var cb = document.getElementById('hw-cb-' + hw.id); if (cb) cb.checked = false; hwChanged(hw.id); });
   document.getElementById('brother-paper-type').value = '';
   document.getElementById('brother-paper-qty').value = 1;
@@ -1300,7 +1319,7 @@ function resetForm() {
   updateWPPreview();
 }
 
-document.getElementById('np-submit-btn').addEventListener('click', async function() {
+document.getElementById('np-submit-btn').addEventListener('click', function() {
   var d = getFormData();
   var btn = document.getElementById('np-submit-btn');
   var valid = true;
@@ -1309,135 +1328,233 @@ document.getElementById('np-submit-btn').addEventListener('click', async functio
     if (!el.value.trim()) { el.classList.add('invalid'); valid = false; } else el.classList.remove('invalid');
   });
   if (!d.paket) { document.getElementById('np-paket').classList.add('invalid'); valid = false; } else document.getElementById('np-paket').classList.remove('invalid');
-  if (!valid) { showNpResult('&#x26A0;&#xFE0F; Bitte alle Pflichtfelder ausfüllen.', 'error'); return; }
+  if (!valid) { showNpResult('Bitte alle Pflichtfelder ausfuellen.', 'error'); return; }
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Wird geprüft…';
-  try {
-    var search = await apiFetch('/projects?filters=' + encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}])));
-    var existing = (search._embedded && search._embedded.elements ? search._embedded.elements : []).find(function(p) { return p.name.toLowerCase() === d.name.toLowerCase(); });
+  btn.innerHTML = '<span class="spinner"></span> Wird geprueft...';
+
+  var searchFilter = encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}]));
+  apiFetch('/projects?filters=' + searchFilter).then(function(searchData) {
+    var elements = searchData._embedded && searchData._embedded.elements ? searchData._embedded.elements : [];
+    var existing = elements.filter(function(p) { return p.name.toLowerCase() === d.name.toLowerCase(); })[0];
     if (existing) {
       btn.disabled = false;
-      btn.innerHTML = '&#x1F680; Projekt in OpenProject anlegen';
-      showNpResult('&#x26A0;&#xFE0F; <strong>Ein Projekt mit dem Namen "' + d.name + '" existiert bereits!</strong><br><br><a href="' + OP_URL + '/projects/' + existing.identifier + '" target="_blank" style="color:var(--at-risk-c)">&#x1F517; Bestehendes Projekt öffnen</a><br><br><button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">&#x270F;&#xFE0F; Anderen Namen verwenden</button><button onclick="updateExistingProject(\'' + existing.id + '\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">&#x1F504; Bestehendes Projekt aktualisieren</button>', 'warning');
-      return;
+      btn.innerHTML = 'Projekt in OpenProject anlegen';
+      showNpResult('Ein Projekt mit dem Namen "' + d.name + '" existiert bereits!<br><br>'
+        + '<a href="' + OP_URL + '/projects/' + existing.identifier + '" target="_blank">Bestehendes Projekt oeffnen</a><br><br>'
+        + '<button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">Anderen Namen verwenden</button>'
+        + '<button onclick="updateExistingProject(\'' + existing.id + '\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">Bestehendes Projekt aktualisieren</button>',
+        'warning');
+      return null;
     }
-    btn.innerHTML = '<span class="spinner"></span> Projekt wird angelegt…';
-    var projBody = {name: d.name, description: {format:'markdown', raw: buildDescription(d)}, customField11: d.name, customField12: d.standort, customField24: {format:'plain', raw: d.ap}, _links: {}};
-    projBody._links.customField2 = {href: PAKET_OPTIONS[d.paket]};
-    projBody._links.customField6 = {href: ADINT_OPTIONS[d.adint]};
-    projBody._links.customField4 = {href: OUTLOOK_OPTIONS[d.outlook]};
-    var proj = await apiFetch('/projects', {method:'POST', body: JSON.stringify(projBody)});
+    btn.innerHTML = '<span class="spinner"></span> Projekt wird angelegt...';
+    var links = {};
+    if (PAKET_OPT[d.paket]) links.customField2 = {href: PAKET_OPT[d.paket]};
+    if (ADINT_OPT[d.adint]) links.customField6 = {href: ADINT_OPT[d.adint]};
+    if (OUTLOOK_OPT[d.outlook]) links.customField4 = {href: OUTLOOK_OPT[d.outlook]};
+    var projBody = {
+      name: d.name,
+      description: {format:'markdown', raw: buildDescription(d)},
+      customField11: d.name,
+      customField12: d.standort,
+      customField24: {format:'plain', raw: d.ap},
+      _links: links
+    };
+    return apiFetch('/projects', {method:'POST', body: JSON.stringify(projBody)});
+  }).then(function(proj) {
+    if (!proj) return;
     var projId = proj.id;
-    btn.innerHTML = '<span class="spinner"></span> Arbeitspakete werden angelegt…';
+    btn.innerHTML = '<span class="spinner"></span> Arbeitspakete werden angelegt...';
     var wpCount = 0, wpOk = 0;
-    async function makeWP(subject, parentId, isHardware) {
+
+    function makeWP(subject, parentId, isHW) {
       wpCount++;
       var body = {subject: subject, _links: {project: {href: '/api/v3/projects/' + projId}}};
-      if (isHardware) body._links.type = {href: '/api/v3/types/8'};
+      if (isHW) body._links.type = {href: '/api/v3/types/8'};
       if (parentId) body._links.parent = {href: '/api/v3/work_packages/' + parentId};
-      try { var r = await apiFetch('/work_packages', {method:'POST', body: JSON.stringify(body)}); wpOk++; return r.id; } catch(e) { return null; }
+      return apiFetch('/work_packages', {method:'POST', body: JSON.stringify(body)}).then(function(r) { wpOk++; return r.id; }).catch(function() { return null; });
     }
-    for (var i = 0; i < WP_BASIS.length; i++) await makeWP(WP_BASIS[i].name, null, false);
-    if (d.outlook === 'Beauftragt' || d.outlook === 'Gew\u00FCnscht') await makeWP('Outlook Add-in einrichten', null, false);
-    if (d.adint === 'Beauftragt' || d.adint === 'Gew\u00FCnscht') await makeWP('AD-Integration konfigurieren', null, false);
+
+    var chain = Promise.resolve();
+    WP_BASIS.forEach(function(wp) {
+      chain = chain.then(function() { return makeWP(wp.name, null, false); });
+    });
+    if (d.outlook === 'Beauftragt' || d.outlook === 'Gewuenscht') {
+      chain = chain.then(function() { return makeWP('Outlook Add-in einrichten', null, false); });
+    }
+    if (d.adint === 'Beauftragt' || d.adint === 'Gewuenscht') {
+      chain = chain.then(function() { return makeWP('AD-Integration konfigurieren', null, false); });
+    }
     var brotherParentId = null;
-    for (var hi = 0; hi < d.hw.length; hi++) {
-      var h = d.hw[hi];
+    d.hw.forEach(function(h) {
       for (var qi = 0; qi < h.qty; qi++) {
-        var label = h.qty > 1 ? h.name + ' (' + (qi+1) + '/' + h.qty + ')' : h.name;
-        var wid = await makeWP(label, null, true);
-        if (h.id === 'brother' && qi === 0) brotherParentId = wid;
+        (function(hwItem, idx) {
+          chain = chain.then(function() {
+            var label = hwItem.qty > 1 ? hwItem.name + ' (' + (idx+1) + '/' + hwItem.qty + ')' : hwItem.name;
+            return makeWP(label, null, true).then(function(wid) {
+              if (hwItem.id === 'brother' && idx === 0) brotherParentId = wid;
+              return wid;
+            });
+          });
+        })(h, qi);
       }
+    });
+    if (d.paperType) {
+      chain = chain.then(function() {
+        if (brotherParentId) return makeWP('Papier: ' + d.paperType + ' x ' + d.paperQty + ' Rollen', brotherParentId, true);
+      });
     }
-    if (brotherParentId && d.brotherPaperType) await makeWP('Papier: ' + d.brotherPaperType + ' x ' + d.brotherPaperQty + ' Rollen', brotherParentId, true);
-    showNpResult('&#x2705; <strong>Projekt erfolgreich angelegt!</strong><br><br><strong>Name:</strong> ' + d.name + '<br><strong>Projekt-ID:</strong> ' + projId + '<br><strong>Arbeitspakete:</strong> ' + wpCount + ' angelegt (' + wpOk + ' erfolgreich)<br><br><a href="' + OP_URL + '/projects/' + proj.identifier + '" target="_blank" style="color:var(--success-c)">&#x1F517; In OpenProject öffnen</a>', 'success');
-    loadFromAPI();
-  } catch(e) {
-    showNpResult('&#x274C; Fehler: ' + e.message, 'error');
-  } finally {
+    return chain.then(function() {
+      showNpResult('Projekt erfolgreich angelegt!<br><br>'
+        + 'Name: ' + d.name + '<br>'
+        + 'Projekt-ID: ' + projId + '<br>'
+        + 'Arbeitspakete: ' + wpCount + ' angelegt (' + wpOk + ' erfolgreich)<br><br>'
+        + '<a href="' + OP_URL + '/projects/' + proj.identifier + '" target="_blank">In OpenProject oeffnen</a>',
+        'success');
+      loadFromAPI();
+    });
+  }).catch(function(err) {
+    showNpResult('Fehler: ' + err.message, 'error');
+  }).then(function() {
     btn.disabled = false;
-    btn.innerHTML = '&#x1F680; Projekt in OpenProject anlegen';
-  }
+    btn.innerHTML = 'Projekt in OpenProject anlegen';
+  });
 });
 
-async function updateExistingProject(projId) {
+function updateExistingProject(projId) {
   var d = getFormData();
   var btn = document.getElementById('np-submit-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Wird aktualisiert…';
-  try {
-    var projBody = {description: {format:'markdown', raw: buildDescription(d)}, customField11: d.name, customField12: d.standort, customField24: {format:'plain', raw: d.ap}, _links: {}};
-    projBody._links.customField2 = {href: PAKET_OPTIONS[d.paket]};
-    projBody._links.customField6 = {href: ADINT_OPTIONS[d.adint]};
-    projBody._links.customField4 = {href: OUTLOOK_OPTIONS[d.outlook]};
-    await apiFetch('/projects/' + projId, {method:'PATCH', body: JSON.stringify(projBody)});
-    var existingWPs = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}}])));
-    var hwWPs = existingWPs._embedded && existingWPs._embedded.elements ? existingWPs._embedded.elements : [];
-    var selectedNames = [];
-    d.hw.forEach(function(h) {
-      for (var i = 0; i < h.qty; i++) selectedNames.push(h.qty > 1 ? h.name + ' (' + (i+1) + '/' + h.qty + ')' : h.name);
-    });
-    if (d.brotherPaperType) selectedNames.push('Papier: ' + d.brotherPaperType + ' x ' + d.brotherPaperQty + ' Rollen');
-    var deleted = 0;
-    for (var i = 0; i < hwWPs.length; i++) {
-      if (!selectedNames.includes(hwWPs[i].subject)) {
-        try { await apiFetch('/work_packages/' + hwWPs[i].id, {method:'DELETE'}); deleted++; } catch(e) {}
-      }
-    }
-    showNpResult('&#x2705; <strong>Projekt erfolgreich aktualisiert!</strong>' + (deleted > 0 ? '<br><br>&#x1F5D1; ' + deleted + ' Hardware-AP(s) entfernt.' : ''), 'success');
+  btn.innerHTML = '<span class="spinner"></span> Wird aktualisiert...';
+  var links = {};
+  if (PAKET_OPT[d.paket]) links.customField2 = {href: PAKET_OPT[d.paket]};
+  if (ADINT_OPT[d.adint]) links.customField6 = {href: ADINT_OPT[d.adint]};
+  if (OUTLOOK_OPT[d.outlook]) links.customField4 = {href: OUTLOOK_OPT[d.outlook]};
+  var projBody = {
+    description: {format:'markdown', raw: buildDescription(d)},
+    customField11: d.name,
+    customField12: d.standort,
+    customField24: {format:'plain', raw: d.ap},
+    _links: links
+  };
+  apiFetch('/projects/' + projId, {method:'PATCH', body: JSON.stringify(projBody)}).then(function() {
+    showNpResult('Projekt erfolgreich aktualisiert!', 'success');
     loadFromAPI();
-  } catch(e) {
-    showNpResult('&#x274C; Fehler: ' + e.message, 'error');
-  } finally {
+  }).catch(function(err) {
+    showNpResult('Fehler: ' + err.message, 'error');
+  }).then(function() {
     btn.disabled = false;
-    btn.innerHTML = '&#x1F680; Projekt in OpenProject anlegen';
-  }
+    btn.innerHTML = 'Projekt in OpenProject anlegen';
+  });
 }
 
-async function changeWBStatus(idx, evt) {
-  evt.stopPropagation();
-  var w = warenData[idx];
-  if (!w) return;
-  if (!confirm('Status von "' + w.titel + '" auf "Bestellt" \u00E4ndern?')) return;
-  try {
-    var wpData = await apiFetch('/work_packages/' + w.raw.id);
-    await apiFetch('/work_packages/' + w.raw.id, {
-      method: 'PATCH',
-      body: JSON.stringify({
-        lockVersion: wpData.lockVersion,
-        _links: {status: {href: '/api/v3/statuses/17'}}
-      })
-    });
-    alert('\u2705 Status erfolgreich auf "Bestellt" ge\u00E4ndert!');
-    loadFromAPI();
-  } catch(err) {
-    alert('\u274C Fehler: ' + err.message);
-  }
-}
-  var img = new Image(); img.crossOrigin = 'anonymous';
+// PDF Logo
+function addLogoToPDF(doc, cb) {
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
   img.onload = function() {
-    try { var c = document.createElement('canvas'); c.width = img.width; c.height = img.height; c.getContext('2d').drawImage(img,0,0); var r = img.width/img.height, h=10, w=h*r; doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h); } catch(e) {}
+    try {
+      var c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      c.getContext('2d').drawImage(img, 0, 0);
+      var ratio = img.width / img.height, h = 10, w = h * ratio;
+      doc.addImage(c.toDataURL('image/png'), 'PNG', doc.internal.pageSize.getWidth() - w - 12, 6, w, h);
+    } catch(e) {}
     cb();
   };
   img.onerror = function() { cb(); };
   img.src = 'https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';
 }
 
+// Exports
 function tableData() {
   return projectData.map(function(p) {
-    return {'Projektname':p.name,'Status':statusLabel(statusKey(p.status)),'Projektverantwortlicher':p.pm||'–','Paket':p.paket||'–','Outlook':p.outlook||'–','AD-Integration':p.adint||'–','AP gesamt':p.wp_total,'AP abgeschlossen':p.wp_closed,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0,'Besonderheiten':(p.besonderheit||'–').substring(0,200)};
+    return {
+      Projektname: p.name, Status: statusLabel(statusKey(p.status)),
+      Projektverantwortlicher: p.pm || '-', Paket: p.paket || '-',
+      'AP gesamt': p.wp_total, 'AP abgeschlossen': p.wp_closed,
+      'AP offen': p.wp_total - p.wp_closed,
+      'Fortschritt (%)': p.wp_total > 0 ? Math.round((p.wp_closed / p.wp_total) * 100) : 0
+    };
   });
 }
 
-function exportExcel() { var ws=XLSX.utils.json_to_sheet(tableData()); ws['!cols']=[28,14,22,16,10,12,10,14,8,14,40].map(function(w){return{wch:w};}); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Projekte'); XLSX.writeFile(wb,'welcome_projekte.xlsx'); }
-function exportCSV() { var rows=tableData(),h=Object.keys(rows[0]); var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return '"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n'); var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='welcome_projekte.csv'; a.click(); }
-function exportPDF() { var jsPDF=window.jspdf.jsPDF; var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Projektuebersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projektname','Status','Projektverantwortlicher','Paket','Outlook','AD-Integration','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'–';})}),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:44},8:{halign:'center'}}});doc.save('welcome_projekte.pdf');}); }
+function exportExcel() {
+  var ws = XLSX.utils.json_to_sheet(tableData());
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Projekte');
+  XLSX.writeFile(wb, 'welcome_projekte.xlsx');
+}
 
-function wbTableData() { return warenData.map(function(w){return{'Projekt':w.projekt||'–','Arbeitspaket':w.titel,'Typ':w.typ,'Status':w.status};}); }
-function exportWBExcel() { var ws=XLSX.utils.json_to_sheet(wbTableData()); ws['!cols']=[30,40,18,16].map(function(w){return{wch:w};}); var wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Warenbestand'); XLSX.writeFile(wb,'welcome_warenbestand.xlsx'); }
-function exportWBCSV() { var rows=wbTableData(),h=Object.keys(rows[0]); var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return '"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n'); var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'})); a.download='welcome_warenbestand.csv'; a.click(); }
-function exportWBPDF() { var jsPDF=window.jspdf.jsPDF; var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}); addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projekt','Arbeitspaket','Typ','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]||'–';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});doc.save('welcome_warenbestand.pdf');}); }
+function exportCSV() {
+  var rows = tableData();
+  var h = Object.keys(rows[0]);
+  var csv = [h.join(';')].concat(rows.map(function(r) {
+    return h.map(function(k) { return '"' + (r[k] + '').replace(/"/g, '""') + '"'; }).join(';');
+  })).join('\n');
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'welcome_projekte.csv';
+  a.click();
+}
 
+function exportPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
+  addLogoToPDF(doc, function() {
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(0,51,102);
+    doc.text('WELCOME - Projektuebersicht', 14, 14);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(130);
+    doc.text('Erstellt: ' + new Date().toLocaleDateString('de-DE'), 14, 20);
+    var cols = ['Projektname','Status','Projektverantwortlicher','Paket','AP gesamt','AP offen','Fortschritt (%)'];
+    doc.autoTable({startY:24, head:[cols], body: tableData().map(function(r) { return cols.map(function(c) { return r[c] !== undefined ? r[c] : '-'; }); }),
+      styles:{fontSize:7.5,cellPadding:2.5}, headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},
+      alternateRowStyles:{fillColor:[244,246,249]}, columnStyles:{0:{cellWidth:44}}});
+    doc.save('welcome_projekte.pdf');
+  });
+}
+
+function wbTableData() {
+  return warenData.map(function(w) {
+    return {Projekt: w.projekt || '-', Arbeitspaket: w.titel, Typ: w.typ, Status: w.status, Zugewiesen: (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '-'};
+  });
+}
+
+function exportWBExcel() {
+  var ws = XLSX.utils.json_to_sheet(wbTableData());
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Warenbestand');
+  XLSX.writeFile(wb, 'welcome_warenbestand.xlsx');
+}
+
+function exportWBCSV() {
+  var rows = wbTableData();
+  var h = Object.keys(rows[0]);
+  var csv = [h.join(';')].concat(rows.map(function(r) {
+    return h.map(function(k) { return '"' + (r[k] + '').replace(/"/g, '""') + '"'; }).join(';');
+  })).join('\n');
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'welcome_warenbestand.csv';
+  a.click();
+}
+
+function exportWBPDF() {
+  var jsPDF = window.jspdf.jsPDF;
+  var doc = new jsPDF({orientation:'landscape', unit:'mm', format:'a4'});
+  addLogoToPDF(doc, function() {
+    doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(0,51,102);
+    doc.text('WELCOME - Warenbestand', 14, 14);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(130);
+    doc.text('Erstellt: ' + new Date().toLocaleDateString('de-DE'), 14, 20);
+    var cols = ['Projekt','Arbeitspaket','Typ','Status','Zugewiesen'];
+    doc.autoTable({startY:24, head:[cols], body: wbTableData().map(function(r) { return cols.map(function(c) { return r[c] || '-'; }); }),
+      styles:{fontSize:8,cellPadding:3}, headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},
+      alternateRowStyles:{fillColor:[244,246,249]}, columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});
+    doc.save('welcome_warenbestand.pdf');
+  });
+}
+
+// Init
 initHardware();
 initRadios();
 updateWPPreview();
