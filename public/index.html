@@ -326,7 +326,10 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div class="wb-stats" id="wb-stats">
       <div class="stat-card"><div class="num" id="wb-total">–</div><div class="lbl">Einträge gesamt</div></div>
       <div class="stat-card"><div class="num" id="wb-proj-count">–</div><div class="lbl">Betroffene Projekte</div></div>
-      <div class="stat-card"><div class="num" id="wb-pending-count" style="color:var(--error-c)">–</div><div class="lbl">Bestellung ausstehend</div></div>
+      <div class="stat-card" id="wb-pending-card" style="cursor:pointer" title="Klick zum Filtern">
+        <div class="num" id="wb-pending-count" style="color:var(--error-c)">–</div>
+        <div class="lbl">Bestellung ausstehend &#x1F50D;</div>
+      </div>
     </div>
     <div class="wb-export-bar" id="wb-export-bar">
       <button class="btn btn-excel" onclick="exportWBExcel()">&#x2B07; Excel</button>
@@ -793,8 +796,22 @@ async function loadFromAPI() {
     showMsg('✅ ' + filtered.length + ' Projekte geladen.', 'success');
     setTimeout(function() { var el = document.getElementById('msg'); if (el && el.className === 'msg-success') el.style.display = 'none'; }, 3000);
 
-    // Mitglieder pro Projekt nachladen
-    filtered.forEach(function(p) {
+  // Klick auf Pending-Karte → Filter setzen
+  var pendingCard = document.getElementById('wb-pending-card');
+  if (pendingCard) {
+    pendingCard.addEventListener('click', function() {
+      var panel = document.getElementById('wb-status-ms-panel');
+      if (!panel) return;
+      panel.querySelectorAll('input[type=checkbox]').forEach(function(cb) {
+        cb.checked = cb.value === 'bestellung ausstehend';
+      });
+      updateMsBtn('wb-status-ms-btn', 'wb-status-ms-panel');
+      applyWBFilter();
+    });
+  }
+
+  // Mitglieder nachladen
+  filtered.forEach(function(p) {
       if (!p._id) return;
       apiFetch('/projects/' + p._id + '/memberships?pageSize=50').then(function(data) {
         var members = (data._embedded && data._embedded.elements ? data._embedded.elements : []);
@@ -815,7 +832,7 @@ async function loadFromAPI() {
         if (card) card.dataset.members = memberNames.join(' ');
         // PM-Filter befüllen
         updateMemberFilter(memberNames);
-      }).catch(function() {});
+      }).catch(function(e) { console.warn('Mitglieder Fehler Projekt ' + p._id + ':', e.message); });
     });
   } catch(e) { showMsg('❌ Fehler: ' + e.message, 'error'); }
 }
@@ -1036,7 +1053,7 @@ function renderWarenbestand() {
     document.getElementById('wb-filter-bar').style.display = 'none';
     return;
   }
-  var PENDING_STATUS = ['bestellung ausstehend','ausstehend','bestellt','in bestellung'];
+  var PENDING_STATUS = ['bestellung ausstehend'];
   warenData.sort(function(a, b) {
     var aP = PENDING_STATUS.some(function(s) { return (a.status||'').toLowerCase().includes(s); }) ? 0 : 1;
     var bP = PENDING_STATUS.some(function(s) { return (b.status||'').toLowerCase().includes(s); }) ? 0 : 1;
