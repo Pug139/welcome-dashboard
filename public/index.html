@@ -867,9 +867,10 @@ document.getElementById('np-submit-btn').addEventListener('click',async()=>{
     btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt…';
     let wpCount=0,wpOk=0;
 
-    const makeWP=async(subject,parentId=null)=>{
+    const makeWP=async(subject,parentId=null,isHardware=false)=>{
       wpCount++;
       const body={subject,_links:{project:{href:`/api/v3/projects/${projId}`}}};
+      if(isHardware) body._links.type={href:'/api/v3/types/8'};
       if(parentId) body._links.parent={href:`/api/v3/work_packages/${parentId}`};
       try{const r=await apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});wpOk++;return r.id;}
       catch(e){return null;}
@@ -887,14 +888,14 @@ document.getElementById('np-submit-btn').addEventListener('click',async()=>{
     for(const h of d.hw){
       for(let i=0;i<h.qty;i++){
         const label=h.qty>1?`${h.name} (${i+1}/${h.qty})`:h.name;
-        const id=await makeWP(label);
+        const id=await makeWP(label,null,true);
         if(h.id==='brother'&&i===0) brotherParentId=id;
       }
     }
 
-    // Brother Papier als Unteraufgabe
+    // Brother Papier als Unteraufgabe (Typ Hardware)
     if(brotherParentId&&d.brotherPaperType){
-      await makeWP(`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`, brotherParentId);
+      await makeWP(`Papier: ${d.brotherPaperType} × ${d.brotherPaperQty} Rollen`,brotherParentId,true);
     }
 
     showNpResult(`✅ <strong>Projekt erfolgreich angelegt!</strong><br><br>
