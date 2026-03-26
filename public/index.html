@@ -324,7 +324,10 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <div class="tab-panel" id="tab-warenbestand">
     <div id="msg-wb"></div>
     <div class="wb-stats" id="wb-stats">
-      <div class="stat-card"><div class="num" id="wb-total">–</div><div class="lbl">Einträge gesamt</div></div>
+      <div class="stat-card" id="wb-total-card" style="cursor:pointer" title="Klick zum Zurücksetzen aller Filter">
+        <div class="num" id="wb-total">–</div>
+        <div class="lbl">Einträge gesamt &#x2715;</div>
+      </div>
       <div class="stat-card"><div class="num" id="wb-proj-count">–</div><div class="lbl">Betroffene Projekte</div></div>
       <div class="stat-card" id="wb-pending-card" style="cursor:pointer" title="Klick zum Filtern">
         <div class="num" id="wb-pending-count" style="color:var(--error-c)">–</div>
@@ -785,7 +788,7 @@ async function loadFromAPI() {
       var t = (wp._links && wp._links.type ? wp._links.type.title : '').toLowerCase();
       var st = wp._links && wp._links.status ? wp._links.status.title : '';
       if (WAREN_TYPES.includes(t) && !isWPClosed(st.toLowerCase())) {
-        warenData.push({projekt: (wp._links && wp._links.project ? wp._links.project.title : '') || '–', titel: wp.subject || '–', typ: (wp._links && wp._links.type ? wp._links.type.title : '') || '–', status: st || '–', raw: {Projekt: wp._links && wp._links.project ? wp._links.project.title : '', Thema: wp.subject, Typ: wp._links && wp._links.type ? wp._links.type.title : '', Status: st, Zugewiesen: wp._links && wp._links.assignee ? wp._links.assignee.title : '–', Erstellt: wp.createdAt ? wp.createdAt.substring(0,10) : '–'}});
+        warenData.push({projekt: (wp._links && wp._links.project ? wp._links.project.title : '') || '–', titel: wp.subject || '–', typ: (wp._links && wp._links.type ? wp._links.type.title : '') || '–', status: st || '–', raw: {id: wp.id, Projekt: wp._links && wp._links.project ? wp._links.project.title : '', Thema: wp.subject, Typ: wp._links && wp._links.type ? wp._links.type.title : '', Status: st, Zugewiesen: wp._links && wp._links.assignee ? wp._links.assignee.title : '–', Erstellt: wp.createdAt ? wp.createdAt.substring(0,10) : '–'}});
       }
     });
     var filtered = projects.filter(function(p) { return !EXCL_PROJ.includes(p.name.toLowerCase().trim()) && !isProjectClosed(p.status); });
@@ -795,6 +798,10 @@ async function loadFromAPI() {
     setupProjFilters();
     showMsg('✅ ' + filtered.length + ' Projekte geladen.', 'success');
     setTimeout(function() { var el = document.getElementById('msg'); if (el && el.className === 'msg-success') el.style.display = 'none'; }, 3000);
+
+  // Klick auf Gesamt-Karte → alle Filter zurücksetzen
+  var totalCard = document.getElementById('wb-total-card');
+  if (totalCard) totalCard.addEventListener('click', function() { clearWBFilter(); });
 
   // Klick auf Pending-Karte → Filter setzen
   var pendingCard = document.getElementById('wb-pending-card');
@@ -1084,9 +1091,9 @@ function renderWarenbestand() {
   var PENDING_STATUS = ['bestellung ausstehend','ausstehend','bestellt','in bestellung'];
   var rows = warenData.map(function(w, i) {
     var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '–';
-    var isPending = PENDING_STATUS.some(function(s) { return (w.status||'').toLowerCase().includes(s); });
+    var isPending = w.status === 'Bestellung ausstehend';
     var statusCell = isPending
-      ? '<span class="wb-status-pending">&#x26A0;&#xFE0F; ' + w.status + '</span>'
+      ? '<span class="wb-status-pending" style="cursor:pointer" onclick="changeWBStatus(' + i + ', event)" title="Klick zum Ändern auf Bestellt">&#x26A0;&#xFE0F; ' + w.status + ' &#x270E;</span>'
       : w.status;
     return '<tr class="wb-row' + (isPending ? ' wb-pending' : '') + '" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status + ' ' + zugewiesen).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + statusCell + '</td><td>' + zugewiesen + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
   }).join('');
@@ -1387,7 +1394,27 @@ async function updateExistingProject(projId) {
   }
 }
 
-function addLogoToPDF(doc, cb) {
+async function changeWBStatus(idx, e) {
+  e.stopPropagation();
+  var w = warenData[idx];
+  if (!w) return;
+  if (!confirm('Status von "' + w.titel + '" auf "Bestellt" ändern?')) return;
+  try {
+    // lockVersion holen
+    var wpData = await apiFetch('/work_packages/' + w.raw.id);
+    await apiFetch('/work_packages/' + w.raw.id, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        lockVersion: wpData.lockVersion,
+        _links: {status: {href: '/api/v3/statuses/17'}}
+      })
+    });
+    alert('✅ Status erfolgreich auf "Bestellt" geändert!');
+    loadFromAPI();
+  } catch(e) {
+    alert('❌ Fehler: ' + e.message);
+  }
+}
   var img = new Image(); img.crossOrigin = 'anonymous';
   img.onload = function() {
     try { var c = document.createElement('canvas'); c.width = img.width; c.height = img.height; c.getContext('2d').drawImage(img,0,0); var r = img.width/img.height, h=10, w=h*r; doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h); } catch(e) {}
