@@ -1036,16 +1036,17 @@ function renderWarenbestand() {
     document.getElementById('wb-filter-bar').style.display = 'none';
     return;
   }
-  var PENDING = ['ausstehend','bestellung ausstehend','offen','bestellt','in bestellung','neu'];
+  var PENDING_STATUS = ['bestellung ausstehend','ausstehend','bestellt','in bestellung'];
   warenData.sort(function(a, b) {
-    var aP = PENDING.some(function(s) { return a.status.toLowerCase().includes(s); }) ? 0 : 1;
-    var bP = PENDING.some(function(s) { return b.status.toLowerCase().includes(s); }) ? 0 : 1;
+    var aP = PENDING_STATUS.some(function(s) { return (a.status||'').toLowerCase().includes(s); }) ? 0 : 1;
+    var bP = PENDING_STATUS.some(function(s) { return (b.status||'').toLowerCase().includes(s); }) ? 0 : 1;
     return aP - bP;
   });
   document.getElementById('wb-total').textContent = warenData.length;
   document.getElementById('wb-proj-count').textContent = new Set(warenData.map(function(w) { return w.projekt; })).size;
-  var pendingCount = warenData.filter(function(w) { return PENDING_STATUS.some(function(s) { return w.status.toLowerCase().includes(s); }); }).length;
-  document.getElementById('wb-pending-count').textContent = pendingCount;
+  var pendingCount = warenData.filter(function(w) { return PENDING_STATUS.some(function(s) { return (w.status||'').toLowerCase().includes(s); }); }).length;
+  var pendingEl = document.getElementById('wb-pending-count');
+  if (pendingEl) pendingEl.textContent = pendingCount;
   document.getElementById('wb-stats').style.display = 'flex';
   document.getElementById('wb-export-bar').style.display = 'flex';
   var statusCounts = {};
@@ -1066,7 +1067,7 @@ function renderWarenbestand() {
   var PENDING_STATUS = ['bestellung ausstehend','ausstehend','bestellt','in bestellung'];
   var rows = warenData.map(function(w, i) {
     var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '–';
-    var isPending = PENDING_STATUS.some(function(s) { return w.status.toLowerCase().includes(s); });
+    var isPending = PENDING_STATUS.some(function(s) { return (w.status||'').toLowerCase().includes(s); });
     var statusCell = isPending
       ? '<span class="wb-status-pending">&#x26A0;&#xFE0F; ' + w.status + '</span>'
       : w.status;
