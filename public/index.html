@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WELCOME Projekt-Übersicht</title>
+<link rel="icon" type="image/webp" href="https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -176,7 +177,9 @@ header p{font-size:.72rem;opacity:.7}
 .wb-table tr.wb-hidden{display:none}
 .wb-table .proj-col{color:var(--brand-light);font-weight:600}
 .wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
-.wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
+.wb-table tr.wb-pending td{background:rgba(248,81,73,.06)}
+.wb-table tr.wb-pending td:first-child{border-left:3px solid var(--error-c)}
+.wb-status-pending{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(248,81,73,.15);color:var(--error-c);border:1px solid var(--error-c)}
 .np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
 .np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
 .np-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
@@ -323,6 +326,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div class="wb-stats" id="wb-stats">
       <div class="stat-card"><div class="num" id="wb-total">–</div><div class="lbl">Einträge gesamt</div></div>
       <div class="stat-card"><div class="num" id="wb-proj-count">–</div><div class="lbl">Betroffene Projekte</div></div>
+      <div class="stat-card"><div class="num" id="wb-pending-count" style="color:var(--error-c)">–</div><div class="lbl">Bestellung ausstehend</div></div>
     </div>
     <div class="wb-export-bar" id="wb-export-bar">
       <button class="btn btn-excel" onclick="exportWBExcel()">&#x2B07; Excel</button>
@@ -438,6 +442,7 @@ var PROXY = '/proxy';
 var REFRESH_INTERVAL = 300;
 
 var API_KEY = '';
+window.API_KEY = API_KEY;
 var projectData = [];
 var warenData = [];
 var raw = {proj: null, wp: null};
@@ -539,6 +544,7 @@ async function doLogin() {
     var r = await fetch(PROXY + '/projects?pageSize=1', {headers: {'X-OP-URL': OP_URL, 'X-OP-KEY': token}});
     if (!r.ok) throw new Error();
     API_KEY = token;
+    window.API_KEY = token;
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('tokenLabel').textContent = 'Verbunden';
     loadFromAPI();
@@ -1038,6 +1044,8 @@ function renderWarenbestand() {
   });
   document.getElementById('wb-total').textContent = warenData.length;
   document.getElementById('wb-proj-count').textContent = new Set(warenData.map(function(w) { return w.projekt; })).size;
+  var pendingCount = warenData.filter(function(w) { return PENDING_STATUS.some(function(s) { return w.status.toLowerCase().includes(s); }); }).length;
+  document.getElementById('wb-pending-count').textContent = pendingCount;
   document.getElementById('wb-stats').style.display = 'flex';
   document.getElementById('wb-export-bar').style.display = 'flex';
   var statusCounts = {};
@@ -1055,9 +1063,14 @@ function renderWarenbestand() {
     lbl.innerHTML = '<input type="checkbox" value="' + entry[0].toLowerCase() + '"> ' + entry[0] + ' <span class="ms-count-badge">' + entry[1] + '</span>';
     wbSPanel.appendChild(lbl);
   });
+  var PENDING_STATUS = ['bestellung ausstehend','ausstehend','bestellt','in bestellung'];
   var rows = warenData.map(function(w, i) {
     var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '–';
-    return '<tr class="wb-row" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status + ' ' + zugewiesen).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + w.status + '</td><td>' + zugewiesen + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
+    var isPending = PENDING_STATUS.some(function(s) { return w.status.toLowerCase().includes(s); });
+    var statusCell = isPending
+      ? '<span class="wb-status-pending">&#x26A0;&#xFE0F; ' + w.status + '</span>'
+      : w.status;
+    return '<tr class="wb-row' + (isPending ? ' wb-pending' : '') + '" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status + ' ' + zugewiesen).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + statusCell + '</td><td>' + zugewiesen + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
   }).join('');
   content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table" id="wb-table"><thead><tr>' +
     '<th class="wb-sort-hdr" data-col="proj" style="cursor:pointer">Projekt <span class="sort-arrow">&#x21C5;</span></th>' +
