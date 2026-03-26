@@ -310,6 +310,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         </div>
       </div>
       <select class="filter-select" id="proj-pm-filter"><option value="">Alle Verantwortlichen</option></select>
+      <select class="filter-select" id="proj-member-filter"><option value="">Alle Mitglieder</option></select>
       <button class="clear-btn" id="proj-clear-btn">&#x2715; Reset</button>
       <span class="filter-count" id="proj-filter-count"></span>
     </div>
@@ -444,6 +445,38 @@ var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main',
 var EXCL_WP_TYPES = ['phase','meilenstein'];
 var WAREN_TYPES = ['hardware','elo einrichtung'];
 
+/*
+ * ── OpenProject Custom Field IDs ──────────────────────────────
+ * Projekt-Felder:
+ *   customField2  = Paket              (Liste: S=4, M=5, L=6)
+ *   customField4  = Outlook            (Liste: s.u.)
+ *   customField6  = AD-Integration     (Liste: s.u.)
+ *   customField10 = Kundennummer
+ *   customField11 = Kundenname
+ *   customField12 = Standort
+ *   customField13 = Homepage des Kunden
+ *   customField19 = Besonderheiten
+ *   customField20 = PrintNode Account
+ *   customField23 = Check-In Geräte
+ *   customField24 = Ansprechpartner Kunde  (Langer Text)
+ *   customField25 = Access Scanner / Leser
+ *   customField31 = Funktionen
+ *   customField36 = Sonstige Hardware
+ *   customField39 = Projektverantwortlicher
+ *
+ * Arbeitspaket-Typen:
+ *   ID 1  = Task
+ *   ID 2  = Milestone
+ *   ID 3  = Phase
+ *   ID 8  = Hardware
+ *   ID 10 = ELO Einrichtung
+ *
+ * Custom Options (Listenwerte):
+ *   Paket:          S=4,  M=5,  L=6
+ *   Outlook:        Nicht Aktiv=10, Gewünscht=14, Beauftragt=36, Aktiv=37
+ *   AD-Integration: Nicht Aktiv=34, Gewünscht=35, Beauftragt=16, Aktiv=17
+ * ──────────────────────────────────────────────────────────────
+ */
 var PAKET_OPTIONS = {};
 PAKET_OPTIONS['S'] = '/api/v3/custom_options/4';
 PAKET_OPTIONS['M'] = '/api/v3/custom_options/5';
@@ -723,7 +756,8 @@ async function loadFromAPI() {
     });
     var wpOpen = await apiFetch('/work_packages?pageSize=500');
     var wpClosed = await apiFetch('/work_packages?pageSize=500&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"c","values":[]}}])));
-    var allWPs = (wpOpen._embedded && wpOpen._embedded.elements ? wpOpen._embedded.elements : []).concat(wpClosed._embedded && wpClosed._embedded.elements ? wpClosed._embedded.elements : []);
+    var wpAll = await apiFetch('/work_packages?pageSize=500&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}])));
+    var allWPs = wpAll._embedded && wpAll._embedded.elements ? wpAll._embedded.elements : [];
     var wpByProj = {};
     allWPs.forEach(function(wp) {
       var pId = wp._links && wp._links.project ? wp._links.project.href.split('/').pop() : null;
@@ -752,6 +786,31 @@ async function loadFromAPI() {
     setupProjFilters();
     showMsg('✅ ' + filtered.length + ' Projekte geladen.', 'success');
     setTimeout(function() { var el = document.getElementById('msg'); if (el && el.className === 'msg-success') el.style.display = 'none'; }, 3000);
+
+    // Mitglieder pro Projekt nachladen
+    filtered.forEach(function(p) {
+      if (!p._id) return;
+      apiFetch('/projects/' + p._id + '/memberships?pageSize=50').then(function(data) {
+        var members = (data._embedded && data._embedded.elements ? data._embedded.elements : []);
+        var el = document.getElementById('proj-members-' + p._id);
+        var card = document.querySelector('.project-card[data-proj-id="' + p._id + '"]');
+        if (!el) return;
+        if (!members.length) { el.style.display = 'none'; return; }
+        var memberNames = [];
+        var html = members.map(function(m) {
+          var name = m._links && m._links.principal ? m._links.principal.title : '–';
+          var roles = (m._links && m._links.roles ? m._links.roles : []).map(function(r) { return r.title; }).join(', ');
+          memberNames.push(name.toLowerCase());
+          return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)">&#x1F464; <strong style="color:var(--text)">' + name + '</strong>' + (roles ? ' <span style="color:var(--text-muted)">· ' + roles + '</span>' : '') + '</span>';
+        }).join('');
+        el.innerHTML = html;
+        el.style.display = 'flex';
+        // Mitglieder im dataset speichern für Suche/Filter
+        if (card) card.dataset.members = memberNames.join(' ');
+        // PM-Filter befüllen
+        updateMemberFilter(memberNames);
+      }).catch(function() {});
+    });
   } catch(e) { showMsg('❌ Fehler: ' + e.message, 'error'); }
 }
 
@@ -822,6 +881,8 @@ function renderCards(projects) {
     card.dataset.name = p.name.toLowerCase();
     card.dataset.status = sk;
     card.dataset.pm = (p.pm || '').toLowerCase();
+    card.dataset.members = '';
+    if (p._id) card.dataset.projId = p._id;
     var html = '<div class="proj-header"><div class="proj-name">' + p.name + '</div><span class="badge badge-' + sk + '">' + statusLabel(sk) + '</span></div>';
     html += '<div class="proj-meta">';
     if (p.pm) html += '<div class="meta-item"><strong>&#x1F464;</strong> ' + p.pm + '</div>';
@@ -836,6 +897,7 @@ function renderCards(projects) {
         return '<span class="feature-badge ' + cls + '">' + icon + '<span class="feature-name">' + x.l + ':</span> ' + x.v + '</span>';
       }).join('') + '</div>';
     }
+    if (p._id) html += '<div id="proj-members-' + p._id + '" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>';
     html += '<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>' + p.wp_closed + '/' + p.wp_total + ' · ' + pct + '%</span></div><div class="prog-track"><div class="prog-fill ' + fill + '" style="width:' + pct + '%"></div></div></div>';
     if (p.statusdesc) html += '<button class="toggle-btn sdesc-btn" data-i="' + i + '">&#x1F4AC; Statusbeschreibung <span class="arrow">&#x25BC;</span></button><div class="sdesc-body" id="sd-' + i + '">' + p.statusdesc + '</div>';
     if (p._id) html += '<button class="toggle-btn ap-load-btn" data-proj-id="' + p._id + '">&#x1F4CB; Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-' + p._id + '"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">&#x23F3; Wird geladen…</div></div>';
@@ -882,6 +944,11 @@ async function loadProjectWPs(projId) {
   try {
     var data = await apiFetch('/projects/' + projId + '/work_packages?pageSize=100&filters=' + encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}])));
     var wps = data._embedded && data._embedded.elements ? data._embedded.elements : [];
+    wps.sort(function(a, b) {
+      var aClosed = isWPClosed((a._links && a._links.status ? a._links.status.title : '').toLowerCase()) ? 1 : 0;
+      var bClosed = isWPClosed((b._links && b._links.status ? b._links.status.title : '').toLowerCase()) ? 1 : 0;
+      return aClosed - bClosed;
+    });
     if (!wps.length) { el.innerHTML = '<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete gefunden.</div>'; el.dataset.loaded = '1'; return; }
     el.innerHTML = wps.map(function(wp) {
       var status = wp._links && wp._links.status ? wp._links.status.title : '–';
@@ -906,6 +973,7 @@ function setupProjFilters() {
   initMS('proj-status-ms-btn', 'proj-status-ms-panel', applyProjFilter);
   document.getElementById('proj-search').addEventListener('input', applyProjFilter);
   pmF.addEventListener('change', applyProjFilter);
+  document.getElementById('proj-member-filter').addEventListener('change', applyProjFilter);
   document.getElementById('proj-clear-btn').addEventListener('click', clearProjFilter);
 }
 
@@ -913,9 +981,13 @@ function applyProjFilter() {
   var q = document.getElementById('proj-search').value.toLowerCase();
   var statuses = getMsValues('proj-status-ms-panel');
   var pm = document.getElementById('proj-pm-filter').value;
+  var member = document.getElementById('proj-member-filter').value.toLowerCase();
   var v = 0;
   document.querySelectorAll('#cards .project-card').forEach(function(c) {
-    var m = (!q || c.dataset.name.includes(q)) && (!statuses.length || statuses.includes(c.dataset.status)) && (!pm || c.dataset.pm.includes(pm));
+    var m = (!q || c.dataset.name.includes(q) || c.dataset.members.includes(q))
+      && (!statuses.length || statuses.includes(c.dataset.status))
+      && (!pm || c.dataset.pm.includes(pm))
+      && (!member || c.dataset.members.includes(member));
     c.classList.toggle('hidden', !m);
     if (m) v++;
   });
@@ -926,10 +998,27 @@ function applyProjFilter() {
 function clearProjFilter() {
   document.getElementById('proj-search').value = '';
   document.getElementById('proj-pm-filter').value = '';
+  document.getElementById('proj-member-filter').value = '';
   resetMs('proj-status-ms-btn', 'proj-status-ms-panel');
   document.getElementById('proj-filter-count').textContent = '';
   document.querySelectorAll('#cards .project-card').forEach(function(c) { c.classList.remove('hidden'); });
   document.getElementById('no-results').style.display = 'none';
+}
+
+var allMemberNames = [];
+function updateMemberFilter(names) {
+  names.forEach(function(n) { if (!allMemberNames.includes(n)) allMemberNames.push(n); });
+  allMemberNames.sort();
+  var sel = document.getElementById('proj-member-filter');
+  if (!sel) return;
+  var current = sel.value;
+  sel.innerHTML = '<option value="">Alle Mitglieder</option>';
+  allMemberNames.forEach(function(n) {
+    var o = document.createElement('option');
+    o.value = n; o.textContent = n.charAt(0).toUpperCase() + n.slice(1);
+    sel.appendChild(o);
+  });
+  sel.value = current;
 }
 
 function renderWarenbestand() {
@@ -967,9 +1056,40 @@ function renderWarenbestand() {
     wbSPanel.appendChild(lbl);
   });
   var rows = warenData.map(function(w, i) {
-    return '<tr class="wb-row" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + w.status + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
+    var zugewiesen = (w.raw && w.raw.Zugewiesen) ? w.raw.Zugewiesen : '–';
+    return '<tr class="wb-row" data-idx="' + i + '" data-proj="' + (w.projekt||'').toLowerCase() + '" data-typ="' + w.typ.toLowerCase() + '" data-status="' + w.status.toLowerCase() + '" data-search="' + (w.titel + ' ' + w.projekt + ' ' + w.status + ' ' + zugewiesen).toLowerCase() + '"><td class="proj-col">' + (w.projekt||'–') + '</td><td>' + w.titel + '</td><td><span class="wb-type-badge">' + w.typ + '</span></td><td>' + w.status + '</td><td>' + zugewiesen + '</td><td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
   }).join('');
-  content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Typ</th><th>Status</th><th></th></tr></thead><tbody id="wb-tbody">' + rows + '</tbody></table><div class="wb-no-results" id="wb-no-results" style="display:none">&#x1F50D; Keine Einträge gefunden.</div></div>';
+  content.innerHTML = '<div class="wb-table-wrap"><table class="wb-table" id="wb-table"><thead><tr>' +
+    '<th class="wb-sort-hdr" data-col="proj" style="cursor:pointer">Projekt <span class="sort-arrow">&#x21C5;</span></th>' +
+    '<th class="wb-sort-hdr" data-col="titel" style="cursor:pointer">Arbeitspaket <span class="sort-arrow">&#x21C5;</span></th>' +
+    '<th>Typ</th>' +
+    '<th class="wb-sort-hdr" data-col="status" style="cursor:pointer">Status <span class="sort-arrow">&#x21C5;</span></th>' +
+    '<th class="wb-sort-hdr" data-col="zugewiesen" style="cursor:pointer">Zugewiesen <span class="sort-arrow">&#x21C5;</span></th>' +
+    '<th></th></tr></thead>' +
+    '<tbody id="wb-tbody">' + rows + '</tbody></table>' +
+    '<div class="wb-no-results" id="wb-no-results" style="display:none">&#x1F50D; Keine Einträge gefunden.</div></div>';
+
+  // Sortierung
+  var wbSortCol = null, wbSortAsc = true;
+  content.querySelectorAll('.wb-sort-hdr').forEach(function(th) {
+    th.addEventListener('click', function() {
+      var col = th.dataset.col;
+      if (wbSortCol === col) { wbSortAsc = !wbSortAsc; } else { wbSortCol = col; wbSortAsc = true; }
+      content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a) { a.innerHTML = '&#x21C5;'; });
+      th.querySelector('.sort-arrow').innerHTML = wbSortAsc ? '&#x2191;' : '&#x2193;';
+      var tbody = document.getElementById('wb-tbody');
+      var rowsArr = Array.from(tbody.querySelectorAll('.wb-row'));
+      rowsArr.sort(function(a, b) {
+        var aVal = '', bVal = '';
+        if (col === 'proj') { aVal = a.dataset.proj; bVal = b.dataset.proj; }
+        else if (col === 'status') { aVal = a.dataset.status; bVal = b.dataset.status; }
+        else if (col === 'titel') { aVal = a.querySelectorAll('td')[1].textContent.toLowerCase(); bVal = b.querySelectorAll('td')[1].textContent.toLowerCase(); }
+        else if (col === 'zugewiesen') { aVal = a.querySelectorAll('td')[4].textContent.toLowerCase(); bVal = b.querySelectorAll('td')[4].textContent.toLowerCase(); }
+        return wbSortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      });
+      rowsArr.forEach(function(r) { tbody.appendChild(r); });
+    });
+  });
   content.querySelectorAll('.wb-row').forEach(function(row) {
     row.addEventListener('click', function() {
       var w = warenData[+row.dataset.idx];
