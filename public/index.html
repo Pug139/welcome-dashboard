@@ -770,7 +770,8 @@ function renderCards(projects){
     wrap.appendChild(card);
   });
   wrap.querySelectorAll('.toggle-btn:not(.ap-load-btn)').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('open');document.getElementById('sd-'+b.dataset.i).classList.toggle('open');}));
-  wrap.querySelectorAll('.ap-load-btn').forEach(b=>b.addEventListener('click',()=>{
+  wrap.querySelectorAll('.ap-load-btn').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation();
     const projId=b.dataset.projId;
     const body=document.getElementById('ap-body-'+projId);
     const open=b.dataset.open==='1';
@@ -798,7 +799,13 @@ function clearProjFilter(){document.getElementById('proj-search').value='';docum
 function renderWarenbestand(){
   const content=document.getElementById('wb-content');
   if(!warenData.length){content.innerHTML='<div class="wb-empty">📭 Keine offenen Hardware- oder ELO-Einrichtungs-Arbeitspakete gefunden.</div>';document.getElementById('wb-stats').style.display='none';document.getElementById('wb-export-bar').style.display='none';document.getElementById('wb-filter-bar').style.display='none';return;}
-  document.getElementById('wb-total').textContent=warenData.length;document.getElementById('wb-proj-count').textContent=new Set(warenData.map(w=>w.projekt)).size;document.getElementById('wb-stats').style.display='flex';document.getElementById('wb-export-bar').style.display='flex';
+      // Warenbestand sortieren – ausstehende zuerst
+    const PENDING_STATUS=['ausstehend','offen','bestellt','in bestellung','neu'];
+    warenData.sort((a,b)=>{
+      const aP=PENDING_STATUS.some(s=>a.status.toLowerCase().includes(s))?0:1;
+      const bP=PENDING_STATUS.some(s=>b.status.toLowerCase().includes(s))?0:1;
+      return aP-bP;
+    });document.getElementById('wb-proj-count').textContent=new Set(warenData.map(w=>w.projekt)).size;document.getElementById('wb-stats').style.display='flex';document.getElementById('wb-export-bar').style.display='flex';
   const statusCounts={};warenData.forEach(w=>{statusCounts[w.status]=(statusCounts[w.status]||0)+1;});
   const wbPF=document.getElementById('wb-proj-filter');wbPF.innerHTML='<option value="">Alle Projekte</option>';[...new Set(warenData.map(w=>w.projekt).filter(Boolean))].sort().forEach(p=>{const o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);});
   const wbSPanel=document.getElementById('wb-status-ms-panel');wbSPanel.innerHTML='';Object.entries(statusCounts).sort(([a],[b])=>a.localeCompare(b)).forEach(([s,c])=>{const lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML=`<input type="checkbox" value="${s.toLowerCase()}"> ${s} <span class="ms-count-badge">${c}</span>`;wbSPanel.appendChild(lbl);});
@@ -877,7 +884,7 @@ document.getElementById('np-submit-btn').addEventListener('click',async()=>{
 
     // Projekt anlegen
     btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt…';
-    const projBody={name:d.name,description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
+    const projBody={name:d.name,description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField2:d.paket,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
     const proj=await apiFetch('/projects',{method:'POST',body:JSON.stringify(projBody)});
     const projId=proj.id;
 
@@ -934,7 +941,7 @@ async function updateExistingProject(projId){
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert…';
   try{
     // Projektfelder aktualisieren
-    const projBody={description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
+    const projBody={description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField2:d.paket,customField24:{format:'plain',raw:d.ap},_links:{customField6:{href:ADINT_OPTIONS[d.adint]},customField4:{href:OUTLOOK_OPTIONS[d.outlook]}}};
     await apiFetch(`/projects/${projId}`,{method:'PATCH',body:JSON.stringify(projBody)});
 
     // Hardware-APs: bestehende laden und nicht mehr ausgewählte löschen
