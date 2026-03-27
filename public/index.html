@@ -326,9 +326,12 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <div class="ms-wrap">
         <button class="ms-btn" id="proj-status-ms-btn" data-base="Status">Status <span class="ms-arrow">&#x25BC;</span></button>
         <div class="ms-panel" id="proj-status-ms-panel">
-          <label class="ms-option"><input type="checkbox" value="on_track"> Im Plan</label>
+          <label class="ms-option"><input type="checkbox" value="on_track"> Planmaessig / Im Plan</label>
           <label class="ms-option"><input type="checkbox" value="at_risk"> Gefaehrdet</label>
-          <label class="ms-option"><input type="checkbox" value="off_track"> Kritisch</label>
+          <label class="ms-option"><input type="checkbox" value="off_track"> Unplanmaessig</label>
+          <label class="ms-option"><input type="checkbox" value="not_started"> Nicht gestartet</label>
+          <label class="ms-option"><input type="checkbox" value="finished"> Abgeschlossen</label>
+          <label class="ms-option"><input type="checkbox" value="discontinued"> Eingestellt</label>
           <label class="ms-option"><input type="checkbox" value="default"> Kein Status</label>
         </div>
       </div>
@@ -539,18 +542,13 @@ function getLink(obj, key, prop) {
 function statusKey(s) {
   if (!s) return 'default';
   var l = s.toLowerCase();
-  // on track
-  if (l==='on track'||l.includes('im plan')||l.includes('planm')||l.includes('on_track')) return 'on_track';
-  // at risk
-  if (l==='at risk'||l.includes('gefaehr')||l.includes('at_risk')||l.includes('gef\u00e4hr')) return 'at_risk';
-  // off track
-  if (l==='off track'||l.includes('off_track')||l.includes('unplanm')||l.includes('kritisch')||l.includes('verz\u00f6g')||l.includes('verzoeg')) return 'off_track';
-  // not started
-  if (l==='not started'||l.includes('nicht gestartet')||l.includes('not_started')) return 'not_started';
-  // finished
+  if (l==='on track'||l==='on_track'||l.includes('planm')||l.includes('im plan')) return 'on_track';
+  if (l==='at risk'||l==='at_risk'||l.includes('gefaehr')||l.includes('gef\u00e4hr')) return 'at_risk';
+  if (l==='off track'||l==='off_track'||l.includes('unplanm')||l.includes('kritisch')||l.includes('verz\u00f6g')||l.includes('verzoeg')) return 'off_track';
+  if (l==='not started'||l==='not_started'||l.includes('nicht gestartet')) return 'not_started';
   if (l==='finished'||l==='fertig'||l==='abgeschlossen') return 'finished';
-  // discontinued
   if (l==='discontinued'||l.includes('eingestellt')||l.includes('abgebrochen')) return 'discontinued';
+  if (l==='nicht gesetzt'||l==='not set') return 'default';
   return 'default';
 }
 function statusLabel(k) {
@@ -957,12 +955,26 @@ function renderWarenbestand(){
     panel.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=cb.value===PENDING_STATUS;});
     updateMsBtn('wb-status-ms-btn','wb-status-ms-panel');applyWBFilter();
   };
+  // Aktuelle WB-Filterauswahl merken
+  var prevWbStatuses = getMsValues('wb-status-ms-panel');
+  var prevWbProj = document.getElementById('wb-proj-filter').value;
+  var prevWbTyp = document.getElementById('wb-type-filter').value;
+  var prevWbQ = document.getElementById('wb-search').value;
+
   var statusCounts={};warenData.forEach(function(w){var s=w.status||'-';statusCounts[s]=(statusCounts[s]||0)+1;});
   var wbPF=document.getElementById('wb-proj-filter');wbPF.innerHTML='<option value="">Alle Projekte</option>';
   var projs=[];warenData.forEach(function(w){if(w.projekt&&!projs.includes(w.projekt))projs.push(w.projekt);});
   projs.sort().forEach(function(p){var o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);});
+
+  // Status-Panel neu aufbauen und vorherige Auswahl wiederherstellen
   var wbSPanel=document.getElementById('wb-status-ms-panel');wbSPanel.innerHTML='';
-  Object.keys(statusCounts).sort().forEach(function(s){var lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML='<input type="checkbox" value="'+s.toLowerCase()+'"> '+s+' <span class="ms-count-badge">'+statusCounts[s]+'</span>';wbSPanel.appendChild(lbl);});
+  Object.keys(statusCounts).sort().forEach(function(s){var lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML='<input type="checkbox" value="'+s.toLowerCase()+'"'+(prevWbStatuses.includes(s.toLowerCase())?' checked':'')+' > '+s+' <span class="ms-count-badge">'+statusCounts[s]+'</span>';wbSPanel.appendChild(lbl);});
+  updateMsBtn('wb-status-ms-btn','wb-status-ms-panel');
+
+  // Vorherige Filterwerte wiederherstellen
+  wbPF.value = prevWbProj;
+  document.getElementById('wb-type-filter').value = prevWbTyp;
+  document.getElementById('wb-search').value = prevWbQ;
   var rows=warenData.map(function(w,i){
     var zugewiesen=(w.raw&&w.raw.Zugewiesen)?w.raw.Zugewiesen:'-';
     var isPending=(w.status||'').toLowerCase()===PENDING_STATUS;
