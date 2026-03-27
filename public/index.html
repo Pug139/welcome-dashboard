@@ -137,7 +137,9 @@ header p{font-size:.72rem;opacity:.7}
 .badge-on_track{background:rgba(63,185,80,.15);color:var(--on-track-c)}
 .badge-at_risk{background:rgba(240,136,62,.15);color:var(--at-risk-c)}
 .badge-off_track{background:rgba(248,81,73,.15);color:var(--off-track-c)}
-.badge-default{background:var(--bg3);color:var(--text-muted)}
+.badge-not_started{background:rgba(139,148,158,.15);color:var(--text-muted)}
+.badge-finished{background:rgba(63,185,80,.15);color:var(--on-track-c)}
+.badge-discontinued{background:rgba(248,81,73,.15);color:var(--off-track-c)}
 .proj-meta{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
 .meta-item{font-size:.78rem;color:var(--text-sub)}
 .meta-item strong{color:var(--text)}
@@ -306,7 +308,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     <div class="refresh-bar" id="refresh-bar" style="display:none">
       <span id="refresh-label">Aktualisierung in 5:00</span>
       <div class="prog-track"><div class="prog-fill" id="refresh-progress" style="width:100%"></div></div>
-      <button class="refresh-btn" onclick="manualRefresh()">Jetzt</button>
+      <button class="refresh-btn" onclick="manualRefresh()">&#x21BB; Jetzt neu laden</button>
     </div>
     <div class="stats-row" id="stats-row">
       <div class="stat-card"><div class="num" id="s-total">-</div><div class="lbl">Projekte</div></div>
@@ -373,6 +375,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <button class="btn btn-excel" onclick="exportWBExcel()">Excel</button>
       <button class="btn btn-pdf" onclick="exportWBPDF()">PDF</button>
       <button class="btn btn-csv" onclick="exportWBCSV()">CSV</button>
+      <button class="refresh-btn" style="margin-left:auto" onclick="manualRefresh()">&#x21BB; Neu laden</button>
     </div>
     <div class="filter-bar" id="wb-filter-bar" style="display:none">
       <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen..."></div>
@@ -537,15 +540,27 @@ function getLink(obj, key, prop) {
 function statusKey(s) {
   if (!s) return 'default';
   var l = s.toLowerCase();
-  if (l.includes('plan')||l.includes('on track')||l.includes('zeit')) return 'on_track';
-  if (l.includes('risk')||l.includes('gefaehr')) return 'at_risk';
-  if (l.includes('off')||l.includes('kritisch')||l.includes('verzoeg')) return 'off_track';
+  // on track
+  if (l==='on track'||l.includes('im plan')||l.includes('planm')||l.includes('on_track')) return 'on_track';
+  // at risk
+  if (l==='at risk'||l.includes('gefaehr')||l.includes('at_risk')||l.includes('gef\u00e4hr')) return 'at_risk';
+  // off track
+  if (l==='off track'||l.includes('off_track')||l.includes('unplanm')||l.includes('kritisch')||l.includes('verz\u00f6g')||l.includes('verzoeg')) return 'off_track';
+  // not started
+  if (l==='not started'||l.includes('nicht gestartet')||l.includes('not_started')) return 'not_started';
+  // finished
+  if (l==='finished'||l==='fertig'||l==='abgeschlossen') return 'finished';
+  // discontinued
+  if (l==='discontinued'||l.includes('eingestellt')||l.includes('abgebrochen')) return 'discontinued';
   return 'default';
 }
 function statusLabel(k) {
   if (k==='on_track') return 'Im Plan';
-  if (k==='at_risk') return 'Gefaehrdet';
-  if (k==='off_track') return 'Kritisch';
+  if (k==='at_risk') return 'Gef\u00e4hrdet';
+  if (k==='off_track') return 'Unplanm\u00e4\u00dfig';
+  if (k==='not_started') return 'Nicht gestartet';
+  if (k==='finished') return 'Abgeschlossen';
+  if (k==='discontinued') return 'Eingestellt';
   return 'Kein Status';
 }
 function isProjectClosed(s) {
@@ -819,10 +834,13 @@ function loadArchivedProjects(){
   wrap.innerHTML='<div class="wb-empty">Wird geladen...</div>';
   apiFetch('/projects?pageSize=200').then(function(data){
     var all=data._embedded&&data._embedded.elements?data._embedded.elements:[];
-    archivedData=all.filter(function(p){return isProjectClosed(getLink(p,'status')||'');}).map(function(p){
-      return {name:p.name||'',status:getLink(p,'status')||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,updatedAt:p.updatedAt||''};
+    archivedData=all.filter(function(p){
+      var sk=statusKey(getLink(p,'status')||p.status||'');
+      return sk==='finished'||sk==='discontinued'||isProjectClosed(getLink(p,'status')||p.status||'');
+    }).map(function(p){
+      return {name:p.name||'',status:getLink(p,'status')||p.status||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,updatedAt:p.updatedAt||''};
     });
-    renderArchivedCards();
+    renderArchivedCards(); // behaelt Suchbegriff und Sortierung bei
   }).catch(function(err){wrap.innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
 }
 
