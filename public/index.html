@@ -332,7 +332,6 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <label class="ms-option"><input type="checkbox" value="default"> Kein Status</label>
         </div>
       </div>
-      <select class="filter-select" id="proj-pm-filter"><option value="">Alle Verantwortlichen</option></select>
       <select class="filter-select" id="proj-member-filter"><option value="">Alle Mitglieder</option></select>
       <button class="clear-btn" id="proj-clear-btn">Reset</button>
       <span class="filter-count" id="proj-filter-count"></span>
@@ -739,6 +738,9 @@ function loadFromAPI() {
     var filtered=projects.filter(function(p){return !EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status);});
     projectData=filtered;allMemberNames=[];
     renderCards(filtered);renderWarenbestand();setupProjFilters();
+    // Filter nach Reload beibehalten
+    applyProjFilter();
+    applyWBFilter();
     showMsg(filtered.length+' Projekte geladen.','success');
     setTimeout(function(){var el=document.getElementById('msg');if(el&&el.className==='msg-success')el.style.display='none';},3000);
     // Mitglieder nachladen
@@ -884,16 +886,19 @@ document.getElementById('archiv-search').addEventListener('input',renderArchived
 document.getElementById('archiv-sort').addEventListener('change',renderArchivedCards);
 document.getElementById('archiv-limit').addEventListener('change',renderArchivedCards);
 
+var projFiltersInitialized = false;
+var wbFiltersInitialized = false;
+
 function setupProjFilters(){
-  var pmF=document.getElementById('proj-pm-filter');pmF.innerHTML='<option value="">Alle Verantwortlichen</option>';
-  var pms=[];projectData.forEach(function(p){if(p.pm&&!pms.includes(p.pm))pms.push(p.pm);});
-  pms.sort().forEach(function(pm){var o=document.createElement('option');o.value=pm.toLowerCase();o.textContent=pm;pmF.appendChild(o);});
   document.getElementById('proj-filter-bar').style.display='flex';
-  initMS('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
-  document.getElementById('proj-search').addEventListener('input',applyProjFilter);
-  pmF.addEventListener('change',applyProjFilter);
-  document.getElementById('proj-member-filter').addEventListener('change',applyProjFilter);
-  document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
+  if (!projFiltersInitialized) {
+    initMS('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
+    document.getElementById('proj-search').addEventListener('input',applyProjFilter);
+    document.getElementById('proj-member-filter').addEventListener('change',applyProjFilter);
+    document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
+    projFiltersInitialized = true;
+  }
+  applyProjFilter();
 }
 
 function updateMemberFilter(names){
@@ -908,11 +913,10 @@ function updateMemberFilter(names){
 function applyProjFilter(){
   var q=document.getElementById('proj-search').value.toLowerCase();
   var statuses=getMsValues('proj-status-ms-panel');
-  var pm=document.getElementById('proj-pm-filter').value;
   var member=document.getElementById('proj-member-filter').value.toLowerCase();
   var v=0;
   document.querySelectorAll('#cards .project-card').forEach(function(c){
-    var m=(!q||c.dataset.name.includes(q)||(c.dataset.members||'').includes(q))&&(!statuses.length||statuses.includes(c.dataset.status))&&(!pm||c.dataset.pm.includes(pm))&&(!member||(c.dataset.members||'').includes(member));
+    var m=(!q||c.dataset.name.includes(q)||(c.dataset.members||'').includes(q))&&(!statuses.length||statuses.includes(c.dataset.status))&&(!member||(c.dataset.members||'').includes(member));
     c.classList.toggle('hidden',!m);if(m)v++;
   });
   document.getElementById('no-results').style.display=v===0?'block':'none';
@@ -920,8 +924,10 @@ function applyProjFilter(){
 }
 
 function clearProjFilter(){
-  document.getElementById('proj-search').value='';document.getElementById('proj-pm-filter').value='';document.getElementById('proj-member-filter').value='';
-  resetMs('proj-status-ms-btn','proj-status-ms-panel');document.getElementById('proj-filter-count').textContent='';
+  document.getElementById('proj-search').value='';
+  document.getElementById('proj-member-filter').value='';
+  resetMs('proj-status-ms-btn','proj-status-ms-panel');
+  document.getElementById('proj-filter-count').textContent='';
   document.querySelectorAll('#cards .project-card').forEach(function(c){c.classList.remove('hidden');});
   document.getElementById('no-results').style.display='none';
 }
@@ -995,11 +1001,15 @@ function renderWarenbestand(){
   });
   document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
   document.getElementById('wb-filter-bar').style.display='flex';
-  initMS('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);
-  document.getElementById('wb-search').addEventListener('input',applyWBFilter);
-  wbPF.addEventListener('change',applyWBFilter);
-  document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);
-  document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
+  if (!wbFiltersInitialized) {
+    initMS('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);
+    document.getElementById('wb-search').addEventListener('input',applyWBFilter);
+    wbPF.addEventListener('change',applyWBFilter);
+    document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);
+    document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
+    wbFiltersInitialized = true;
+  }
+  applyWBFilter();
 }
 
 function applyWBFilter(){
