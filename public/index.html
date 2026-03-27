@@ -374,7 +374,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <button class="btn btn-excel" onclick="exportWBExcel()">Excel</button>
       <button class="btn btn-pdf" onclick="exportWBPDF()">PDF</button>
       <button class="btn btn-csv" onclick="exportWBCSV()">CSV</button>
-      <button class="refresh-btn" style="margin-left:auto" onclick="manualRefresh()">&#x21BB; Neu laden</button>
+      <button class="refresh-btn" style="margin-left:auto" id="wb-reload-btn" onclick="manualRefresh()">&#x21BB; Neu laden</button>
     </div>
     <div class="filter-bar" id="wb-filter-bar" style="display:none">
       <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen..."></div>
@@ -617,7 +617,17 @@ function startRefreshTimer() {
     if (refreshSecsLeft<=0){refreshSecsLeft=REFRESH_INTERVAL;loadFromAPI();}
   },1000);
 }
-function manualRefresh(){refreshSecsLeft=REFRESH_INTERVAL;loadFromAPI();}
+function manualRefresh(){
+  refreshSecsLeft=REFRESH_INTERVAL;
+  // Lade-Animation auf allen Reload-Buttons
+  var wbBtn=document.getElementById('wb-reload-btn');
+  if(wbBtn){wbBtn.innerHTML='<span class="spinner" style="border-top-color:var(--brand-light)"></span> Laden...';wbBtn.disabled=true;}
+  loadFromAPI().then(function(){
+    if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}
+  }).catch(function(){
+    if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}
+  });
+}
 
 // Theme
 document.getElementById('themeBtn').addEventListener('click',function(){
@@ -709,7 +719,7 @@ function showMsg(txt,type,id){var el=document.getElementById(id||'msg');if(!el)r
 function loadFromAPI() {
   showMsg('Daten werden geladen...','info');
   document.getElementById('msg').style.display='block';
-  apiFetch('/projects?pageSize=100').then(function(projData){
+  return apiFetch('/projects?pageSize=100').then(function(projData){
     var projects=(projData._embedded&&projData._embedded.elements?projData._embedded.elements:[]).map(function(p){
       var pm=p.customField39||getLink(p,'responsible')||'';
       return {name:p.name||'',status:getLink(p,'status')||'',pm:pm,paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0,_id:p.id,identifier:p.identifier};
