@@ -116,16 +116,23 @@ header p{font-size:.72rem;opacity:.7}
 .stat-card.clickable:hover{border-color:var(--brand-light)}
 .stat-card .num{font-size:1.7rem;font-weight:700;color:var(--brand-light)}
 .stat-card .lbl{font-size:.72rem;color:var(--text-muted);margin-top:2px}
-.export-bar,.wb-export-bar{display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.export-bar,.wb-export-bar{display:none;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
 .btn{padding:9px 18px;border:none;border-radius:7px;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-primary{background:var(--brand);color:white;justify-content:center;margin-top:4px}
 .btn-primary:hover:not(:disabled){background:var(--brand-dark)}
 .btn-success{background:#1d7a45;color:white}.btn-success:hover:not(:disabled){background:#165e35}
+.btn-new{background:var(--brand);color:white;margin-left:auto}.btn-new:hover{background:var(--brand-dark)}
 .btn-excel{background:#1d7a45;color:white}.btn-excel:hover{background:#165e35}
 .btn-pdf{background:#a93226;color:white}.btn-pdf:hover{background:#922b21}
 .btn-csv{background:#555e6a;color:white}.btn-csv:hover{background:#444d58}
 .btn-full{width:100%}
+.btn-icon{padding:4px 8px;border:1px solid var(--border);border-radius:5px;background:none;color:var(--text-muted);font-size:.78rem;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn-icon:hover{background:var(--bg3);color:var(--text);border-color:var(--brand-light)}
+.btn-icon.danger:hover{background:rgba(248,81,73,.1);color:var(--error-c);border-color:var(--error-c)}
+.btn-icon.menge-btn{font-size:.9rem;font-weight:700;padding:2px 8px;min-width:26px;text-align:center}
+.menge-cell{display:flex;align-items:center;justify-content:center;gap:4px}
+.menge-val{font-weight:700;min-width:28px;text-align:center}
 .project-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:12px;border-left:5px solid var(--brand);transition:background .3s}
 .project-card.status-on_track{border-left-color:var(--on-track-c)}
 .project-card.status-at_risk{border-left-color:var(--at-risk-c)}
@@ -170,7 +177,6 @@ header p{font-size:.72rem;opacity:.7}
 .op-link{font-size:.72rem;color:var(--brand-light);text-decoration:none;display:inline-flex;align-items:center;gap:3px;margin-top:6px;opacity:.8}
 .op-link:hover{opacity:1;text-decoration:underline}
 .no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
-/* Archiv */
 .archiv-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
 .archiv-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;border-left:5px solid var(--text-muted);opacity:.8}
 .archiv-card:hover{opacity:1}
@@ -183,9 +189,9 @@ header p{font-size:.72rem;opacity:.7}
 .wb-table th{background:var(--brand-dark);color:white;padding:9px 13px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 .wb-sort-hdr{cursor:pointer;user-select:none}
 .wb-sort-hdr:hover{background:#004080}
-.wb-table td{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:middle}
+.wb-table td{padding:7px 13px;border-bottom:1px solid var(--border);color:var(--text-sub);vertical-align:middle}
 .wb-table tr:last-child td{border-bottom:none}
-.wb-table tr.wb-row:hover td{background:var(--bg3);cursor:pointer}
+.wb-table tr.wb-row:hover td{background:var(--bg3)}
 .wb-table tr.wb-hidden{display:none}
 .wb-table tr.wb-low td{background:rgba(240,136,62,.05)}
 .wb-table tr.wb-out td{background:rgba(248,81,73,.06)}
@@ -195,6 +201,28 @@ header p{font-size:.72rem;opacity:.7}
 .wb-status-pending:hover{background:rgba(248,81,73,.25)}
 .wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
 .wb-section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin:20px 0 12px}
+.wb-actions{display:flex;gap:4px;align-items:center;justify-content:flex-end}
+/* Lager Modal */
+.lager-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
+.lager-modal-overlay.open{display:flex}
+.lager-modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;max-width:540px;width:100%;padding:28px;position:relative;max-height:90vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,.5)}
+.lager-modal-box h3{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
+.lager-modal-box .lm-sub{font-size:.78rem;color:var(--text-muted);margin-bottom:20px}
+.lm-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted);line-height:1}
+.lm-close:hover{color:var(--text)}
+.lm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.lm-field{display:flex;flex-direction:column;gap:5px}
+.lm-field.full{grid-column:1/-1}
+.lm-label{font-size:.78rem;font-weight:600;color:var(--text-sub)}
+.lm-input,.lm-select{padding:9px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;width:100%;transition:border-color .2s;font-family:inherit}
+.lm-input:focus,.lm-select:focus{outline:none;border-color:var(--brand-light)}
+.lm-input.invalid{border-color:var(--error-c)}
+.lm-hint{font-size:.7rem;color:var(--text-muted);margin-top:2px}
+.lm-divider{grid-column:1/-1;border:none;border-top:1px solid var(--border);margin:4px 0}
+.lm-footer{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.lm-footer .btn{flex:1;justify-content:center}
+.lm-err{color:var(--error-c);font-size:.8rem;margin-top:8px;display:none}
+.lm-saving{display:none;align-items:center;gap:8px;font-size:.82rem;color:var(--hint-text);margin-top:8px}
 /* NP */
 .np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
 .np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
@@ -249,7 +277,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   .import-panel{width:calc(100vw - 24px);right:-10px}.import-grid{grid-template-columns:1fr}
   .tab-btn{padding:7px 12px;font-size:.78rem}
   .main{padding:10px 10px 20px}
-  .np-grid{grid-template-columns:1fr}
+  .np-grid,.lm-grid{grid-template-columns:1fr}
+  .lm-field.full{grid-column:1}
   .filter-bar{flex-direction:column;align-items:stretch}
   .export-bar,.wb-export-bar{flex-direction:column}
 }
@@ -375,7 +404,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <button class="btn btn-excel" onclick="exportWBExcel()">Excel</button>
       <button class="btn btn-pdf" onclick="exportWBPDF()">PDF</button>
       <button class="btn btn-csv" onclick="exportWBCSV()">CSV</button>
-      <button class="refresh-btn" style="margin-left:auto" id="wb-reload-btn" onclick="manualRefresh()">&#x21BB; Neu laden</button>
+      <button class="refresh-btn" id="wb-reload-btn" onclick="manualRefresh()">&#x21BB; Neu laden</button>
+      <button class="btn btn-new" onclick="openLagerModalNew()">&#x2B; Artikel anlegen</button>
     </div>
     <div class="filter-bar" id="wb-filter-bar" style="display:none">
       <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Artikel suchen..."></div>
@@ -480,10 +510,63 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 
 <footer>WELCOME Projekt-Dashboard &middot; EnterSmart GmbH &middot; Alle Daten bleiben lokal im Browser</footer>
 
+<!-- WB Detail Modal -->
 <div id="wb-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:560px;width:100%;padding:24px;position:relative;max-height:80vh;overflow-y:auto">
     <button onclick="document.getElementById('wb-modal').style.display='none'" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text-muted)">&#x2715;</button>
     <div id="wb-modal-content"></div>
+  </div>
+</div>
+
+<!-- Lager CRUD Modal -->
+<div class="lager-modal-overlay" id="lagerModal">
+  <div class="lager-modal-box">
+    <button class="lm-close" onclick="closeLagerModal()">&#x2715;</button>
+    <h3 id="lm-title">Artikel anlegen</h3>
+    <p class="lm-sub" id="lm-sub">Neuen Artikel im Globalen Lager (OP Projekt 80) anlegen.</p>
+    <input type="hidden" id="lm-wp-id">
+    <input type="hidden" id="lm-lock-version">
+    <div class="lm-grid">
+      <div class="lm-field full">
+        <label class="lm-label">Artikelname <span style="color:var(--at-risk-c)">*</span></label>
+        <input class="lm-input" id="lm-name" type="text" placeholder="z.B. ELO 22&quot;">
+      </div>
+      <div class="lm-field">
+        <label class="lm-label">Artikelnummer</label>
+        <input class="lm-input" id="lm-artikelnummer" type="text" placeholder="z.B. 0815">
+      </div>
+      <div class="lm-field">
+        <label class="lm-label">Lieferant</label>
+        <input class="lm-input" id="lm-lieferant" type="text" placeholder="z.B. Mustermann GmbH">
+      </div>
+      <div class="lm-field">
+        <label class="lm-label">Lagerort</label>
+        <input class="lm-input" id="lm-lagerort" type="text" placeholder="z.B. Regal A3">
+      </div>
+      <div class="lm-field">
+        <label class="lm-label">Status</label>
+        <select class="lm-select" id="lm-status-sel">
+          <option value="">-- Kein Status --</option>
+        </select>
+        <span class="lm-hint">Status des Artikels im Lager</span>
+      </div>
+      <hr class="lm-divider">
+      <div class="lm-field">
+        <label class="lm-label">Menge (aktuell)</label>
+        <input class="lm-input" id="lm-menge" type="number" min="0" value="0" placeholder="0">
+      </div>
+      <div class="lm-field">
+        <label class="lm-label">Mindestbestand</label>
+        <input class="lm-input" id="lm-mindestbestand" type="number" min="0" value="0" placeholder="0">
+        <span class="lm-hint">Alarm wenn Menge &le; Mindestbestand</span>
+      </div>
+    </div>
+    <div class="lm-err" id="lm-err">Bitte Artikelname eingeben.</div>
+    <div class="lm-saving" id="lm-saving"><span class="spinner" style="border-top-color:var(--brand-light)"></span> Wird gespeichert...</div>
+    <div class="lm-footer">
+      <button class="btn btn-success" id="lm-save-btn" onclick="saveLagerArtikel()">&#x2713; Speichern</button>
+      <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="closeLagerModal()">Abbrechen</button>
+    </div>
   </div>
 </div>
 
@@ -493,7 +576,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
  * customField2=Paket(S=4,M=5,L=6) customField4=Outlook customField6=AD-Integration
  * customField11=Kundenname customField12=Standort customField24=Ansprechpartner
  * customField39=Projektverantwortlicher
- * OP Custom Fields - Hardware-APs:
+ * OP Custom Fields - Hardware-APs (Lager):
  * customField27=Seriennummer customField29=Lieferdatum customField30=Garantie
  * customField40=Menge customField41=Artikelnummer customField42=Lieferant
  * customField43=Lagerort customField44=Mindestbestand
@@ -510,6 +593,7 @@ var API_KEY = '';
 var projectData = [], warenData = [], lagerData = [], archivedData = [];
 var allMemberNames = [];
 var projFiltersInitialized = false, wbFiltersInitialized = false;
+var lagerStatusOptions = [];
 var raw = {proj:null, wp:null};
 var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal'];
 var EXCL_WP_TYPES = ['phase','meilenstein'];
@@ -567,7 +651,7 @@ function showMsg(txt,type,id) {
   var el=document.getElementById(id||'msg');if(!el)return;el.textContent=txt;el.className='msg-'+type;el.style.display='block';
 }
 
-// Login
+/* ── Login ── */
 document.getElementById('login-btn').addEventListener('click',doLogin);
 document.getElementById('login-token').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 function doLogin() {
@@ -579,7 +663,7 @@ function doLogin() {
     API_KEY=token;
     document.getElementById('loginOverlay').style.display='none';
     document.getElementById('tokenLabel').textContent='Verbunden';
-    loadFromAPI();startRefreshTimer();loadArchivedProjects();
+    loadFromAPI();startRefreshTimer();loadArchivedProjects();loadLagerStatuses();
   }).catch(function(){err.style.display='block';btn.textContent='Anmelden';btn.disabled=false;});
 }
 function showRelogin() {
@@ -588,7 +672,7 @@ function showRelogin() {
   document.getElementById('loginOverlay').style.display='flex';
 }
 
-// Refresh
+/* ── Refresh ── */
 var refreshTimer=null,refreshSecsLeft=REFRESH_INTERVAL;
 function startRefreshTimer() {
   document.getElementById('refresh-bar').style.display='flex';clearInterval(refreshTimer);refreshSecsLeft=REFRESH_INTERVAL;
@@ -603,11 +687,11 @@ function startRefreshTimer() {
 function manualRefresh() {
   refreshSecsLeft=REFRESH_INTERVAL;
   var wbBtn=document.getElementById('wb-reload-btn');
-  if(wbBtn){wbBtn.innerHTML='<span class="spinner" style="border-top-color:var(--brand-light)"></span> Laden...';wbBtn.disabled=true;}
+  if(wbBtn){wbBtn.innerHTML='<span class="spinner" style="border-top-color:var(--brand-light)"></span>';wbBtn.disabled=true;}
   loadFromAPI().then(function(){if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}}).catch(function(){if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}});
 }
 
-// Theme
+/* ── Theme ── */
 document.getElementById('themeBtn').addEventListener('click',function(){
   var dark=document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme',dark?'light':'dark');
@@ -615,11 +699,11 @@ document.getElementById('themeBtn').addEventListener('click',function(){
   document.querySelector('.theme-label').textContent=dark?'Dark':'Light';
 });
 
-// Import
+/* ── Import ── */
 document.getElementById('importTrigger').addEventListener('click',function(e){e.stopPropagation();document.getElementById('importPanel').classList.toggle('open');});
 document.addEventListener('click',function(e){if(!document.getElementById('importDropdown').contains(e.target))document.getElementById('importPanel').classList.remove('open');});
 
-// Tabs
+/* ── Tabs ── */
 document.querySelectorAll('.tab-btn').forEach(function(btn){
   btn.addEventListener('click',function(){
     document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
@@ -628,7 +712,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   });
 });
 
-// Multi-select
+/* ── Multi-select ── */
 function initMS(btnId,panelId,onChange) {
   var btn=document.getElementById(btnId),panel=document.getElementById(panelId);if(!btn||!panel)return;
   btn.addEventListener('click',function(e){
@@ -647,7 +731,7 @@ function getMsValues(panelId) {var p=document.getElementById(panelId);if(!p)retu
 function resetMs(btnId,panelId) {var p=document.getElementById(panelId);if(p)p.querySelectorAll('input').forEach(function(i){i.checked=false;});updateMsBtn(btnId,panelId);}
 document.addEventListener('click',function(){document.querySelectorAll('.ms-panel.open').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.ms-btn .ms-arrow').forEach(function(a){a.style.transform='';});});
 
-// Drop zones
+/* ── Drop zones ── */
 function setupZone(zoneId,inputId,key) {
   var zone=document.getElementById(zoneId),inp=document.getElementById(inputId);
   zone.addEventListener('click',function(){inp.click();});
@@ -669,7 +753,7 @@ function handleMulti(files) {
 document.getElementById('build-btn').addEventListener('click',function(){buildDashboard();document.getElementById('importPanel').classList.remove('open');});
 function parseFile(file,key){var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'binary',raw:false});raw[key]=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent=file.name;document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');document.getElementById('build-btn').disabled=false;}catch(err){showMsg('Fehler: '+err.message,'error');}};r.readAsBinaryString(file);}
 
-// Load from API
+/* ── API Load ── */
 function loadFromAPI() {
   showMsg('Daten werden geladen...','info');document.getElementById('msg').style.display='block';
   return apiFetch('/projects?pageSize=100').then(function(projData){
@@ -755,8 +839,7 @@ function loadProjectWPs(projId) {
   }).catch(function(err){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: '+err.message+'</div>';el.dataset.loaded='0';});
 }
 
-// Projekt-Filter
-var projFiltersInitialized = false;
+/* ── Projekt-Filter ── */
 function setupProjFilters() {
   document.getElementById('proj-filter-bar').style.display='flex';
   if(!projFiltersInitialized){
@@ -790,8 +873,7 @@ function clearProjFilter() {
   document.querySelectorAll('#cards .project-card').forEach(function(c){c.classList.remove('hidden');});document.getElementById('no-results').style.display='none';
 }
 
-// Archiv
-var archivedData = [];
+/* ── Archiv ── */
 function loadArchivedProjects() {
   document.getElementById('archiv-cards').innerHTML='<div class="wb-empty">Wird geladen...</div>';
   apiFetch('/projects?pageSize=200').then(function(data){
@@ -817,14 +899,34 @@ document.getElementById('archiv-search').addEventListener('input',renderArchived
 document.getElementById('archiv-sort').addEventListener('change',renderArchivedCards);
 document.getElementById('archiv-limit').addEventListener('change',renderArchivedCards);
 
-// Warenbestand
-var wbFiltersInitialized = false;
+/* ── Lager Status laden ── */
+function loadLagerStatuses() {
+  apiFetch('/statuses').then(function(data){
+    lagerStatusOptions=(data._embedded&&data._embedded.elements?data._embedded.elements:[]).map(function(s){return{id:s.id,name:s.name,href:s._links&&s._links.self?s._links.self.href:''};});
+    var sel=document.getElementById('lm-status-sel');
+    sel.innerHTML='<option value="">-- Kein Status --</option>';
+    lagerStatusOptions.forEach(function(s){var o=document.createElement('option');o.value=s.href;o.textContent=s.name;sel.appendChild(o);});
+  }).catch(function(){});
+}
+
+/* ── Warenbestand ── */
 function renderWarenbestand() {
   var content=document.getElementById('wb-content');
   var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
   apiFetch('/projects/'+LAGER_PROJ_ID+'/work_packages?pageSize=100&filters='+fa).then(function(data){
     lagerData=(data._embedded&&data._embedded.elements?data._embedded.elements:[]).filter(function(wp){return getLink(wp,'type').toLowerCase()==='hardware';}).map(function(wp){
-      return {id:wp.id,name:wp.subject||'-',menge:parseInt(wp.customField40)||0,mindestbestand:parseInt(wp.customField44)||0,artikelnummer:wp.customField41||'-',lieferant:wp.customField42||'-',lagerort:wp.customField43||'-',status:getLink(wp,'status')||'-'};
+      return {
+        id:wp.id,
+        lockVersion:wp.lockVersion||0,
+        name:wp.subject||'-',
+        menge:parseInt(wp.customField40)||0,
+        mindestbestand:parseInt(wp.customField44)||0,
+        artikelnummer:wp.customField41||'-',
+        lieferant:wp.customField42||'-',
+        lagerort:wp.customField43||'-',
+        status:getLink(wp,'status')||'-',
+        statusHref:(wp._links&&wp._links.status&&wp._links.status.href)||''
+      };
     });
     var fp=encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}},{"status":{"operator":"=","values":["19"]}}]));
     return apiFetch('/work_packages?pageSize=200&filters='+fp).then(function(pd){
@@ -850,26 +952,43 @@ function renderLagerTabelle() {
   Object.keys(sc).sort().forEach(function(s){var lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML='<input type="checkbox" value="'+s.toLowerCase()+'"'+(prevStatuses.includes(s.toLowerCase())?' checked':'')+' > '+s+' <span class="ms-count-badge">'+sc[s]+'</span>';wbSPanel.appendChild(lbl);});
   updateMsBtn('wb-status-ms-btn','wb-status-ms-panel');
 
-  if(!lagerData.length){content.innerHTML='<div class="wb-empty">Keine Artikel im Lager gefunden.</div>';return;}
+  if(!lagerData.length){content.innerHTML='<div class="wb-empty">Keine Artikel im Lager. Lege den ersten Artikel an!</div>';return;}
+
   var rows=lagerData.map(function(a,i){
     var isLow=a.mindestbestand>0&&a.menge<=a.mindestbestand,isOut=a.menge===0;
-    var mengeCell=isOut?'<span style="color:var(--error-c);font-weight:700">0 &#x26A0;</span>':isLow?'<span style="color:var(--at-risk-c);font-weight:700">'+a.menge+' &#x26A0;</span>':a.menge;
+    var mengeCell='<div class="menge-cell">'
+      +'<button class="btn-icon menge-btn" onclick="adjustMengeOP('+i+',-1,event)" title="Menge -1">-</button>'
+      +'<span class="menge-val" style="color:'+(isOut?'var(--error-c)':isLow?'var(--at-risk-c)':'var(--text)')+'">'+a.menge+(isOut?' &#x26A0;':isLow?' &#x26A0;':'')+'</span>'
+      +'<button class="btn-icon menge-btn" onclick="adjustMengeOP('+i+',1,event)" title="Menge +1">+</button>'
+      +'</div>';
     var search=(a.name+' '+a.artikelnummer+' '+a.lieferant+' '+a.lagerort).toLowerCase();
     return '<tr class="wb-row'+(isOut?' wb-out':isLow?' wb-low':'')+'" data-idx="'+i+'" data-search="'+search+'" data-status="'+a.status.toLowerCase()+'" data-lager="'+(isOut?'out':isLow?'low':'ok')+'">'
-      +'<td style="font-weight:600;color:var(--text)">'+a.name+'</td><td>'+a.artikelnummer+'</td>'
-      +'<td style="text-align:center;font-weight:700">'+mengeCell+'</td>'
+      +'<td style="font-weight:600;color:var(--text)">'+a.name+'</td>'
+      +'<td style="color:var(--text-muted)">'+a.artikelnummer+'</td>'
+      +'<td>'+mengeCell+'</td>'
       +'<td style="text-align:center;color:var(--text-muted);font-size:.8rem">'+a.mindestbestand+'</td>'
-      +'<td>'+a.lieferant+'</td><td>'+a.lagerort+'</td><td>'+a.status+'</td>'
-      +'<td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
+      +'<td>'+a.lieferant+'</td>'
+      +'<td>'+a.lagerort+'</td>'
+      +'<td>'+a.status+'</td>'
+      +'<td><div class="wb-actions">'
+      +'<button class="btn-icon" onclick="openLagerModal('+i+',event)" title="Bearbeiten">&#x270E;</button>'
+      +'<button class="btn-icon danger" onclick="deleteLagerArtikel('+i+',event)" title="Loeschen">&#x1F5D1;</button>'
+      +'</div></td>'
+      +'</tr>';
   }).join('');
+
   content.innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr>'
     +'<th class="wb-sort-hdr" data-col="name">Artikel <span class="sort-arrow">&#x21C5;</span></th>'
-    +'<th>Artikelnr.</th><th style="text-align:center" class="wb-sort-hdr" data-col="menge">Menge <span class="sort-arrow">&#x21C5;</span></th>'
-    +'<th style="text-align:center">Mindest.</th><th>Lieferant</th><th>Lagerort</th>'
-    +'<th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th><th></th>'
+    +'<th>Artikelnr.</th>'
+    +'<th style="text-align:center;min-width:120px">Menge</th>'
+    +'<th style="text-align:center">Mindest.</th>'
+    +'<th>Lieferant</th><th>Lagerort</th>'
+    +'<th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th style="min-width:80px"></th>'
     +'</tr></thead><tbody id="wb-tbody">'+rows+'</tbody></table>'
     +'<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Artikel gefunden.</div></div>';
 
+  // Sortierung
   var wbSortCol=null,wbSortAsc=true;
   content.querySelectorAll('.wb-sort-hdr').forEach(function(th){
     th.addEventListener('click',function(){
@@ -877,25 +996,8 @@ function renderLagerTabelle() {
       content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a){a.innerHTML='&#x21C5;';});
       th.querySelector('.sort-arrow').innerHTML=wbSortAsc?'&#x2191;':'&#x2193;';
       var tbody=document.getElementById('wb-tbody'),rowArr=Array.from(tbody.querySelectorAll('.wb-row'));
-      rowArr.sort(function(a,b){var av='',bv='';if(c==='name'){av=a.querySelectorAll('td')[0].textContent;bv=b.querySelectorAll('td')[0].textContent;}else if(c==='menge'){av=parseInt(a.querySelectorAll('td')[2].textContent)||0;bv=parseInt(b.querySelectorAll('td')[2].textContent)||0;return wbSortAsc?av-bv:bv-av;}else if(c==='status'){av=a.dataset.status;bv=b.dataset.status;}return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);});
+      rowArr.sort(function(a,b){var av='',bv='';if(c==='name'){av=a.querySelectorAll('td')[0].textContent.trim();bv=b.querySelectorAll('td')[0].textContent.trim();}else if(c==='menge'){av=parseInt(lagerData[+a.dataset.idx].menge)||0;bv=parseInt(lagerData[+b.dataset.idx].menge)||0;return wbSortAsc?av-bv:bv-av;}else if(c==='status'){av=a.dataset.status;bv=b.dataset.status;}return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);});
       rowArr.forEach(function(r){tbody.appendChild(r);});
-    });
-  });
-
-  content.querySelectorAll('.wb-row').forEach(function(row){
-    row.addEventListener('click',function(){
-      var a=lagerData[+row.dataset.idx];if(!a)return;
-      document.getElementById('wb-modal-content').innerHTML='<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:12px">'+a.name+'</h3>'
-        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.82rem">'
-        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">MENGE</div><div style="font-size:1.4rem;font-weight:700;color:var(--brand-light)">'+a.menge+'</div></div>'
-        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">MINDESTBESTAND</div><div style="font-size:1.4rem;font-weight:700;color:var(--at-risk-c)">'+a.mindestbestand+'</div></div>'
-        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">ARTIKELNUMMER</div><div>'+a.artikelnummer+'</div></div>'
-        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">LIEFERANT</div><div>'+a.lieferant+'</div></div>'
-        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">LAGERORT</div><div>'+a.lagerort+'</div></div>'
-        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">STATUS</div><div>'+a.status+'</div></div>'
-        +'</div>'
-        +'<div style="margin-top:14px"><a href="'+OP_URL+'/work_packages/'+a.id+'" target="_blank" style="font-size:.75rem;color:var(--brand-light)">&#x1F517; In OpenProject oeffnen</a></div>';
-      document.getElementById('wb-modal').style.display='flex';
     });
   });
 
@@ -942,10 +1044,166 @@ function changeWBStatus(idx,evt) {
   if(!confirm('Status von "'+w.titel+'" auf "Bestellt" aendern?'))return;
   apiFetch('/work_packages/'+w.raw.id).then(function(wpData){
     return apiFetch('/work_packages/'+w.raw.id,{method:'PATCH',body:JSON.stringify({lockVersion:wpData.lockVersion,_links:{status:{href:'/api/v3/statuses/17'}}})});
-  }).then(function(){alert('Status erfolgreich auf "Bestellt" geaendert!');loadFromAPI();}).catch(function(err){alert('Fehler: '+err.message);});
+  }).then(function(){renderWarenbestand();}).catch(function(err){alert('Fehler: '+err.message);});
 }
 
-// Hardware
+/* ── Menge +/- direkt in Tabelle ── */
+function adjustMengeOP(idx, delta, evt) {
+  if(evt)evt.stopPropagation();
+  var a=lagerData[idx];if(!a)return;
+  var newMenge=Math.max(0,a.menge+delta);
+  if(newMenge===a.menge)return;
+  // Optimistisch in UI updaten
+  a.menge=newMenge;
+  var row=document.querySelector('#wb-tbody .wb-row[data-idx="'+idx+'"]');
+  if(row){
+    var isLow=a.mindestbestand>0&&newMenge<=a.mindestbestand,isOut=newMenge===0;
+    row.className='wb-row'+(isOut?' wb-out':isLow?' wb-low':'');
+    row.dataset.lager=isOut?'out':isLow?'low':'ok';
+    var valEl=row.querySelector('.menge-val');
+    if(valEl){valEl.style.color=isOut?'var(--error-c)':isLow?'var(--at-risk-c)':'var(--text)';valEl.innerHTML=newMenge+(isOut?' &#x26A0;':isLow?' &#x26A0;':'');}
+  }
+  // Update Stat-Karte
+  var lowCount=lagerData.filter(function(x){return x.mindestbestand>0&&x.menge<=x.mindestbestand;}).length;
+  document.getElementById('wb-proj-count').textContent=lowCount;
+  // OP speichern
+  apiFetch('/work_packages/'+a.id).then(function(wpData){
+    return apiFetch('/work_packages/'+a.id,{method:'PATCH',body:JSON.stringify({lockVersion:wpData.lockVersion,customField40:newMenge})});
+  }).then(function(updated){
+    a.lockVersion=updated.lockVersion||a.lockVersion;
+  }).catch(function(err){
+    // Bei Fehler: revert
+    a.menge=a.menge-delta;
+    renderLagerTabelle();
+    alert('Fehler beim Speichern: '+err.message);
+  });
+}
+
+/* ── Lager CRUD Modal ── */
+function openLagerModalNew() {
+  document.getElementById('lm-title').textContent='Artikel anlegen';
+  document.getElementById('lm-sub').textContent='Neuen Artikel im Globalen Lager anlegen.';
+  document.getElementById('lm-wp-id').value='';
+  document.getElementById('lm-lock-version').value='';
+  document.getElementById('lm-name').value='';
+  document.getElementById('lm-artikelnummer').value='';
+  document.getElementById('lm-lieferant').value='';
+  document.getElementById('lm-lagerort').value='';
+  document.getElementById('lm-menge').value='0';
+  document.getElementById('lm-mindestbestand').value='0';
+  document.getElementById('lm-status-sel').value='';
+  document.getElementById('lm-err').style.display='none';
+  document.getElementById('lm-saving').style.display='none';
+  document.getElementById('lm-save-btn').disabled=false;
+  document.getElementById('lagerModal').classList.add('open');
+  setTimeout(function(){document.getElementById('lm-name').focus();},100);
+}
+
+function openLagerModal(idx, evt) {
+  if(evt)evt.stopPropagation();
+  var a=lagerData[idx];if(!a)return;
+  document.getElementById('lm-title').textContent='Artikel bearbeiten';
+  document.getElementById('lm-sub').textContent='Aenderungen werden direkt in OpenProject gespeichert.';
+  document.getElementById('lm-wp-id').value=a.id;
+  document.getElementById('lm-lock-version').value=a.lockVersion||0;
+  document.getElementById('lm-name').value=a.name!=='-'?a.name:'';
+  document.getElementById('lm-artikelnummer').value=a.artikelnummer!=='-'?a.artikelnummer:'';
+  document.getElementById('lm-lieferant').value=a.lieferant!=='-'?a.lieferant:'';
+  document.getElementById('lm-lagerort').value=a.lagerort!=='-'?a.lagerort:'';
+  document.getElementById('lm-menge').value=a.menge;
+  document.getElementById('lm-mindestbestand').value=a.mindestbestand;
+  // Status setzen
+  var sel=document.getElementById('lm-status-sel');
+  sel.value=a.statusHref||'';
+  document.getElementById('lm-err').style.display='none';
+  document.getElementById('lm-saving').style.display='none';
+  document.getElementById('lm-save-btn').disabled=false;
+  document.getElementById('lagerModal').classList.add('open');
+  setTimeout(function(){document.getElementById('lm-name').focus();},100);
+}
+
+function closeLagerModal() {
+  document.getElementById('lagerModal').classList.remove('open');
+}
+
+function saveLagerArtikel() {
+  var name=document.getElementById('lm-name').value.trim();
+  if(!name){document.getElementById('lm-err').style.display='block';document.getElementById('lm-err').textContent='Bitte Artikelname eingeben.';return;}
+  var wpId=document.getElementById('lm-wp-id').value;
+  var lockVersion=parseInt(document.getElementById('lm-lock-version').value)||0;
+  var artikelnummer=document.getElementById('lm-artikelnummer').value.trim();
+  var lieferant=document.getElementById('lm-lieferant').value.trim();
+  var lagerort=document.getElementById('lm-lagerort').value.trim();
+  var menge=parseInt(document.getElementById('lm-menge').value)||0;
+  var mindestbestand=parseInt(document.getElementById('lm-mindestbestand').value)||0;
+  var statusHref=document.getElementById('lm-status-sel').value;
+
+  var btn=document.getElementById('lm-save-btn');
+  btn.disabled=true;
+  document.getElementById('lm-saving').style.display='flex';
+  document.getElementById('lm-err').style.display='none';
+
+  var body={
+    subject:name,
+    customField40:menge,
+    customField41:artikelnummer||null,
+    customField42:lieferant||null,
+    customField43:lagerort||null,
+    customField44:mindestbestand,
+    _links:{
+      project:{href:'/api/v3/projects/'+LAGER_PROJ_ID},
+      type:{href:'/api/v3/types/8'}
+    }
+  };
+  if(statusHref)body._links.status={href:statusHref};
+
+  var promise;
+  if(wpId){
+    // PATCH - Update
+    body.lockVersion=lockVersion;
+    promise=apiFetch('/work_packages/'+wpId,{method:'PATCH',body:JSON.stringify(body)});
+  } else {
+    // POST - Neu anlegen
+    promise=apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});
+  }
+
+  promise.then(function(){
+    closeLagerModal();
+    renderWarenbestand();
+  }).catch(function(err){
+    document.getElementById('lm-saving').style.display='none';
+    btn.disabled=false;
+    document.getElementById('lm-err').style.display='block';
+    document.getElementById('lm-err').textContent='Fehler: '+err.message;
+  });
+}
+
+function deleteLagerArtikel(idx, evt) {
+  if(evt)evt.stopPropagation();
+  var a=lagerData[idx];if(!a)return;
+  if(!confirm('Artikel "'+a.name+'" wirklich loeschen?\n\nDieser wird aus dem Globalen Lager in OpenProject geloescht.'))return;
+  apiFetch('/work_packages/'+a.id,{method:'DELETE'}).then(function(){
+    renderWarenbestand();
+  }).catch(function(err){
+    // OP gibt bei DELETE oft 204 zurueck, was kein JSON ist
+    // Daher: wenn Fehler "JSON" related, trotzdem neu laden
+    if(err.message&&(err.message.includes('JSON')||err.message.includes('Unexpected')||err.message.includes('204'))){
+      renderWarenbestand();
+    } else {
+      alert('Fehler beim Loeschen: '+err.message);
+    }
+  });
+}
+
+/* ── Lager Modal schliessen mit Escape und Klick auf Overlay ── */
+document.getElementById('lagerModal').addEventListener('click',function(e){
+  if(e.target===document.getElementById('lagerModal'))closeLagerModal();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeLagerModal();
+});
+
+/* ── Hardware (Neues Projekt) ── */
 function initHardware() {
   var list=document.getElementById('hw-list');list.innerHTML='';
   HW_ITEMS.forEach(function(hw){var row=document.createElement('div');row.className='hw-item';row.id='hw-row-'+hw.id;row.innerHTML='<input type="checkbox" id="hw-cb-'+hw.id+'" onchange="hwChanged(\''+hw.id+'\')">'+'<label class="hw-item-name" for="hw-cb-'+hw.id+'">'+hw.name+'</label>'+'<div class="hw-qty" id="hw-qty-'+hw.id+'" style="display:none">'+'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',-1)">-</button>'+'<span class="hw-qty-val" id="hw-qty-val-'+hw.id+'">1</span>'+'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',1)">+</button></div>';list.appendChild(row);});
@@ -1023,7 +1281,7 @@ function updateExistingProject(projId) {
   apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links})}).then(function(){showNpResult('Projekt erfolgreich aktualisiert!','success');loadFromAPI();}).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
 }
 
-// Exports
+/* ── Exports ── */
 function addLogoToPDF(doc,cb){var img=new Image();img.crossOrigin='anonymous';img.onload=function(){try{var c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);var ratio=img.width/img.height,h=10,w=h*ratio;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}cb();};img.onerror=function(){cb();};img.src='https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';}
 function tableData(){return projectData.map(function(p){return{Projektname:p.name,Status:statusLabel(statusKey(p.status)),PM:p.pm||'-',Paket:p.paket||'-','AP gesamt':p.wp_total,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0};});}
 function exportExcel(){var ws=XLSX.utils.json_to_sheet(tableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Projekte');XLSX.writeFile(wb,'welcome_projekte.xlsx');}
