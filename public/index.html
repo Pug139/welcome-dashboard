@@ -66,7 +66,7 @@ header p{font-size:.72rem;opacity:.7}
 .import-dropdown{position:relative}
 .import-trigger{display:flex;align-items:center;gap:6px;cursor:pointer;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:6px 12px;color:white;font-size:.78rem;font-weight:600;white-space:nowrap}
 .import-trigger:hover{background:rgba(255,255,255,.2)}
-.import-panel{position:absolute;top:calc(100% + 8px);right:0;width:420px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:300;display:none}
+.import-panel{position:absolute;top:calc(100% + 8px);right:0;width:380px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:300;display:none}
 .import-panel.open{display:block}
 .import-panel h3{font-size:.82rem;color:var(--hint-text);margin-bottom:10px;font-weight:600}
 .import-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
@@ -79,11 +79,11 @@ header p{font-size:.72rem;opacity:.7}
 .import-both:hover,.import-both.over{border-color:var(--brand-light);background:var(--drop-over)}
 .import-both.loaded{border-color:var(--on-track-c);background:var(--drop-loaded);color:var(--on-track-c);font-weight:600}
 .import-both input{display:none}
-.tab-bar{display:flex;align-items:center;max-width:920px;margin:16px auto 0;padding:0 16px;gap:4px;flex-wrap:wrap}
+.tab-bar{display:flex;align-items:center;max-width:960px;margin:16px auto 0;padding:0 16px;gap:4px;flex-wrap:wrap}
 .tab-btn{padding:9px 22px;border:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:.88rem;font-weight:600;transition:all .2s;color:var(--text-muted);background:var(--tab-inactive)}
 .tab-btn.active{background:var(--tab-active);color:white}
 .tab-btn:hover:not(.active){background:var(--bg3);color:var(--text)}
-.main{max-width:920px;margin:0 auto;padding:16px 16px 24px}
+.main{max-width:960px;margin:0 auto;padding:16px 16px 24px}
 .tab-panel{display:none}.tab-panel.active{display:block}
 .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
 .search-wrap{position:relative;flex:1;min-width:160px}
@@ -111,7 +111,7 @@ header p{font-size:.72rem;opacity:.7}
 .msg-success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
 .msg-info{background:var(--hint-bg);color:var(--hint-text);border:1px solid var(--hint-border)}
 .stats-row,.wb-stats{display:none;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-.stat-card{background:var(--stat-bg);border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:120px;text-align:center}
+.stat-card{background:var(--stat-bg);border:1px solid var(--border);border-radius:8px;padding:12px 18px;flex:1;min-width:110px;text-align:center}
 .stat-card.clickable{cursor:pointer;transition:border-color .2s}
 .stat-card.clickable:hover{border-color:var(--brand-light)}
 .stat-card .num{font-size:1.7rem;font-weight:700;color:var(--brand-light)}
@@ -130,6 +130,9 @@ header p{font-size:.72rem;opacity:.7}
 .project-card.status-on_track{border-left-color:var(--on-track-c)}
 .project-card.status-at_risk{border-left-color:var(--at-risk-c)}
 .project-card.status-off_track{border-left-color:var(--off-track-c)}
+.project-card.status-not_started{border-left-color:var(--text-muted)}
+.project-card.status-finished{border-left-color:var(--on-track-c);opacity:.8}
+.project-card.status-discontinued{border-left-color:var(--off-track-c);opacity:.7}
 .project-card.hidden{display:none}
 .proj-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
 .proj-name{font-size:1rem;font-weight:700;color:var(--brand-light)}
@@ -137,9 +140,9 @@ header p{font-size:.72rem;opacity:.7}
 .badge-on_track{background:rgba(63,185,80,.15);color:var(--on-track-c)}
 .badge-at_risk{background:rgba(240,136,62,.15);color:var(--at-risk-c)}
 .badge-off_track{background:rgba(248,81,73,.15);color:var(--off-track-c)}
-.badge-not_started{background:rgba(139,148,158,.15);color:var(--text-muted)}
-.badge-finished{background:rgba(63,185,80,.15);color:var(--on-track-c)}
-.badge-discontinued{background:rgba(248,81,73,.15);color:var(--off-track-c)}
+.badge-not_started,.badge-default{background:var(--bg3);color:var(--text-muted)}
+.badge-finished{background:rgba(63,185,80,.1);color:var(--on-track-c)}
+.badge-discontinued{background:rgba(248,81,73,.1);color:var(--off-track-c)}
 .proj-meta{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
 .meta-item{font-size:.78rem;color:var(--text-sub)}
 .meta-item strong{color:var(--text)}
@@ -149,11 +152,6 @@ header p{font-size:.72rem;opacity:.7}
 .fill-medium{background:linear-gradient(90deg,#0055a5,#4a90d9)}
 .fill-low{background:linear-gradient(90deg,#003366,#0055a5)}
 .fill-none{background:var(--border)}
-.feature-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.feature-badge{display:inline-flex;align-items:center;gap:4px;font-size:.77rem;font-weight:600;padding:4px 10px;border-radius:6px}
-.feature-badge.feature-beauftragt{background:rgba(230,126,34,.15);color:var(--at-risk-c);border:1px solid var(--at-risk-c)}
-.feature-badge.feature-gewuenscht{background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light)}
-.feature-name{font-weight:700}
 .toggle-btn{background:var(--toggle-bg);border:1px solid var(--hint-border);border-radius:6px;padding:5px 10px;font-size:.77rem;color:var(--hint-text);cursor:pointer;display:flex;align-items:center;gap:5px;font-weight:600;transition:background .2s;margin-top:8px}
 .toggle-btn:hover{background:var(--toggle-hover)}
 .toggle-btn .arrow{transition:transform .25s;display:inline-block}
@@ -169,9 +167,17 @@ header p{font-size:.72rem;opacity:.7}
 .ap-type{font-size:.65rem;padding:1px 6px;border-radius:10px;background:var(--bg3);color:var(--text-muted);flex-shrink:0}
 .ap-status{font-size:.65rem;padding:2px 7px;border-radius:10px;background:rgba(74,144,217,.12);color:var(--brand-light);border:1px solid var(--brand-light);flex-shrink:0;white-space:nowrap}
 .ap-status.done{background:rgba(63,185,80,.12);color:var(--on-track-c);border-color:var(--on-track-c)}
-.no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
 .op-link{font-size:.72rem;color:var(--brand-light);text-decoration:none;display:inline-flex;align-items:center;gap:3px;margin-top:6px;opacity:.8}
 .op-link:hover{opacity:1;text-decoration:underline}
+.no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem;display:none}
+/* Archiv */
+.archiv-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.archiv-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;border-left:5px solid var(--text-muted);opacity:.8}
+.archiv-card:hover{opacity:1}
+.archiv-card.hidden{display:none}
+.archiv-name{font-size:.95rem;font-weight:700;color:var(--text-muted)}
+.archiv-meta{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;font-size:.76rem;color:var(--text-muted)}
+/* Warenbestand */
 .wb-table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
 .wb-table{width:100%;border-collapse:collapse;font-size:.83rem}
 .wb-table th{background:var(--brand-dark);color:white;padding:9px 13px;text-align:left;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
@@ -181,21 +187,14 @@ header p{font-size:.72rem;opacity:.7}
 .wb-table tr:last-child td{border-bottom:none}
 .wb-table tr.wb-row:hover td{background:var(--bg3);cursor:pointer}
 .wb-table tr.wb-hidden{display:none}
-.wb-table tr.wb-pending td{background:rgba(248,81,73,.06)}
-.wb-table tr.wb-pending td:first-child{border-left:3px solid var(--error-c)}
+.wb-table tr.wb-low td{background:rgba(240,136,62,.05)}
+.wb-table tr.wb-out td{background:rgba(248,81,73,.06)}
 .wb-table .proj-col{color:var(--brand-light);font-weight:600}
 .wb-type-badge{display:inline-block;font-size:.68rem;padding:2px 7px;border-radius:12px;background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light);font-weight:600}
 .wb-status-pending{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(248,81,73,.15);color:var(--error-c);border:1px solid var(--error-c);cursor:pointer}
 .wb-status-pending:hover{background:rgba(248,81,73,.25)}
 .wb-empty,.wb-no-results{text-align:center;padding:36px;color:var(--text-muted);font-size:.88rem}
-/* Archiv */
-.archiv-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
-.archiv-card{background:var(--proj-bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:10px;border-left:5px solid var(--text-muted);opacity:.8;transition:opacity .2s}
-.archiv-card:hover{opacity:1}
-.archiv-card.hidden{display:none}
-.archiv-name{font-size:.95rem;font-weight:700;color:var(--text-muted)}
-.archiv-meta{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;font-size:.76rem;color:var(--text-muted)}
-.archiv-pagination{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.8rem;color:var(--text-muted)}
+.wb-section-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin:20px 0 12px}
 /* NP */
 .np-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
 .np-card h2{font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px}
@@ -204,7 +203,6 @@ header p{font-size:.72rem;opacity:.7}
 .np-sec-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:14px}
 .np-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .np-field{display:flex;flex-direction:column;gap:5px}
-.np-field.full{grid-column:1/-1}
 .np-label{font-size:.78rem;font-weight:600;color:var(--text-sub)}
 .np-label .req{color:var(--at-risk-c);margin-left:2px}
 .np-input,.np-select,.np-textarea{padding:9px 12px;border:1px solid var(--input-border);border-radius:7px;background:var(--input-bg);color:var(--text);font-size:.85rem;width:100%;transition:border-color .2s;font-family:inherit}
@@ -251,7 +249,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   .import-panel{width:calc(100vw - 24px);right:-10px}.import-grid{grid-template-columns:1fr}
   .tab-btn{padding:7px 12px;font-size:.78rem}
   .main{padding:10px 10px 20px}
-  .np-grid{grid-template-columns:1fr}.np-field.full{grid-column:1}
+  .np-grid{grid-template-columns:1fr}
   .filter-bar{flex-direction:column;align-items:stretch}
   .export-bar,.wb-export-bar{flex-direction:column}
 }
@@ -369,8 +367,8 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <!-- WARENBESTAND -->
   <div class="tab-panel" id="tab-warenbestand">
     <div class="wb-stats" id="wb-stats">
-      <div class="stat-card clickable" id="wb-total-card"><div class="num" id="wb-total">-</div><div class="lbl">Eintraege gesamt (Reset)</div></div>
-      <div class="stat-card"><div class="num" id="wb-proj-count">-</div><div class="lbl">Betroffene Projekte</div></div>
+      <div class="stat-card clickable" id="wb-total-card"><div class="num" id="wb-total">-</div><div class="lbl">Artikel im Lager</div></div>
+      <div class="stat-card"><div class="num" id="wb-proj-count" style="color:var(--at-risk-c)">-</div><div class="lbl">Niedriger Bestand</div></div>
       <div class="stat-card clickable" id="wb-pending-card"><div class="num" id="wb-pending-count" style="color:var(--error-c)">-</div><div class="lbl">Bestellung ausstehend</div></div>
     </div>
     <div class="wb-export-bar" id="wb-export-bar">
@@ -380,9 +378,12 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <button class="refresh-btn" style="margin-left:auto" id="wb-reload-btn" onclick="manualRefresh()">&#x21BB; Neu laden</button>
     </div>
     <div class="filter-bar" id="wb-filter-bar" style="display:none">
-      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Suchen..."></div>
-      <select class="filter-select" id="wb-proj-filter"><option value="">Alle Projekte</option></select>
-      <select class="filter-select" id="wb-type-filter"><option value="">Alle Typen</option><option value="hardware">Hardware</option><option value="elo einrichtung">ELO Einrichtung</option></select>
+      <div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input class="search-input" id="wb-search" type="text" placeholder="Artikel suchen..."></div>
+      <select class="filter-select" id="wb-lager-filter">
+        <option value="">Alle Artikel</option>
+        <option value="low">Niedriger Bestand</option>
+        <option value="out">Nicht vorraettig</option>
+      </select>
       <div class="ms-wrap">
         <button class="ms-btn" id="wb-status-ms-btn" data-base="Status">Status <span class="ms-arrow">&#x25BC;</span></button>
         <div class="ms-panel" id="wb-status-ms-panel"></div>
@@ -391,6 +392,10 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <span class="filter-count" id="wb-filter-count"></span>
     </div>
     <div id="wb-content"><div class="wb-empty">Daten werden geladen...</div></div>
+    <div id="wb-bestellungen" style="display:none;margin-top:24px">
+      <div class="wb-section-title">&#x26A0;&#xFE0F; Offene Bestellungen in Projekten</div>
+      <div id="wb-bestellungen-content"></div>
+    </div>
   </div>
 
   <!-- NEUES PROJEKT -->
@@ -414,9 +419,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field"><label class="np-label">Paket <span class="req">*</span></label>
             <select class="np-select" id="np-paket">
               <option value="">Bitte waehlen</option>
-              <option value="S">S</option>
-              <option value="M">M</option>
-              <option value="L">L</option>
+              <option value="S">S</option><option value="M">M</option><option value="L">L</option>
             </select>
           </div>
         </div>
@@ -449,7 +452,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
               <select class="np-select" id="brother-paper-type">
                 <option value="">Bitte waehlen</option>
                 <option value="DK-N55224 Endlospapierrolle 54mm 30.48m">DK-N55224 Endlospapierrolle 54mm</option>
-                <option value="DK-44205 Endlosetiketten 62mm 30.48m wiederabloesbar">DK-44205 Endlosetiketten 62mm wiederabloesbar</option>
+                <option value="DK-44205 Endlosetiketten 62mm 30.48m wiederabloesbar">DK-44205 Endlosetiketten 62mm</option>
                 <option value="DK-22251 Endlosetiketten schwarz-rot 62mm 15.24m">DK-22251 Endlosetiketten schwarz-rot 62mm</option>
               </select>
             </div>
@@ -473,7 +476,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
     </div>
   </div>
 
-</div><!-- /main -->
+</div>
 
 <footer>WELCOME Projekt-Dashboard &middot; EnterSmart GmbH &middot; Alle Daten bleiben lokal im Browser</footer>
 
@@ -486,27 +489,31 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 
 <script>
 /*
- * OpenProject Custom Field IDs:
+ * OP Custom Fields - Projekte:
  * customField2=Paket(S=4,M=5,L=6) customField4=Outlook customField6=AD-Integration
- * customField11=Kundenname customField12=Standort customField24=Ansprechpartner(LangerText)
+ * customField11=Kundenname customField12=Standort customField24=Ansprechpartner
  * customField39=Projektverantwortlicher
- * WP-Typen: 1=Task,8=Hardware,10=ELO Einrichtung
- * WP-Status: 17=Bestellt,19=Bestellung ausstehend
+ * OP Custom Fields - Hardware-APs:
+ * customField27=Seriennummer customField29=Lieferdatum customField30=Garantie
+ * customField40=Menge customField41=Artikelnummer customField42=Lieferant
+ * customField43=Lagerort customField44=Mindestbestand
+ * WP-Typen: 1=Task 8=Hardware 10=ELO
+ * WP-Status: 17=Bestellt 19=Bestellung ausstehend
+ * Lager-Projekt: ID 80
  */
 
 var OP_URL = 'https://entersmart.openproject.com';
 var PROXY = '/proxy';
 var REFRESH_INTERVAL = 300;
+var LAGER_PROJ_ID = 80;
 var API_KEY = '';
-var projectData = [];
-var warenData = [];
+var projectData = [], warenData = [], lagerData = [], archivedData = [];
 var allMemberNames = [];
-var archivedData = [];
+var projFiltersInitialized = false, wbFiltersInitialized = false;
 var raw = {proj:null, wp:null};
 var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal'];
 var EXCL_WP_TYPES = ['phase','meilenstein'];
 var WAREN_TYPES = ['hardware','elo einrichtung'];
-var PENDING_STATUS = 'bestellung ausstehend';
 
 var PAKET_OPT = {S:'/api/v3/custom_options/4',M:'/api/v3/custom_options/5',L:'/api/v3/custom_options/6'};
 var OUTLOOK_OPT = {'Nicht Aktiv':'/api/v3/custom_options/10','Gewuenscht':'/api/v3/custom_options/14','Beauftragt':'/api/v3/custom_options/36','Aktiv':'/api/v3/custom_options/37'};
@@ -521,121 +528,94 @@ var HW_ITEMS = [
 var WP_BASIS = [{name:'Kickoff & Projektplanung'},{name:'Systemeinrichtung'},{name:'Benutzerverwaltung'},{name:'Schulung'},{name:'Go-Live'},{name:'Abnahme & Dokumentation'}];
 
 function apiHdrs() { return {'Content-Type':'application/json','X-OP-URL':OP_URL,'X-OP-KEY':API_KEY}; }
-
 function apiFetch(path, opts) {
   opts = opts || {};
-  var hdrs = apiHdrs();
-  return fetch(PROXY + path, {method:opts.method||'GET', headers:hdrs, body:opts.body}).then(function(res) {
-    return res.json().then(function(data) {
-      if (!res.ok) throw new Error(data.message || ('HTTP ' + res.status));
-      return data;
-    });
+  return fetch(PROXY+path, {method:opts.method||'GET', headers:apiHdrs(), body:opts.body}).then(function(res){
+    return res.json().then(function(data){ if(!res.ok) throw new Error(data.message||('HTTP '+res.status)); return data; });
   });
 }
-
 function getLink(obj, key, prop) {
-  prop = prop || 'title';
-  if (obj && obj._links && obj._links[key]) return obj._links[key][prop] || '';
+  prop = prop||'title';
+  if(obj&&obj._links&&obj._links[key]) return obj._links[key][prop]||'';
   return '';
 }
-
 function statusKey(s) {
-  if (!s) return 'default';
+  if(!s) return 'default';
   var l = s.toLowerCase();
-  if (l==='on track'||l==='on_track'||l.includes('planm')||l.includes('im plan')) return 'on_track';
-  if (l==='at risk'||l==='at_risk'||l.includes('gefaehr')||l.includes('gef\u00e4hr')) return 'at_risk';
-  if (l==='off track'||l==='off_track'||l.includes('unplanm')||l.includes('kritisch')||l.includes('verz\u00f6g')||l.includes('verzoeg')) return 'off_track';
-  if (l==='not started'||l==='not_started'||l.includes('nicht gestartet')) return 'not_started';
-  if (l==='finished'||l==='fertig'||l==='abgeschlossen') return 'finished';
-  if (l==='discontinued'||l.includes('eingestellt')||l.includes('abgebrochen')) return 'discontinued';
-  if (l==='nicht gesetzt'||l==='not set') return 'default';
+  if(l==='on track'||l==='on_track'||l.includes('planm')||l.includes('im plan')) return 'on_track';
+  if(l==='at risk'||l==='at_risk'||l.includes('gefaehr')||l.includes('gef\u00e4hr')) return 'at_risk';
+  if(l==='off track'||l==='off_track'||l.includes('unplanm')||l.includes('kritisch')||l.includes('verz\u00f6g')) return 'off_track';
+  if(l==='not started'||l==='not_started'||l.includes('nicht gestartet')) return 'not_started';
+  if(l==='finished'||l==='fertig'||l==='abgeschlossen') return 'finished';
+  if(l==='discontinued'||l.includes('eingestellt')||l.includes('abgebrochen')) return 'discontinued';
+  if(l==='nicht gesetzt'||l==='not set') return 'default';
   return 'default';
 }
 function statusLabel(k) {
-  if (k==='on_track') return 'Im Plan';
-  if (k==='at_risk') return 'Gef\u00e4hrdet';
-  if (k==='off_track') return 'Unplanm\u00e4\u00dfig';
-  if (k==='not_started') return 'Nicht gestartet';
-  if (k==='finished') return 'Abgeschlossen';
-  if (k==='discontinued') return 'Eingestellt';
-  return 'Kein Status';
+  var m = {on_track:'Im Plan',at_risk:'Gef\u00e4hrdet',off_track:'Unplanm\u00e4\u00dfig',not_started:'Nicht gestartet',finished:'Abgeschlossen',discontinued:'Eingestellt'};
+  return m[k]||'Kein Status';
 }
 function isProjectClosed(s) {
-  if (!s) return false;
-  var l = s.toLowerCase();
-  return ['abgeschlossen','closed','archiv','fertig','done','beendet','finished'].some(function(x){return l.includes(x);});
+  var sk = statusKey(s);
+  return sk==='finished'||sk==='discontinued';
 }
 function isWPClosed(st) {
-  var l = (st||'').toLowerCase();
+  var l=(st||'').toLowerCase();
   return ['geschlossen','closed','erledigt','done','abgeschlossen','geliefert','delivered','fertig','rejected'].some(function(s){return l.includes(s);});
+}
+function showMsg(txt,type,id) {
+  var el=document.getElementById(id||'msg');if(!el)return;el.textContent=txt;el.className='msg-'+type;el.style.display='block';
 }
 
 // Login
-document.getElementById('login-btn').addEventListener('click', doLogin);
-document.getElementById('login-token').addEventListener('keydown', function(e){if(e.key==='Enter')doLogin();});
-
+document.getElementById('login-btn').addEventListener('click',doLogin);
+document.getElementById('login-token').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 function doLogin() {
-  var token = document.getElementById('login-token').value.trim();
-  if (!token) return;
-  var btn = document.getElementById('login-btn');
-  var err = document.getElementById('login-err');
-  btn.textContent = 'Pruefe...'; btn.disabled = true; err.style.display = 'none';
-  fetch(PROXY+'/projects?pageSize=1', {headers:{'X-OP-URL':OP_URL,'X-OP-KEY':token}}).then(function(r){
-    if (!r.ok) throw new Error();
-    API_KEY = token;
-    document.getElementById('loginOverlay').style.display = 'none';
-    document.getElementById('tokenLabel').textContent = 'Verbunden';
-    loadFromAPI();
-    startRefreshTimer();
-    loadArchivedProjects();
-  }).catch(function(){
-    err.style.display = 'block'; btn.textContent = 'Anmelden'; btn.disabled = false;
-  });
+  var token=document.getElementById('login-token').value.trim();if(!token)return;
+  var btn=document.getElementById('login-btn'),err=document.getElementById('login-err');
+  btn.textContent='Pruefe...';btn.disabled=true;err.style.display='none';
+  fetch(PROXY+'/projects?pageSize=1',{headers:{'X-OP-URL':OP_URL,'X-OP-KEY':token}}).then(function(r){
+    if(!r.ok) throw new Error();
+    API_KEY=token;
+    document.getElementById('loginOverlay').style.display='none';
+    document.getElementById('tokenLabel').textContent='Verbunden';
+    loadFromAPI();startRefreshTimer();loadArchivedProjects();
+  }).catch(function(){err.style.display='block';btn.textContent='Anmelden';btn.disabled=false;});
 }
-
 function showRelogin() {
-  API_KEY = '';
-  document.getElementById('login-token').value = '';
-  document.getElementById('login-err').style.display = 'none';
-  document.getElementById('login-btn').textContent = 'Anmelden';
-  document.getElementById('login-btn').disabled = false;
-  document.getElementById('loginOverlay').style.display = 'flex';
+  API_KEY='';document.getElementById('login-token').value='';document.getElementById('login-err').style.display='none';
+  document.getElementById('login-btn').textContent='Anmelden';document.getElementById('login-btn').disabled=false;
+  document.getElementById('loginOverlay').style.display='flex';
 }
 
 // Refresh
-var refreshTimer = null, refreshSecsLeft = REFRESH_INTERVAL;
+var refreshTimer=null,refreshSecsLeft=REFRESH_INTERVAL;
 function startRefreshTimer() {
-  document.getElementById('refresh-bar').style.display = 'flex';
-  clearInterval(refreshTimer); refreshSecsLeft = REFRESH_INTERVAL;
-  refreshTimer = setInterval(function(){
+  document.getElementById('refresh-bar').style.display='flex';clearInterval(refreshTimer);refreshSecsLeft=REFRESH_INTERVAL;
+  refreshTimer=setInterval(function(){
     refreshSecsLeft--;
-    document.getElementById('refresh-progress').style.width = (refreshSecsLeft/REFRESH_INTERVAL*100)+'%';
-    var m = Math.floor(refreshSecsLeft/60), s = refreshSecsLeft%60;
-    document.getElementById('refresh-label').textContent = 'Aktualisierung in '+m+':'+(s<10?'0':'')+s;
-    if (refreshSecsLeft<=0){refreshSecsLeft=REFRESH_INTERVAL;loadFromAPI();}
+    document.getElementById('refresh-progress').style.width=(refreshSecsLeft/REFRESH_INTERVAL*100)+'%';
+    var m=Math.floor(refreshSecsLeft/60),s=refreshSecsLeft%60;
+    document.getElementById('refresh-label').textContent='Aktualisierung in '+m+':'+(s<10?'0':'')+s;
+    if(refreshSecsLeft<=0){refreshSecsLeft=REFRESH_INTERVAL;loadFromAPI();}
   },1000);
 }
-function manualRefresh(){
+function manualRefresh() {
   refreshSecsLeft=REFRESH_INTERVAL;
-  // Lade-Animation auf allen Reload-Buttons
   var wbBtn=document.getElementById('wb-reload-btn');
   if(wbBtn){wbBtn.innerHTML='<span class="spinner" style="border-top-color:var(--brand-light)"></span> Laden...';wbBtn.disabled=true;}
-  loadFromAPI().then(function(){
-    if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}
-  }).catch(function(){
-    if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}
-  });
+  loadFromAPI().then(function(){if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}}).catch(function(){if(wbBtn){wbBtn.innerHTML='&#x21BB; Neu laden';wbBtn.disabled=false;}});
 }
 
 // Theme
 document.getElementById('themeBtn').addEventListener('click',function(){
-  var dark = document.documentElement.getAttribute('data-theme')==='dark';
+  var dark=document.documentElement.getAttribute('data-theme')==='dark';
   document.documentElement.setAttribute('data-theme',dark?'light':'dark');
-  document.querySelector('.theme-icon').textContent = dark?'🌙':'☀️';
-  document.querySelector('.theme-label').textContent = dark?'Dark':'Light';
+  document.querySelector('.theme-icon').textContent=dark?'🌙':'☀️';
+  document.querySelector('.theme-label').textContent=dark?'Dark':'Light';
 });
 
-// Import dropdown
+// Import
 document.getElementById('importTrigger').addEventListener('click',function(e){e.stopPropagation();document.getElementById('importPanel').classList.toggle('open');});
 document.addEventListener('click',function(e){if(!document.getElementById('importDropdown').contains(e.target))document.getElementById('importPanel').classList.remove('open');});
 
@@ -644,37 +624,31 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   btn.addEventListener('click',function(){
     document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
     document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');});
-    btn.classList.add('active');
-    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    btn.classList.add('active');document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
   });
 });
 
 // Multi-select
-function initMS(btnId,panelId,onChange){
-  var btn=document.getElementById(btnId),panel=document.getElementById(panelId);
-  if(!btn||!panel)return;
+function initMS(btnId,panelId,onChange) {
+  var btn=document.getElementById(btnId),panel=document.getElementById(panelId);if(!btn||!panel)return;
   btn.addEventListener('click',function(e){
-    e.stopPropagation();
-    document.querySelectorAll('.ms-panel.open').forEach(function(p){if(p!==panel)p.classList.remove('open');});
-    panel.classList.toggle('open');
-    var arr=btn.querySelector('.ms-arrow');if(arr)arr.style.transform=panel.classList.contains('open')?'rotate(180deg)':'';
+    e.stopPropagation();document.querySelectorAll('.ms-panel.open').forEach(function(p){if(p!==panel)p.classList.remove('open');});
+    panel.classList.toggle('open');var arr=btn.querySelector('.ms-arrow');if(arr)arr.style.transform=panel.classList.contains('open')?'rotate(180deg)':'';
   });
   panel.addEventListener('change',function(){updateMsBtn(btnId,panelId);if(onChange)onChange();});
 }
-function updateMsBtn(btnId,panelId){
-  var btn=document.getElementById(btnId),panel=document.getElementById(panelId);
-  if(!btn||!panel)return;
-  var n=panel.querySelectorAll('input:checked').length;
-  var base=btn.dataset.base||'Status';
+function updateMsBtn(btnId,panelId) {
+  var btn=document.getElementById(btnId),panel=document.getElementById(panelId);if(!btn||!panel)return;
+  var n=panel.querySelectorAll('input:checked').length,base=btn.dataset.base||'Status';
   btn.innerHTML=base+(n>0?' <span style="background:var(--brand-light);color:white;border-radius:10px;padding:1px 7px;font-size:.7rem;font-weight:700">'+n+'</span>':'')+' <span class="ms-arrow" style="font-size:.65rem;opacity:.6;margin-left:4px">&#x25BC;</span>';
   btn.classList.toggle('has-sel',n>0);
 }
-function getMsValues(panelId){var p=document.getElementById(panelId);if(!p)return[];return Array.from(p.querySelectorAll('input:checked')).map(function(i){return i.value;});}
-function resetMs(btnId,panelId){var p=document.getElementById(panelId);if(p)p.querySelectorAll('input').forEach(function(i){i.checked=false;});updateMsBtn(btnId,panelId);}
+function getMsValues(panelId) {var p=document.getElementById(panelId);if(!p)return[];return Array.from(p.querySelectorAll('input:checked')).map(function(i){return i.value;});}
+function resetMs(btnId,panelId) {var p=document.getElementById(panelId);if(p)p.querySelectorAll('input').forEach(function(i){i.checked=false;});updateMsBtn(btnId,panelId);}
 document.addEventListener('click',function(){document.querySelectorAll('.ms-panel.open').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.ms-btn .ms-arrow').forEach(function(a){a.style.transform='';});});
 
 // Drop zones
-function setupZone(zoneId,inputId,key){
+function setupZone(zoneId,inputId,key) {
   var zone=document.getElementById(zoneId),inp=document.getElementById(inputId);
   zone.addEventListener('click',function(){inp.click();});
   inp.addEventListener('change',function(){if(inp.files[0])parseFile(inp.files[0],key);});
@@ -689,69 +663,38 @@ fBoth.addEventListener('change',function(){handleMulti(fBoth.files);});
 ['dragenter','dragover'].forEach(function(ev){dzBoth.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();dzBoth.classList.add('over');});});
 dzBoth.addEventListener('dragleave',function(e){e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');});
 dzBoth.addEventListener('drop',function(e){e.preventDefault();e.stopPropagation();dzBoth.classList.remove('over');handleMulti(e.dataTransfer.files);});
-
-function handleMulti(files){
-  Array.from(files).forEach(function(f){
-    var r=new FileReader();
-    r.onload=function(ev){
-      try{
-        var wb=XLSX.read(ev.target.result,{type:'binary',raw:false});
-        var data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
-        if(!data.length)return;
-        var h=Object.keys(data[0]).map(function(k){return k.toLowerCase();});
-        var isWP=h.some(function(k){return k.includes('typ')||k.includes('thema')||k.includes('zugewiesen');});
-        var key=isWP?'wp':'proj';raw[key]=data;
-        document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent=f.name;
-        document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');
-        document.getElementById('build-btn').disabled=false;
-      }catch(err){showMsg('Fehler: '+err.message,'error');}
-    };r.readAsBinaryString(f);
-  });
+function handleMulti(files) {
+  Array.from(files).forEach(function(f){var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'binary',raw:false});var data=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});if(!data.length)return;var h=Object.keys(data[0]).map(function(k){return k.toLowerCase();});var isWP=h.some(function(k){return k.includes('typ')||k.includes('thema')||k.includes('zugewiesen');});var key=isWP?'wp':'proj';raw[key]=data;document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent=f.name;document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');document.getElementById('build-btn').disabled=false;}catch(err){showMsg('Fehler: '+err.message,'error');}};r.readAsBinaryString(f);});
 }
 document.getElementById('build-btn').addEventListener('click',function(){buildDashboard();document.getElementById('importPanel').classList.remove('open');});
 function parseFile(file,key){var r=new FileReader();r.onload=function(ev){try{var wb=XLSX.read(ev.target.result,{type:'binary',raw:false});raw[key]=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});document.getElementById(key==='proj'?'lbl-proj':'lbl-wp').textContent=file.name;document.getElementById(key==='proj'?'dz-proj':'dz-wp').classList.add('loaded');document.getElementById('build-btn').disabled=false;}catch(err){showMsg('Fehler: '+err.message,'error');}};r.readAsBinaryString(file);}
 
-function showMsg(txt,type,id){var el=document.getElementById(id||'msg');if(!el)return;el.textContent=txt;el.className='msg-'+type;el.style.display='block';}
-
 // Load from API
 function loadFromAPI() {
-  showMsg('Daten werden geladen...','info');
-  document.getElementById('msg').style.display='block';
+  showMsg('Daten werden geladen...','info');document.getElementById('msg').style.display='block';
   return apiFetch('/projects?pageSize=100').then(function(projData){
     var projects=(projData._embedded&&projData._embedded.elements?projData._embedded.elements:[]).map(function(p){
       var pm=p.customField39||getLink(p,'responsible')||'';
-      return {name:p.name||'',status:getLink(p,'status')||'',pm:pm,paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0,_id:p.id,identifier:p.identifier};
+      return {name:p.name||'',status:getLink(p,'status')||p.status||'',pm:pm,paket:'',wp_total:0,wp_closed:0,_id:p.id,identifier:p.identifier};
     });
-    var filterAll=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
-    return Promise.all([apiFetch('/work_packages?pageSize=500&filters='+filterAll),Promise.resolve(projects)]);
-  }).then(function(results){
-    var wpData=results[0],projects=results[1];
-    var allWPs=wpData._embedded&&wpData._embedded.elements?wpData._embedded.elements:[];
+    var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+    return Promise.all([apiFetch('/work_packages?pageSize=500&filters='+fa),Promise.resolve(projects)]);
+  }).then(function(res){
+    var allWPs=res[0]._embedded&&res[0]._embedded.elements?res[0]._embedded.elements:[];
+    var projects=res[1];
     var wpByProj={};
     allWPs.forEach(function(wp){
       var pId=getLink(wp,'project','href');if(pId)pId=pId.split('/').pop();
       var t=getLink(wp,'type').toLowerCase();if(EXCL_WP_TYPES.includes(t))return;
       if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};
-      wpByProj[pId].total++;
-      if(isWPClosed(getLink(wp,'status')))wpByProj[pId].closed++;
+      wpByProj[pId].total++;if(isWPClosed(getLink(wp,'status')))wpByProj[pId].closed++;
     });
     projects.forEach(function(p){var d=wpByProj[String(p._id)];if(d){p.wp_total=d.total;p.wp_closed=d.closed;}});
-    warenData=[];
-    allWPs.forEach(function(wp){
-      var t=getLink(wp,'type').toLowerCase(),st=getLink(wp,'status')||'';
-      if(WAREN_TYPES.includes(t)&&!isWPClosed(st)){
-        warenData.push({projekt:getLink(wp,'project')||'-',titel:wp.subject||'-',typ:getLink(wp,'type')||'-',status:st||'-',raw:{id:wp.id,Projekt:getLink(wp,'project'),Thema:wp.subject,Typ:getLink(wp,'type'),Status:st,Zugewiesen:getLink(wp,'assignee')||'-',Erstellt:wp.createdAt?wp.createdAt.substring(0,10):'-'}});
-      }
-    });
     var filtered=projects.filter(function(p){return !EXCL_PROJ.includes(p.name.toLowerCase().trim())&&!isProjectClosed(p.status);});
     projectData=filtered;allMemberNames=[];
-    renderCards(filtered);renderWarenbestand();setupProjFilters();
-    // Filter nach Reload beibehalten
-    applyProjFilter();
-    applyWBFilter();
+    renderCards(filtered);renderWarenbestand();setupProjFilters();applyProjFilter();applyWBFilter();
     showMsg(filtered.length+' Projekte geladen.','success');
     setTimeout(function(){var el=document.getElementById('msg');if(el&&el.className==='msg-success')el.style.display='none';},3000);
-    // Mitglieder nachladen
     filtered.forEach(function(p){
       if(!p._id)return;
       var f=encodeURIComponent(JSON.stringify([{"project":{"operator":"=","values":[String(p._id)]}}]));
@@ -759,52 +702,34 @@ function loadFromAPI() {
         var members=mData._embedded&&mData._embedded.elements?mData._embedded.elements:[];
         var el=document.getElementById('proj-members-'+p._id);
         var card=document.querySelector('[data-proj-id="'+p._id+'"]');
-        if(!el)return;
-        if(!members.length){el.style.display='none';return;}
+        if(!el)return;if(!members.length){el.style.display='none';return;}
         var names=[];
-        var html=members.map(function(m){
-          var name=getLink(m,'principal')||'-';
-          var roles=(m._links&&m._links.roles?m._links.roles:[]).map(function(r){return r.title;}).join(', ');
-          names.push(name.toLowerCase());
-          return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)"><strong style="color:var(--text)">'+name+'</strong>'+(roles?' <span style="color:var(--text-muted)">('+roles+')</span>':'')+' </span>';
-        }).join('');
-        el.innerHTML=html;el.style.display='flex';
-        if(card)card.dataset.members=names.join(' ');
-        updateMemberFilter(names);
-      }).catch(function(err){console.warn('Mitglieder Projekt '+p._id+':',err.message);});
+        var html=members.map(function(m){var name=getLink(m,'principal')||'-';var roles=(m._links&&m._links.roles?m._links.roles:[]).map(function(r){return r.title;}).join(', ');names.push(name.toLowerCase());return '<span style="display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:.72rem;color:var(--text-sub)"><strong style="color:var(--text)">'+name+'</strong>'+(roles?' <span style="color:var(--text-muted)">('+roles+')</span>':'')+' </span>';}).join('');
+        el.innerHTML=html;el.style.display='flex';if(card)card.dataset.members=names.join(' ');updateMemberFilter(names);
+      }).catch(function(){});
     });
   }).catch(function(e){showMsg('Fehler: '+e.message,'error');});
 }
 
-function buildDashboard(){
+function buildDashboard() {
   document.getElementById('msg').style.display='none';document.getElementById('cards').innerHTML='';
-  var projects=[];
-  if(raw.proj)projects=raw.proj.map(function(r){return{name:r.name||r.Name||'(Unbekannt)',status:r.status||r.Status||'',pm:r.pm||'',paket:'',kundennr:'',besonderheit:'',statusdesc:'',outlook:'',adint:'',wp_total:0,wp_closed:0};});
+  var projects=[];if(raw.proj)projects=raw.proj.map(function(r){return{name:r.name||r.Name||'(Unbekannt)',status:r.status||r.Status||'',pm:r.pm||'',paket:'',wp_total:0,wp_closed:0};});
   if(!projects.length){showMsg('Keine Projektdaten.','error');return;}
   projectData=projects;renderCards(projects);renderWarenbestand();setupProjFilters();
 }
 
-function renderCards(projects){
-  var wrap=document.getElementById('cards');wrap.innerHTML='';
-  var tw=0,to=0,td=0;
+function renderCards(projects) {
+  var wrap=document.getElementById('cards');wrap.innerHTML='';var tw=0,to=0,td=0;
   projects.forEach(function(p,i){
-    var sk=statusKey(p.status);
-    var pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0;
+    var sk=statusKey(p.status),pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0;
     var fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
     tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
     var card=document.createElement('div');
-    card.className='project-card status-'+sk;
-    card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();card.dataset.members='';
-    if(p._id)card.dataset.projId=p._id;
+    card.className='project-card status-'+sk;card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();card.dataset.members='';if(p._id)card.dataset.projId=p._id;
     var html='<div class="proj-header"><div class="proj-name">'+p.name+'</div><span class="badge badge-'+sk+'">'+statusLabel(sk)+'</span></div>';
-    html+='<div class="proj-meta">';
-    if(p.pm)html+='<div class="meta-item"><strong>PM:</strong> '+p.pm+'</div>';
-    if(p.paket)html+='<div class="meta-item"><strong>Paket:</strong> '+p.paket+'</div>';
-    html+='<div class="meta-item"><strong>APs:</strong> '+p.wp_total+'</div></div>';
+    html+='<div class="proj-meta">';if(p.pm)html+='<div class="meta-item"><strong>PM:</strong> '+p.pm+'</div>';if(p.paket)html+='<div class="meta-item"><strong>Paket:</strong> '+p.paket+'</div>';html+='<div class="meta-item"><strong>APs:</strong> '+p.wp_total+'</div></div>';
     if(p._id)html+='<div id="proj-members-'+p._id+'" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>';
-    if(p.besonderheit)html+='<div class="proj-meta" style="margin-top:8px"><div class="meta-item"><strong>Besonderheiten:</strong> '+p.besonderheit+'</div></div>';
     html+='<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>'+p.wp_closed+'/'+p.wp_total+' - '+pct+'%</span></div><div class="prog-track"><div class="prog-fill '+fill+'" style="width:'+pct+'%"></div></div></div>';
-    // Link zu OP
     if(p._id&&p.identifier)html+='<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>';
     if(p.statusdesc)html+='<button class="toggle-btn sdesc-btn" data-i="'+i+'">Statusbeschreibung <span class="arrow">&#x25BC;</span></button><div class="sdesc-body" id="sd-'+i+'">'+p.statusdesc+'</div>';
     if(p._id)html+='<button class="toggle-btn ap-load-btn" data-proj-id="'+p._id+'">Arbeitspakete anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-'+p._id+'"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Wird geladen...</div></div>';
@@ -812,113 +737,42 @@ function renderCards(projects){
   });
   wrap.querySelectorAll('.sdesc-btn').forEach(function(b){b.addEventListener('click',function(){b.classList.toggle('open');var el=document.getElementById('sd-'+b.dataset.i);if(el)el.classList.toggle('open');});});
   wrap.querySelectorAll('.ap-load-btn').forEach(function(b){
-    b.addEventListener('click',function(e){
-      e.stopPropagation();e.preventDefault();
-      var projId=b.dataset.projId;var body=document.getElementById('ap-body-'+projId);if(!body)return;
-      if(body.classList.contains('open')){body.classList.remove('open');b.classList.remove('open');}
-      else{body.classList.add('open');b.classList.add('open');loadProjectWPs(projId);}
-    });
+    b.addEventListener('click',function(e){e.stopPropagation();e.preventDefault();var projId=b.dataset.projId;var body=document.getElementById('ap-body-'+projId);if(!body)return;if(body.classList.contains('open')){body.classList.remove('open');b.classList.remove('open');}else{body.classList.add('open');b.classList.add('open');loadProjectWPs(projId);}});
   });
   document.getElementById('s-total').textContent=projects.length;document.getElementById('s-wp').textContent=tw;document.getElementById('s-open').textContent=to;document.getElementById('s-done').textContent=td;
   document.getElementById('stats-row').style.display='flex';document.getElementById('export-bar').style.display='flex';
 }
 
-function loadProjectWPs(projId){
+function loadProjectWPs(projId) {
   var el=document.getElementById('ap-body-'+projId);if(!el||el.dataset.loaded==='1')return;
   var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
   apiFetch('/projects/'+projId+'/work_packages?pageSize=100&filters='+f).then(function(data){
     var wps=data._embedded&&data._embedded.elements?data._embedded.elements:[];
     wps.sort(function(a,b){return(isWPClosed(getLink(a,'status'))?1:0)-(isWPClosed(getLink(b,'status'))?1:0);});
     if(!wps.length){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete.</div>';el.dataset.loaded='1';return;}
-    el.innerHTML=wps.map(function(wp){
-      var status=getLink(wp,'status')||'-',type=getLink(wp,'type')||'-',closed=isWPClosed(status);
-      return '<div class="ap-item'+(closed?' ap-closed':'')+'"><span class="ap-type">'+type+'</span><span class="ap-name">'+wp.subject+'</span><span class="ap-status'+(closed?' done':'')+'">'+status+'</span></div>';
-    }).join('');
+    el.innerHTML=wps.map(function(wp){var status=getLink(wp,'status')||'-',type=getLink(wp,'type')||'-',closed=isWPClosed(status);return '<div class="ap-item'+(closed?' ap-closed':'')+'"><span class="ap-type">'+type+'</span><span class="ap-name">'+wp.subject+'</span><span class="ap-status'+(closed?' done':'')+'">'+status+'</span></div>';}).join('');
     el.dataset.loaded='1';
   }).catch(function(err){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: '+err.message+'</div>';el.dataset.loaded='0';});
 }
 
-// Abgeschlossene Projekte
-function loadArchivedProjects(){
-  var wrap=document.getElementById('archiv-cards');
-  wrap.innerHTML='<div class="wb-empty">Wird geladen...</div>';
-  apiFetch('/projects?pageSize=200').then(function(data){
-    var all=data._embedded&&data._embedded.elements?data._embedded.elements:[];
-    archivedData=all.filter(function(p){
-      var sk=statusKey(getLink(p,'status')||p.status||'');
-      return sk==='finished'||sk==='discontinued'||isProjectClosed(getLink(p,'status')||p.status||'');
-    }).map(function(p){
-      return {name:p.name||'',status:getLink(p,'status')||p.status||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,updatedAt:p.updatedAt||''};
-    });
-    renderArchivedCards(); // behaelt Suchbegriff und Sortierung bei
-  }).catch(function(err){wrap.innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
-}
-
-function renderArchivedCards(){
-  var q=(document.getElementById('archiv-search').value||'').toLowerCase();
-  var sort=document.getElementById('archiv-sort').value;
-  var limit=parseInt(document.getElementById('archiv-limit').value)||0;
-  var data=archivedData.slice();
-  // Filter
-  if(q)data=data.filter(function(p){return p.name.toLowerCase().includes(q)||p.pm.toLowerCase().includes(q);});
-  // Sort
-  data.sort(function(a,b){
-    if(sort==='date-desc')return b.updatedAt.localeCompare(a.updatedAt);
-    if(sort==='date-asc')return a.updatedAt.localeCompare(b.updatedAt);
-    if(sort==='name-asc')return a.name.localeCompare(b.name);
-    if(sort==='name-desc')return b.name.localeCompare(a.name);
-    return 0;
-  });
-  var total=data.length;
-  if(limit>0)data=data.slice(0,limit);
-  document.getElementById('archiv-count').textContent=data.length+' von '+total+' abgeschlossenen Projekten';
-  var wrap=document.getElementById('archiv-cards');
-  if(!data.length){wrap.innerHTML='<div class="wb-empty">Keine abgeschlossenen Projekte gefunden.</div>';return;}
-  wrap.innerHTML=data.map(function(p){
-    var date=p.updatedAt?p.updatedAt.substring(0,10):'';
-    return '<div class="archiv-card">'
-      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">'
-      +'<div class="archiv-name">'+p.name+'</div>'
-      +'<span class="badge" style="background:var(--bg3);color:var(--text-muted)">'+p.status+'</span></div>'
-      +'<div class="archiv-meta">'
-      +(p.pm?'<span>PM: '+p.pm+'</span>':'')
-      +(date?'<span>Zuletzt geaendert: '+date+'</span>':'')
-      +'</div>'
-      +(p.identifier?'<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>':'')
-      +'</div>';
-  }).join('');
-}
-
-// Archiv-Filter Events
-document.getElementById('archiv-search').addEventListener('input',renderArchivedCards);
-document.getElementById('archiv-sort').addEventListener('change',renderArchivedCards);
-document.getElementById('archiv-limit').addEventListener('change',renderArchivedCards);
-
+// Projekt-Filter
 var projFiltersInitialized = false;
-var wbFiltersInitialized = false;
-
-function setupProjFilters(){
+function setupProjFilters() {
   document.getElementById('proj-filter-bar').style.display='flex';
-  if (!projFiltersInitialized) {
+  if(!projFiltersInitialized){
     initMS('proj-status-ms-btn','proj-status-ms-panel',applyProjFilter);
     document.getElementById('proj-search').addEventListener('input',applyProjFilter);
     document.getElementById('proj-member-filter').addEventListener('change',applyProjFilter);
     document.getElementById('proj-clear-btn').addEventListener('click',clearProjFilter);
-    projFiltersInitialized = true;
+    projFiltersInitialized=true;
   }
-  applyProjFilter();
 }
-
-function updateMemberFilter(names){
-  names.forEach(function(n){if(!allMemberNames.includes(n))allMemberNames.push(n);});
-  allMemberNames.sort();
-  var sel=document.getElementById('proj-member-filter');if(!sel)return;
-  var cur=sel.value;sel.innerHTML='<option value="">Alle Mitglieder</option>';
-  allMemberNames.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
-  sel.value=cur;
+function updateMemberFilter(names) {
+  names.forEach(function(n){if(!allMemberNames.includes(n))allMemberNames.push(n);});allMemberNames.sort();
+  var sel=document.getElementById('proj-member-filter');if(!sel)return;var cur=sel.value;sel.innerHTML='<option value="">Alle Mitglieder</option>';
+  allMemberNames.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});sel.value=cur;
 }
-
-function applyProjFilter(){
+function applyProjFilter() {
   var q=document.getElementById('proj-search').value.toLowerCase();
   var statuses=getMsValues('proj-status-ms-panel');
   var member=document.getElementById('proj-member-filter').value.toLowerCase();
@@ -930,127 +784,161 @@ function applyProjFilter(){
   document.getElementById('no-results').style.display=v===0?'block':'none';
   document.getElementById('proj-filter-count').textContent=v+' von '+projectData.length;
 }
-
-function clearProjFilter(){
-  document.getElementById('proj-search').value='';
-  document.getElementById('proj-member-filter').value='';
-  resetMs('proj-status-ms-btn','proj-status-ms-panel');
-  document.getElementById('proj-filter-count').textContent='';
-  document.querySelectorAll('#cards .project-card').forEach(function(c){c.classList.remove('hidden');});
-  document.getElementById('no-results').style.display='none';
+function clearProjFilter() {
+  document.getElementById('proj-search').value='';document.getElementById('proj-member-filter').value='';
+  resetMs('proj-status-ms-btn','proj-status-ms-panel');document.getElementById('proj-filter-count').textContent='';
+  document.querySelectorAll('#cards .project-card').forEach(function(c){c.classList.remove('hidden');});document.getElementById('no-results').style.display='none';
 }
 
-function renderWarenbestand(){
+// Archiv
+var archivedData = [];
+function loadArchivedProjects() {
+  document.getElementById('archiv-cards').innerHTML='<div class="wb-empty">Wird geladen...</div>';
+  apiFetch('/projects?pageSize=200').then(function(data){
+    var all=data._embedded&&data._embedded.elements?data._embedded.elements:[];
+    archivedData=all.filter(function(p){return isProjectClosed(getLink(p,'status')||p.status||'');}).map(function(p){return{name:p.name||'',status:getLink(p,'status')||p.status||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,updatedAt:p.updatedAt||''};});
+    renderArchivedCards();
+  }).catch(function(err){document.getElementById('archiv-cards').innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
+}
+function renderArchivedCards() {
+  var q=(document.getElementById('archiv-search').value||'').toLowerCase();
+  var sort=document.getElementById('archiv-sort').value;
+  var limit=parseInt(document.getElementById('archiv-limit').value)||0;
+  var data=archivedData.slice();
+  if(q)data=data.filter(function(p){return p.name.toLowerCase().includes(q)||p.pm.toLowerCase().includes(q);});
+  data.sort(function(a,b){if(sort==='date-desc')return b.updatedAt.localeCompare(a.updatedAt);if(sort==='date-asc')return a.updatedAt.localeCompare(b.updatedAt);if(sort==='name-asc')return a.name.localeCompare(b.name);if(sort==='name-desc')return b.name.localeCompare(a.name);return 0;});
+  var total=data.length;if(limit>0)data=data.slice(0,limit);
+  document.getElementById('archiv-count').textContent=data.length+' von '+total+' abgeschlossenen Projekten';
+  var wrap=document.getElementById('archiv-cards');
+  if(!data.length){wrap.innerHTML='<div class="wb-empty">Keine abgeschlossenen Projekte gefunden.</div>';return;}
+  wrap.innerHTML=data.map(function(p){var date=p.updatedAt?p.updatedAt.substring(0,10):'';return '<div class="archiv-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div class="archiv-name">'+p.name+'</div><span class="badge badge-default">'+p.status+'</span></div><div class="archiv-meta">'+(p.pm?'<span>PM: '+p.pm+'</span>':'')+(date?'<span>Zuletzt: '+date+'</span>':'')+'</div>'+(p.identifier?'<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>':'')+'</div>';}).join('');
+}
+document.getElementById('archiv-search').addEventListener('input',renderArchivedCards);
+document.getElementById('archiv-sort').addEventListener('change',renderArchivedCards);
+document.getElementById('archiv-limit').addEventListener('change',renderArchivedCards);
+
+// Warenbestand
+var wbFiltersInitialized = false;
+function renderWarenbestand() {
   var content=document.getElementById('wb-content');
-  if(!warenData.length){content.innerHTML='<div class="wb-empty">Keine offenen Hardware- oder ELO-Arbeitspakete.</div>';document.getElementById('wb-stats').style.display='none';document.getElementById('wb-export-bar').style.display='none';document.getElementById('wb-filter-bar').style.display='none';return;}
-  warenData.sort(function(a,b){var aP=(a.status||'').toLowerCase()===PENDING_STATUS?0:1,bP=(b.status||'').toLowerCase()===PENDING_STATUS?0:1;return aP-bP;});
-  var pendingCount=warenData.filter(function(w){return(w.status||'').toLowerCase()===PENDING_STATUS;}).length;
-  document.getElementById('wb-total').textContent=warenData.length;
-  document.getElementById('wb-proj-count').textContent=(function(){var s={};warenData.forEach(function(w){s[w.projekt]=1;});return Object.keys(s).length;})();
-  document.getElementById('wb-pending-count').textContent=pendingCount;
+  var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+  apiFetch('/projects/'+LAGER_PROJ_ID+'/work_packages?pageSize=100&filters='+fa).then(function(data){
+    lagerData=(data._embedded&&data._embedded.elements?data._embedded.elements:[]).filter(function(wp){return getLink(wp,'type').toLowerCase()==='hardware';}).map(function(wp){
+      return {id:wp.id,name:wp.subject||'-',menge:parseInt(wp.customField40)||0,mindestbestand:parseInt(wp.customField44)||0,artikelnummer:wp.customField41||'-',lieferant:wp.customField42||'-',lagerort:wp.customField43||'-',status:getLink(wp,'status')||'-'};
+    });
+    var fp=encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}},{"status":{"operator":"=","values":["19"]}}]));
+    return apiFetch('/work_packages?pageSize=200&filters='+fp).then(function(pd){
+      warenData=(pd._embedded&&pd._embedded.elements?pd._embedded.elements:[]).filter(function(wp){var pid=getLink(wp,'project','href');if(pid)pid=pid.split('/').pop();return String(pid)!==String(LAGER_PROJ_ID);}).map(function(wp){return{id:wp.id,projekt:getLink(wp,'project')||'-',titel:wp.subject||'-',status:getLink(wp,'status')||'-',zugewiesen:getLink(wp,'assignee')||'-',raw:{id:wp.id}};});
+      renderLagerTabelle();renderBestellungen();
+    });
+  }).catch(function(err){content.innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
+}
+
+function renderLagerTabelle() {
+  var content=document.getElementById('wb-content');
+  var lowCount=lagerData.filter(function(a){return a.mindestbestand>0&&a.menge<=a.mindestbestand;}).length;
+  document.getElementById('wb-total').textContent=lagerData.length;
+  document.getElementById('wb-proj-count').textContent=lowCount;
+  document.getElementById('wb-pending-count').textContent=warenData.length;
   document.getElementById('wb-stats').style.display='flex';document.getElementById('wb-export-bar').style.display='flex';
   document.getElementById('wb-total-card').onclick=function(){clearWBFilter();};
-  document.getElementById('wb-pending-card').onclick=function(){
-    var panel=document.getElementById('wb-status-ms-panel');if(!panel)return;
-    panel.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=cb.value===PENDING_STATUS;});
-    updateMsBtn('wb-status-ms-btn','wb-status-ms-panel');applyWBFilter();
-  };
-  // Aktuelle WB-Filterauswahl merken
-  var prevWbStatuses = getMsValues('wb-status-ms-panel');
-  var prevWbProj = document.getElementById('wb-proj-filter').value;
-  var prevWbTyp = document.getElementById('wb-type-filter').value;
-  var prevWbQ = document.getElementById('wb-search').value;
+  document.getElementById('wb-pending-card').onclick=function(){var el=document.getElementById('wb-bestellungen');if(el)el.scrollIntoView({behavior:'smooth'});};
 
-  var statusCounts={};warenData.forEach(function(w){var s=w.status||'-';statusCounts[s]=(statusCounts[s]||0)+1;});
-  var wbPF=document.getElementById('wb-proj-filter');wbPF.innerHTML='<option value="">Alle Projekte</option>';
-  var projs=[];warenData.forEach(function(w){if(w.projekt&&!projs.includes(w.projekt))projs.push(w.projekt);});
-  projs.sort().forEach(function(p){var o=document.createElement('option');o.value=p.toLowerCase();o.textContent=p;wbPF.appendChild(o);});
-
-  // Status-Panel neu aufbauen und vorherige Auswahl wiederherstellen
+  var prevStatuses=getMsValues('wb-status-ms-panel');
   var wbSPanel=document.getElementById('wb-status-ms-panel');wbSPanel.innerHTML='';
-  Object.keys(statusCounts).sort().forEach(function(s){var lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML='<input type="checkbox" value="'+s.toLowerCase()+'"'+(prevWbStatuses.includes(s.toLowerCase())?' checked':'')+' > '+s+' <span class="ms-count-badge">'+statusCounts[s]+'</span>';wbSPanel.appendChild(lbl);});
+  var sc={};lagerData.forEach(function(a){sc[a.status]=(sc[a.status]||0)+1;});
+  Object.keys(sc).sort().forEach(function(s){var lbl=document.createElement('label');lbl.className='ms-option';lbl.innerHTML='<input type="checkbox" value="'+s.toLowerCase()+'"'+(prevStatuses.includes(s.toLowerCase())?' checked':'')+' > '+s+' <span class="ms-count-badge">'+sc[s]+'</span>';wbSPanel.appendChild(lbl);});
   updateMsBtn('wb-status-ms-btn','wb-status-ms-panel');
 
-  // Vorherige Filterwerte wiederherstellen
-  wbPF.value = prevWbProj;
-  document.getElementById('wb-type-filter').value = prevWbTyp;
-  document.getElementById('wb-search').value = prevWbQ;
-  var rows=warenData.map(function(w,i){
-    var zugewiesen=(w.raw&&w.raw.Zugewiesen)?w.raw.Zugewiesen:'-';
-    var isPending=(w.status||'').toLowerCase()===PENDING_STATUS;
-    var statusCell=isPending?'<span class="wb-status-pending" onclick="changeWBStatus('+i+',event)" title="Klick zum Aendern auf Bestellt">&#x26A0; '+w.status+' &#x270E;</span>':(w.status||'-');
-    var search=((w.titel||'')+' '+(w.projekt||'')+' '+(w.status||'')+' '+zugewiesen).toLowerCase();
-    return '<tr class="wb-row'+(isPending?' wb-pending':'')+'" data-idx="'+i+'" data-proj="'+(w.projekt||'').toLowerCase()+'" data-typ="'+(w.typ||'').toLowerCase()+'" data-status="'+(w.status||'').toLowerCase()+'" data-search="'+search+'">'
-      +'<td class="proj-col">'+(w.projekt||'-')+'</td><td>'+(w.titel||'-')+'</td>'
-      +'<td><span class="wb-type-badge">'+(w.typ||'-')+'</span></td>'
-      +'<td>'+statusCell+'</td><td>'+zugewiesen+'</td>'
+  if(!lagerData.length){content.innerHTML='<div class="wb-empty">Keine Artikel im Lager gefunden.</div>';return;}
+  var rows=lagerData.map(function(a,i){
+    var isLow=a.mindestbestand>0&&a.menge<=a.mindestbestand,isOut=a.menge===0;
+    var mengeCell=isOut?'<span style="color:var(--error-c);font-weight:700">0 &#x26A0;</span>':isLow?'<span style="color:var(--at-risk-c);font-weight:700">'+a.menge+' &#x26A0;</span>':a.menge;
+    var search=(a.name+' '+a.artikelnummer+' '+a.lieferant+' '+a.lagerort).toLowerCase();
+    return '<tr class="wb-row'+(isOut?' wb-out':isLow?' wb-low':'')+'" data-idx="'+i+'" data-search="'+search+'" data-status="'+a.status.toLowerCase()+'" data-lager="'+(isOut?'out':isLow?'low':'ok')+'">'
+      +'<td style="font-weight:600;color:var(--text)">'+a.name+'</td><td>'+a.artikelnummer+'</td>'
+      +'<td style="text-align:center;font-weight:700">'+mengeCell+'</td>'
+      +'<td style="text-align:center;color:var(--text-muted);font-size:.8rem">'+a.mindestbestand+'</td>'
+      +'<td>'+a.lieferant+'</td><td>'+a.lagerort+'</td><td>'+a.status+'</td>'
       +'<td style="text-align:center;color:var(--text-muted);font-size:.8rem">&#x1F50D;</td></tr>';
   }).join('');
   content.innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr>'
-    +'<th class="wb-sort-hdr" data-col="proj">Projekt <span class="sort-arrow">&#x21C5;</span></th>'
-    +'<th class="wb-sort-hdr" data-col="titel">Arbeitspaket <span class="sort-arrow">&#x21C5;</span></th>'
-    +'<th>Typ</th><th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th>'
-    +'<th class="wb-sort-hdr" data-col="zugewiesen">Zugewiesen <span class="sort-arrow">&#x21C5;</span></th>'
-    +'<th></th></tr></thead><tbody id="wb-tbody">'+rows+'</tbody></table>'
-    +'<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Eintraege.</div></div>';
+    +'<th class="wb-sort-hdr" data-col="name">Artikel <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th>Artikelnr.</th><th style="text-align:center" class="wb-sort-hdr" data-col="menge">Menge <span class="sort-arrow">&#x21C5;</span></th>'
+    +'<th style="text-align:center">Mindest.</th><th>Lieferant</th><th>Lagerort</th>'
+    +'<th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th><th></th>'
+    +'</tr></thead><tbody id="wb-tbody">'+rows+'</tbody></table>'
+    +'<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Artikel gefunden.</div></div>';
+
   var wbSortCol=null,wbSortAsc=true;
   content.querySelectorAll('.wb-sort-hdr').forEach(function(th){
     th.addEventListener('click',function(){
       var c=th.dataset.col;if(wbSortCol===c){wbSortAsc=!wbSortAsc;}else{wbSortCol=c;wbSortAsc=true;}
       content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a){a.innerHTML='&#x21C5;';});
       th.querySelector('.sort-arrow').innerHTML=wbSortAsc?'&#x2191;':'&#x2193;';
-      var tbody=document.getElementById('wb-tbody');
-      var rowArr=Array.from(tbody.querySelectorAll('.wb-row'));
-      rowArr.sort(function(a,b){
-        var av='',bv='';
-        if(c==='proj'){av=a.dataset.proj;bv=b.dataset.proj;}
-        else if(c==='status'){av=a.dataset.status;bv=b.dataset.status;}
-        else if(c==='titel'){av=(a.querySelectorAll('td')[1]||{}).textContent||'';bv=(b.querySelectorAll('td')[1]||{}).textContent||'';}
-        else if(c==='zugewiesen'){av=(a.querySelectorAll('td')[4]||{}).textContent||'';bv=(b.querySelectorAll('td')[4]||{}).textContent||'';}
-        return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);
-      });
+      var tbody=document.getElementById('wb-tbody'),rowArr=Array.from(tbody.querySelectorAll('.wb-row'));
+      rowArr.sort(function(a,b){var av='',bv='';if(c==='name'){av=a.querySelectorAll('td')[0].textContent;bv=b.querySelectorAll('td')[0].textContent;}else if(c==='menge'){av=parseInt(a.querySelectorAll('td')[2].textContent)||0;bv=parseInt(b.querySelectorAll('td')[2].textContent)||0;return wbSortAsc?av-bv:bv-av;}else if(c==='status'){av=a.dataset.status;bv=b.dataset.status;}return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);});
       rowArr.forEach(function(r){tbody.appendChild(r);});
     });
   });
+
   content.querySelectorAll('.wb-row').forEach(function(row){
-    row.addEventListener('click',function(e){
-      if(e.target.classList.contains('wb-status-pending'))return;
-      var w=warenData[+row.dataset.idx];if(!w)return;
-      var fields=Object.entries(w.raw).filter(function(e){return e[0]!=='id'&&e[1]!=='';}).map(function(e){return '<div style="display:flex;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-size:.75rem;font-weight:700;color:var(--text-muted);min-width:140px;flex-shrink:0">'+e[0]+'</div><div style="font-size:.8rem;color:var(--text-sub)">'+e[1]+'</div></div>';}).join('');
-      document.getElementById('wb-modal-content').innerHTML='<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:4px">'+w.titel+'</h3><div style="font-size:.75rem;color:var(--text-muted);margin-bottom:16px">'+w.projekt+' - '+w.typ+'</div>'+fields;
+    row.addEventListener('click',function(){
+      var a=lagerData[+row.dataset.idx];if(!a)return;
+      document.getElementById('wb-modal-content').innerHTML='<h3 style="font-size:1rem;font-weight:700;color:var(--brand-light);margin-bottom:12px">'+a.name+'</h3>'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.82rem">'
+        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">MENGE</div><div style="font-size:1.4rem;font-weight:700;color:var(--brand-light)">'+a.menge+'</div></div>'
+        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">MINDESTBESTAND</div><div style="font-size:1.4rem;font-weight:700;color:var(--at-risk-c)">'+a.mindestbestand+'</div></div>'
+        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">ARTIKELNUMMER</div><div>'+a.artikelnummer+'</div></div>'
+        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">LIEFERANT</div><div>'+a.lieferant+'</div></div>'
+        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">LAGERORT</div><div>'+a.lagerort+'</div></div>'
+        +'<div><div style="color:var(--text-muted);font-size:.72rem;margin-bottom:3px">STATUS</div><div>'+a.status+'</div></div>'
+        +'</div>'
+        +'<div style="margin-top:14px"><a href="'+OP_URL+'/work_packages/'+a.id+'" target="_blank" style="font-size:.75rem;color:var(--brand-light)">&#x1F517; In OpenProject oeffnen</a></div>';
       document.getElementById('wb-modal').style.display='flex';
     });
   });
-  document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
+
   document.getElementById('wb-filter-bar').style.display='flex';
-  if (!wbFiltersInitialized) {
+  if(!wbFiltersInitialized){
     initMS('wb-status-ms-btn','wb-status-ms-panel',applyWBFilter);
     document.getElementById('wb-search').addEventListener('input',applyWBFilter);
-    wbPF.addEventListener('change',applyWBFilter);
-    document.getElementById('wb-type-filter').addEventListener('change',applyWBFilter);
+    document.getElementById('wb-lager-filter').addEventListener('change',applyWBFilter);
     document.getElementById('wb-clear-btn').addEventListener('click',clearWBFilter);
-    wbFiltersInitialized = true;
+    wbFiltersInitialized=true;
   }
   applyWBFilter();
 }
 
-function applyWBFilter(){
-  var q=document.getElementById('wb-search').value.toLowerCase();var proj=document.getElementById('wb-proj-filter').value;var typ=document.getElementById('wb-type-filter').value;var statuses=getMsValues('wb-status-ms-panel');var v=0;
-  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(row){var m=(!q||row.dataset.search.includes(q))&&(!proj||row.dataset.proj===proj)&&(!typ||row.dataset.typ===typ)&&(!statuses.length||statuses.includes(row.dataset.status));row.classList.toggle('wb-hidden',!m);if(m)v++;});
-  var nr=document.getElementById('wb-no-results');if(nr)nr.style.display=v===0?'block':'none';
-  document.getElementById('wb-filter-count').textContent=v+' von '+warenData.length;
+function renderBestellungen() {
+  var el=document.getElementById('wb-bestellungen'),content=document.getElementById('wb-bestellungen-content');
+  if(!warenData.length){el.style.display='none';return;}
+  el.style.display='block';
+  content.innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr><th>Projekt</th><th>Arbeitspaket</th><th>Status</th><th>Zugewiesen</th></tr></thead><tbody>'
+    +warenData.map(function(w,i){return '<tr class="wb-row"><td class="proj-col">'+w.projekt+'</td><td>'+w.titel+'</td><td><span class="wb-status-pending" onclick="changeWBStatus('+i+',event)" title="Klick: auf Bestellt aendern">&#x26A0; '+w.status+' &#x270E;</span></td><td>'+w.zugewiesen+'</td></tr>';}).join('')
+    +'</tbody></table></div>';
 }
 
-function clearWBFilter(){
-  document.getElementById('wb-search').value='';document.getElementById('wb-proj-filter').value='';document.getElementById('wb-type-filter').value='';
+function applyWBFilter() {
+  var q=(document.getElementById('wb-search').value||'').toLowerCase();
+  var lagerF=(document.getElementById('wb-lager-filter')||{}).value||'';
+  var statuses=getMsValues('wb-status-ms-panel');var v=0;
+  document.querySelectorAll('#wb-tbody .wb-row').forEach(function(row){
+    var m=(!q||row.dataset.search.includes(q))&&(!lagerF||row.dataset.lager===lagerF)&&(!statuses.length||statuses.includes(row.dataset.status));
+    row.classList.toggle('wb-hidden',!m);if(m)v++;
+  });
+  var nr=document.getElementById('wb-no-results');if(nr)nr.style.display=v===0?'block':'none';
+  document.getElementById('wb-filter-count').textContent=v+' von '+lagerData.length;
+}
+function clearWBFilter() {
+  document.getElementById('wb-search').value='';var lf=document.getElementById('wb-lager-filter');if(lf)lf.value='';
   resetMs('wb-status-ms-btn','wb-status-ms-panel');document.getElementById('wb-filter-count').textContent='';
   document.querySelectorAll('#wb-tbody .wb-row').forEach(function(r){r.classList.remove('wb-hidden');});
   var nr=document.getElementById('wb-no-results');if(nr)nr.style.display='none';
 }
 
-function changeWBStatus(idx,evt){
-  evt.stopPropagation();
-  var w=warenData[idx];if(!w||!w.raw||!w.raw.id)return;
+function changeWBStatus(idx,evt) {
+  evt.stopPropagation();var w=warenData[idx];if(!w||!w.raw||!w.raw.id)return;
   if(!confirm('Status von "'+w.titel+'" auf "Bestellt" aendern?'))return;
   apiFetch('/work_packages/'+w.raw.id).then(function(wpData){
     return apiFetch('/work_packages/'+w.raw.id,{method:'PATCH',body:JSON.stringify({lockVersion:wpData.lockVersion,_links:{status:{href:'/api/v3/statuses/17'}}})});
@@ -1058,24 +946,14 @@ function changeWBStatus(idx,evt){
 }
 
 // Hardware
-function initHardware(){
+function initHardware() {
   var list=document.getElementById('hw-list');list.innerHTML='';
-  HW_ITEMS.forEach(function(hw){
-    var row=document.createElement('div');row.className='hw-item';row.id='hw-row-'+hw.id;
-    row.innerHTML='<input type="checkbox" id="hw-cb-'+hw.id+'" onchange="hwChanged(\''+hw.id+'\')">'
-      +'<label class="hw-item-name" for="hw-cb-'+hw.id+'">'+hw.name+'</label>'
-      +'<div class="hw-qty" id="hw-qty-'+hw.id+'" style="display:none">'
-      +'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',-1)">-</button>'
-      +'<span class="hw-qty-val" id="hw-qty-val-'+hw.id+'">1</span>'
-      +'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',1)">+</button></div>';
-    list.appendChild(row);
-  });
+  HW_ITEMS.forEach(function(hw){var row=document.createElement('div');row.className='hw-item';row.id='hw-row-'+hw.id;row.innerHTML='<input type="checkbox" id="hw-cb-'+hw.id+'" onchange="hwChanged(\''+hw.id+'\')">'+'<label class="hw-item-name" for="hw-cb-'+hw.id+'">'+hw.name+'</label>'+'<div class="hw-qty" id="hw-qty-'+hw.id+'" style="display:none">'+'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',-1)">-</button>'+'<span class="hw-qty-val" id="hw-qty-val-'+hw.id+'">1</span>'+'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',1)">+</button></div>';list.appendChild(row);});
 }
-function hwChanged(id){var cb=document.getElementById('hw-cb-'+id),row=document.getElementById('hw-row-'+id),qty=document.getElementById('hw-qty-'+id);row.classList.toggle('selected',cb.checked);if(qty)qty.style.display=cb.checked?'flex':'none';if(id==='brother')document.getElementById('brother-extra').classList.toggle('visible',cb.checked);updateWPPreview();}
-function hwQty(id,delta){var el=document.getElementById('hw-qty-val-'+id);el.textContent=Math.max(1,(parseInt(el.textContent)||1)+delta);updateWPPreview();}
-function getHwSelections(){return HW_ITEMS.filter(function(hw){var cb=document.getElementById('hw-cb-'+hw.id);return cb&&cb.checked;}).map(function(hw){return{id:hw.id,name:hw.name,qty:parseInt(document.getElementById('hw-qty-val-'+hw.id).textContent)||1};});}
-
-function updateWPPreview(){
+function hwChanged(id) {var cb=document.getElementById('hw-cb-'+id),row=document.getElementById('hw-row-'+id),qty=document.getElementById('hw-qty-'+id);row.classList.toggle('selected',cb.checked);if(qty)qty.style.display=cb.checked?'flex':'none';if(id==='brother')document.getElementById('brother-extra').classList.toggle('visible',cb.checked);updateWPPreview();}
+function hwQty(id,delta) {var el=document.getElementById('hw-qty-val-'+id);el.textContent=Math.max(1,(parseInt(el.textContent)||1)+delta);updateWPPreview();}
+function getHwSelections() {return HW_ITEMS.filter(function(hw){var cb=document.getElementById('hw-cb-'+hw.id);return cb&&cb.checked;}).map(function(hw){return{id:hw.id,name:hw.name,qty:parseInt(document.getElementById('hw-qty-val-'+hw.id).textContent)||1};});}
+function updateWPPreview() {
   var outlookEl=document.querySelector('input[name="outlook"]:checked'),adintEl=document.querySelector('input[name="adint"]:checked');
   var outlook=outlookEl?outlookEl.value:'Nicht Aktiv',adint=adintEl?adintEl.value:'Nicht Aktiv';
   var hw=getHwSelections(),paperType=document.getElementById('brother-paper-type').value,paperQty=document.getElementById('brother-paper-qty').value||1;
@@ -1085,84 +963,49 @@ function updateWPPreview(){
   hw.forEach(function(h){for(var i=0;i<h.qty;i++){var label=h.qty>1?h.name+' ('+(i+1)+'/'+h.qty+')':h.name;items.push({name:label,sub:false});if(h.id==='brother'&&i===0&&paperType)items.push({name:'Papier: '+paperType+' x '+paperQty+' Rollen',sub:true});}});
   document.getElementById('wp-preview').innerHTML=items.map(function(it){return '<div class="np-wp-item'+(it.sub?' wp-sub':'')+'"><span class="wp-dot"></span>'+it.name+'</div>';}).join('');
 }
-
-function initRadios(){
-  document.querySelectorAll('.np-radio-group').forEach(function(grp){
-    grp.querySelectorAll('input[type=radio]').forEach(function(r){
-      r.addEventListener('change',function(){grp.querySelectorAll('.np-radio-lbl').forEach(function(l){l.classList.remove('selected');});r.closest('.np-radio-lbl').classList.add('selected');updateWPPreview();});
-      if(r.checked)r.closest('.np-radio-lbl').classList.add('selected');
-    });
-  });
+function initRadios() {
+  document.querySelectorAll('.np-radio-group').forEach(function(grp){grp.querySelectorAll('input[type=radio]').forEach(function(r){r.addEventListener('change',function(){grp.querySelectorAll('.np-radio-lbl').forEach(function(l){l.classList.remove('selected');});r.closest('.np-radio-lbl').classList.add('selected');updateWPPreview();});if(r.checked)r.closest('.np-radio-lbl').classList.add('selected');});});
 }
 document.getElementById('brother-paper-type').addEventListener('change',updateWPPreview);
 document.getElementById('brother-paper-qty').addEventListener('input',updateWPPreview);
 
-function getFormData(){
+function getFormData() {
   var ap=document.getElementById('np-ap').value.trim(),tel=document.getElementById('np-telefon').value.trim(),email=document.getElementById('np-email').value.trim();
   var parts=[ap];if(tel)parts.push('Tel: '+tel);if(email)parts.push('E-Mail: '+email);
   var outlookEl=document.querySelector('input[name="outlook"]:checked'),adintEl=document.querySelector('input[name="adint"]:checked');
   return{name:document.getElementById('np-name').value.trim(),standort:document.getElementById('np-standort').value.trim(),ap:parts.join(' | '),paket:document.getElementById('np-paket').value,outlook:outlookEl?outlookEl.value:'Nicht Aktiv',adint:adintEl?adintEl.value:'Nicht Aktiv',hw:getHwSelections(),paperType:document.getElementById('brother-paper-type').value,paperQty:parseInt(document.getElementById('brother-paper-qty').value)||1,bemerkung:document.getElementById('np-bemerkung').value.trim()};
 }
-
-function buildDescription(d){
+function buildDescription(d) {
   var hwText=d.hw.map(function(h){return h.qty+'x '+h.name;}).join(', ');
   var lines=['Kundenname: '+d.name,'Standort: '+d.standort,'Ansprechpartner: '+d.ap,'Paket: '+d.paket];
-  if(hwText)lines.push('Hardware: '+hwText);
-  lines.push('Outlook Add-in: '+d.outlook,'AD-Integration: '+d.adint);
-  if(d.bemerkung)lines.push('Bemerkungen: '+d.bemerkung);
-  return lines.join('\n');
+  if(hwText)lines.push('Hardware: '+hwText);lines.push('Outlook Add-in: '+d.outlook,'AD-Integration: '+d.adint);if(d.bemerkung)lines.push('Bemerkungen: '+d.bemerkung);return lines.join('\n');
 }
-
-function showNpResult(msg,type){var el=document.getElementById('np-result');el.innerHTML=msg;el.className='np-result '+type;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
-
-function resetForm(){
-  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(function(id){document.getElementById(id).value='';});
-  document.getElementById('np-paket').value='';
-  document.querySelectorAll('input[name="outlook"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
-  document.querySelectorAll('input[name="adint"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
+function showNpResult(msg,type) {var el=document.getElementById('np-result');el.innerHTML=msg;el.className='np-result '+type;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function resetForm() {
+  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(function(id){document.getElementById(id).value='';});document.getElementById('np-paket').value='';
+  document.querySelectorAll('input[name="outlook"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});document.querySelectorAll('input[name="adint"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
   document.querySelectorAll('.np-radio-lbl').forEach(function(l){var inp=l.querySelector('input');l.classList.toggle('selected',inp&&inp.checked);});
   HW_ITEMS.forEach(function(hw){var cb=document.getElementById('hw-cb-'+hw.id);if(cb)cb.checked=false;hwChanged(hw.id);});
-  document.getElementById('brother-paper-type').value='';document.getElementById('brother-paper-qty').value=1;
-  document.getElementById('np-result').style.display='none';updateWPPreview();
+  document.getElementById('brother-paper-type').value='';document.getElementById('brother-paper-qty').value=1;document.getElementById('np-result').style.display='none';updateWPPreview();
 }
 
 document.getElementById('np-submit-btn').addEventListener('click',function(){
-  var d=getFormData();var btn=document.getElementById('np-submit-btn');var valid=true;
+  var d=getFormData(),btn=document.getElementById('np-submit-btn'),valid=true;
   ['np-name','np-standort','np-ap'].forEach(function(id){var el=document.getElementById(id);if(!el.value.trim()){el.classList.add('invalid');valid=false;}else el.classList.remove('invalid');});
   if(!d.paket){document.getElementById('np-paket').classList.add('invalid');valid=false;}else document.getElementById('np-paket').classList.remove('invalid');
   if(!valid){showNpResult('Bitte alle Pflichtfelder ausfuellen.','error');return;}
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird geprueft...';
   var sf=encodeURIComponent(JSON.stringify([{"name":{"operator":"=","values":[d.name]}}]));
-  apiFetch('/projects?filters='+sf).then(function(searchData){
-    var elements=searchData._embedded&&searchData._embedded.elements?searchData._embedded.elements:[];
-    var existing=elements.filter(function(p){return p.name.toLowerCase()===d.name.toLowerCase();})[0];
-    if(existing){
-      btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';
-      showNpResult('Ein Projekt mit dem Namen "'+d.name+'" existiert bereits!<br><br>'
-        +'<a href="'+OP_URL+'/projects/'+existing.identifier+'" target="_blank">Bestehendes Projekt oeffnen</a><br><br>'
-        +'<button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">Anderen Namen verwenden</button>'
-        +'<button onclick="updateExistingProject(\''+existing.id+'\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">Bestehendes Projekt aktualisieren</button>',
-        'warning');
-      return null;
-    }
+  apiFetch('/projects?filters='+sf).then(function(sd){
+    var existing=(sd._embedded&&sd._embedded.elements?sd._embedded.elements:[]).filter(function(p){return p.name.toLowerCase()===d.name.toLowerCase();})[0];
+    if(existing){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';showNpResult('Ein Projekt mit dem Namen "'+d.name+'" existiert bereits!<br><br><a href="'+OP_URL+'/projects/'+existing.identifier+'" target="_blank">Bestehendes Projekt oeffnen</a><br><br><button onclick="document.getElementById(\'np-name\').focus()" style="padding:7px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text);cursor:pointer;margin-right:8px;font-size:.82rem">Anderen Namen verwenden</button><button onclick="updateExistingProject(\''+existing.id+'\')" style="padding:7px 14px;background:var(--brand);border:none;border-radius:7px;color:white;cursor:pointer;font-size:.82rem">Bestehendes Projekt aktualisieren</button>','warning');return null;}
     btn.innerHTML='<span class="spinner"></span> Projekt wird angelegt...';
-    var links={};
-    if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};
-    if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};
-    if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
-    var projBody={name:d.name,description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links};
-    return apiFetch('/projects',{method:'POST',body:JSON.stringify(projBody)});
+    var links={};if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
+    return apiFetch('/projects',{method:'POST',body:JSON.stringify({name:d.name,description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links})});
   }).then(function(proj){
-    if(!proj)return;
-    var projId=proj.id;btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
+    if(!proj)return;var projId=proj.id;btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
     var wpCount=0,wpOk=0;
-    function makeWP(subject,parentId,isHW){
-      wpCount++;
-      var body={subject:subject,_links:{project:{href:'/api/v3/projects/'+projId}}};
-      if(isHW)body._links.type={href:'/api/v3/types/8'};
-      if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};
-      return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)}).then(function(r){wpOk++;return r.id;}).catch(function(){return null;});
-    }
+    function makeWP(subject,parentId,isHW){wpCount++;var body={subject:subject,_links:{project:{href:'/api/v3/projects/'+projId}}};if(isHW)body._links.type={href:'/api/v3/types/8'};if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)}).then(function(r){wpOk++;return r.id;}).catch(function(){return null;});}
     var chain=Promise.resolve();
     WP_BASIS.forEach(function(wp){chain=chain.then(function(){return makeWP(wp.name,null,false);});});
     if(d.outlook==='Beauftragt'||d.outlook==='Gewuenscht')chain=chain.then(function(){return makeWP('Outlook Add-in einrichten',null,false);});
@@ -1170,39 +1013,30 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
     var brotherParentId=null;
     d.hw.forEach(function(h){for(var qi=0;qi<h.qty;qi++){(function(hwItem,idx){chain=chain.then(function(){var label=hwItem.qty>1?hwItem.name+' ('+(idx+1)+'/'+hwItem.qty+')':hwItem.name;return makeWP(label,null,true).then(function(wid){if(hwItem.id==='brother'&&idx===0)brotherParentId=wid;return wid;});});})(h,qi);}});
     if(d.paperType)chain=chain.then(function(){if(brotherParentId)return makeWP('Papier: '+d.paperType+' x '+d.paperQty+' Rollen',brotherParentId,true);});
-    return chain.then(function(){
-      showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>Projekt-ID: '+projId+'<br>Arbeitspakete: '+wpCount+' angelegt ('+wpOk+' erfolgreich)<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>','success');
-      loadFromAPI();
-    });
+    return chain.then(function(){showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>APs: '+wpCount+' angelegt ('+wpOk+' erfolgreich)<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>','success');loadFromAPI();});
   }).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
 });
 
-function updateExistingProject(projId){
-  var d=getFormData();var btn=document.getElementById('np-submit-btn');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert...';
-  var links={};
-  if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};
-  if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};
-  if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
-  var projBody={description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links};
-  apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify(projBody)}).then(function(){showNpResult('Projekt erfolgreich aktualisiert!','success');loadFromAPI();}).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
+function updateExistingProject(projId) {
+  var d=getFormData(),btn=document.getElementById('np-submit-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert...';
+  var links={};if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
+  apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links})}).then(function(){showNpResult('Projekt erfolgreich aktualisiert!','success');loadFromAPI();}).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
 }
 
+// Exports
 function addLogoToPDF(doc,cb){var img=new Image();img.crossOrigin='anonymous';img.onload=function(){try{var c=document.createElement('canvas');c.width=img.width;c.height=img.height;c.getContext('2d').drawImage(img,0,0);var ratio=img.width/img.height,h=10,w=h*ratio;doc.addImage(c.toDataURL('image/png'),'PNG',doc.internal.pageSize.getWidth()-w-12,6,w,h);}catch(e){}cb();};img.onerror=function(){cb();};img.src='https://welcomeyou.de/wp-content/uploads/2021/05/cropped-Logo_welcome_EnterSmart_150x85.webp';}
-
-function tableData(){return projectData.map(function(p){return{Projektname:p.name,Status:statusLabel(statusKey(p.status)),Projektverantwortlicher:p.pm||'-',Paket:p.paket||'-','AP gesamt':p.wp_total,'AP abgeschlossen':p.wp_closed,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0};});}
+function tableData(){return projectData.map(function(p){return{Projektname:p.name,Status:statusLabel(statusKey(p.status)),PM:p.pm||'-',Paket:p.paket||'-','AP gesamt':p.wp_total,'AP offen':p.wp_total-p.wp_closed,'Fortschritt (%)':p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0};});}
 function exportExcel(){var ws=XLSX.utils.json_to_sheet(tableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Projekte');XLSX.writeFile(wb,'welcome_projekte.xlsx');}
 function exportCSV(){var rows=tableData(),h=Object.keys(rows[0]);var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return'"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_projekte.csv';a.click();}
-function exportPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Projektuebersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projektname','Status','Projektverantwortlicher','Paket','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:44}}});doc.save('welcome_projekte.pdf');});}
-
-function wbTableData(){return warenData.map(function(w){return{Projekt:w.projekt||'-',Arbeitspaket:w.titel,Typ:w.typ,Status:w.status,Zugewiesen:(w.raw&&w.raw.Zugewiesen)?w.raw.Zugewiesen:'-'};});}
+function exportPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Projektuebersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projektname','Status','PM','Paket','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]}});doc.save('welcome_projekte.pdf');});}
+function wbTableData(){return lagerData.map(function(a){return{Artikel:a.name,Artikelnummer:a.artikelnummer,Menge:a.menge,Mindestbestand:a.mindestbestand,Lieferant:a.lieferant,Lagerort:a.lagerort,Status:a.status};});}
 function exportWBExcel(){var ws=XLSX.utils.json_to_sheet(wbTableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Warenbestand');XLSX.writeFile(wb,'welcome_warenbestand.xlsx');}
 function exportWBCSV(){var rows=wbTableData(),h=Object.keys(rows[0]);var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return'"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_warenbestand.csv';a.click();}
-function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projekt','Arbeitspaket','Typ','Status','Zugewiesen'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]||'-';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]},columnStyles:{0:{cellWidth:50},1:{cellWidth:80}}});doc.save('welcome_warenbestand.pdf');});}
+function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Artikel','Artikelnummer','Menge','Mindestbestand','Lieferant','Lagerort','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]}});doc.save('welcome_warenbestand.pdf');});}
 
-initHardware();
-initRadios();
-updateWPPreview();
+document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
+
+initHardware();initRadios();updateWPPreview();
 </script>
 </body>
 </html>
