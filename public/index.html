@@ -910,35 +910,115 @@ function loadLagerStatuses() {
 }
 
 /* ── Warenbestand ── */
+/* Status-Gruppen fuer Artikelnummer-Matching */
+var STATUS_EINGEHEND   = ['neu','bestellt','bestellung ausstehend'];
+var STATUS_IM_BESTAND  = ['lagernd','in bearbeitung'];
+var STATUS_AUSGELIEFERT= ['versendet','geliefert','erledigt','abgeschlossen','done','fertig','delivered'];
+
+function matchesStatusGroup(statusStr, group) {
+  var s = (statusStr||'').toLowerCase().trim();
+  return group.some(function(g){ return s===g || s.includes(g); });
+}
+
 function renderWarenbestand() {
   var content=document.getElementById('wb-content');
   var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
-  apiFetch('/projects/'+LAGER_PROJ_ID+'/work_packages?pageSize=100&filters='+fa).then(function(data){
-    lagerData=(data._embedded&&data._embedded.elements?data._embedded.elements:[]).filter(function(wp){return getLink(wp,'type').toLowerCase()==='hardware';}).map(function(wp){
-      return {
-        id:wp.id,
-        lockVersion:wp.lockVersion||0,
-        name:wp.subject||'-',
-        menge:parseInt(wp.customField40)||0,
-        mindestbestand:parseInt(wp.customField44)||0,
-        artikelnummer:wp.customField41||'-',
-        lieferant:wp.customField42||'-',
-        lagerort:wp.customField43||'-',
-        status:getLink(wp,'status')||'-',
-        statusHref:(wp._links&&wp._links.status&&wp._links.status.href)||''
-      };
+
+  // 1) Lager-APs laden (Projekt 80)
+  var pLager = apiFetch('/projects/'+LAGER_PROJ_ID+'/work_packages?pageSize=100&filters='+fa).then(function(data){
+    lagerData=(data._embedded&&data._embedded.elements?data._embedded.elements:[])
+      .filter(function(wp){return getLink(wp,'type').toLowerCase()==='hardware';})
+      .map(function(wp){
+        return {
+          id:wp.id, lockVersion:wp.lockVersion||0,
+          name:wp.subject||'-',
+          menge:parseInt(wp.customField40)||0,
+          mindestbestand:parseInt(wp.customField44)||0,
+          artikelnummer:(wp.customField41||'').trim(),
+          lieferant:wp.customField42||'-',
+          lagerort:wp.customField43||'-',
+          status:getLink(wp,'status')||'-',
+          statusHref:(wp._links&&wp._links.status&&wp._links.status.href)||'',
+          // Matching-Felder werden unten befuellt
+          eingehend:0, imBestand:0, ausgeliefert:0, verfuegbar:0,
+          bestellungenDetails:[]
+        };
+      });
+  });
+
+  // 2) ALLE Hardware-APs aus Kundenprojekten laden (alle Status)
+  var fAll=encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}},{"status":{"operator":"*","values":[]}}]));
+  var pWPs = apiFetch('/work_packages?pageSize=500&filters='+fAll).then(function(pd){
+    return (pd._embedded&&pd._embedded.elements?pd._embedded.elements:[])
+      .filter(function(wp){
+        var pid=getLink(wp,'project','href');if(pid)pid=pid.split('/').pop();
+        return String(pid)!==String(LAGER_PROJ_ID);
+      })
+      .map(function(wp){
+        var st=getLink(wp,'status')||'-';
+        return {
+          id:wp.id,
+          projekt:getLink(wp,'project')||'-',
+          titel:wp.subject||'-',
+          status:st,
+          artikelnummer:(wp.customField41||'').trim(),
+          zugewiesen:getLink(wp,'assignee')||'-',
+          raw:{id:wp.id}
+        };
+      });
+  });
+
+  Promise.all([pLager, pWPs]).then(function(res){
+    var alleKundenWPs = res[1];
+
+    // Bestellungen ausstehend fuer den unteren Bereich
+    warenData = alleKundenWPs.filter(function(wp){
+      return matchesStatusGroup(wp.status, ['bestellung ausstehend']);
     });
-    var fp=encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}},{"status":{"operator":"=","values":["19"]}}]));
-    return apiFetch('/work_packages?pageSize=200&filters='+fp).then(function(pd){
-      warenData=(pd._embedded&&pd._embedded.elements?pd._embedded.elements:[]).filter(function(wp){var pid=getLink(wp,'project','href');if(pid)pid=pid.split('/').pop();return String(pid)!==String(LAGER_PROJ_ID);}).map(function(wp){return{id:wp.id,projekt:getLink(wp,'project')||'-',titel:wp.subject||'-',status:getLink(wp,'status')||'-',zugewiesen:getLink(wp,'assignee')||'-',raw:{id:wp.id}};});
-      renderLagerTabelle();renderBestellungen();
+
+    // 3) Matching: Artikelnummer-basiert
+    // Lager-Artikel ohne Artikelnummer koennen nicht gematcht werden
+    var lagerByArtNr = {};
+    lagerData.forEach(function(a){
+      if(a.artikelnummer && a.artikelnummer!=='-' && a.artikelnummer!==''){
+        lagerByArtNr[a.artikelnummer.toLowerCase()] = a;
+      }
     });
-  }).catch(function(err){content.innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
+
+    // Kunden-APs nach Artikelnummer auf Lager-Artikel matchen
+    alleKundenWPs.forEach(function(wp){
+      var artnr = (wp.artikelnummer||'').toLowerCase();
+      if(!artnr) return;
+      var lagerArtikel = lagerByArtNr[artnr];
+      if(!lagerArtikel) return;
+
+      if(matchesStatusGroup(wp.status, STATUS_EINGEHEND)){
+        lagerArtikel.eingehend++;
+      } else if(matchesStatusGroup(wp.status, STATUS_IM_BESTAND)){
+        lagerArtikel.imBestand++;
+        lagerArtikel.bestellungenDetails.push({projekt:wp.projekt, titel:wp.titel, status:wp.status});
+      } else if(matchesStatusGroup(wp.status, STATUS_AUSGELIEFERT)){
+        lagerArtikel.ausgeliefert++;
+      }
+    });
+
+    // Verfuegbarer Bestand = Lager-Menge - Im Bestand (in Projekten reserviert/genutzt)
+    lagerData.forEach(function(a){
+      a.verfuegbar = Math.max(0, a.menge - a.imBestand);
+    });
+
+    renderLagerTabelle();
+    renderBestellungen();
+  }).catch(function(err){
+    content.innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';
+  });
 }
 
 function renderLagerTabelle() {
   var content=document.getElementById('wb-content');
-  var lowCount=lagerData.filter(function(a){return a.mindestbestand>0&&a.menge<=a.mindestbestand;}).length;
+
+  // Alarm basiert auf verfuegbar (nicht menge)
+  var lowCount=lagerData.filter(function(a){return a.mindestbestand>0&&a.verfuegbar<=a.mindestbestand;}).length;
   document.getElementById('wb-total').textContent=lagerData.length;
   document.getElementById('wb-proj-count').textContent=lowCount;
   document.getElementById('wb-pending-count').textContent=warenData.length;
@@ -955,17 +1035,41 @@ function renderLagerTabelle() {
   if(!lagerData.length){content.innerHTML='<div class="wb-empty">Keine Artikel im Lager. Lege den ersten Artikel an!</div>';return;}
 
   var rows=lagerData.map(function(a,i){
-    var isLow=a.mindestbestand>0&&a.menge<=a.mindestbestand,isOut=a.menge===0;
+    var hasMatch = a.artikelnummer && a.artikelnummer!=='-' && a.artikelnummer!=='';
+    var isLow = a.mindestbestand>0 && a.verfuegbar<=a.mindestbestand;
+    var isOut = a.verfuegbar===0 && a.menge>0; // Alles reserviert/raus
+    var isZero = a.menge===0; // Nichts auf Lager
+
+    var verfuegbarColor = isZero||isOut ? 'var(--error-c)' : isLow ? 'var(--at-risk-c)' : 'var(--on-track-c)';
+    var verfuegbarVal = isZero ? '0 &#x26A0;' : isOut ? a.verfuegbar+' &#x26A0;' : isLow ? a.verfuegbar+' &#x26A0;' : a.verfuegbar;
+
     var mengeCell='<div class="menge-cell">'
       +'<button class="btn-icon menge-btn" onclick="adjustMengeOP('+i+',-1,event)" title="Menge -1">-</button>'
-      +'<span class="menge-val" style="color:'+(isOut?'var(--error-c)':isLow?'var(--at-risk-c)':'var(--text)')+'">'+a.menge+(isOut?' &#x26A0;':isLow?' &#x26A0;':'')+'</span>'
+      +'<span class="menge-val" style="color:var(--text)">'+a.menge+'</span>'
       +'<button class="btn-icon menge-btn" onclick="adjustMengeOP('+i+',1,event)" title="Menge +1">+</button>'
       +'</div>';
+
+    // Im Einsatz: Tooltip mit Projektliste
+    var imBestandCell = a.imBestand > 0
+      ? '<span style="color:var(--at-risk-c);font-weight:600;cursor:default" title="'+
+          a.bestellungenDetails.map(function(d){return d.projekt+': '+d.titel+' ('+d.status+')';}).join('\n')+
+        '">'+a.imBestand+' &#x1F4CC;</span>'
+      : (hasMatch ? '<span style="color:var(--text-muted)">0</span>' : '<span style="color:var(--border)" title="Keine Artikelnummer - kein Matching">-</span>');
+
+    var eingehendCell = a.eingehend > 0
+      ? '<span style="color:var(--brand-light);font-weight:600">'+a.eingehend+' &#x1F69A;</span>'
+      : (hasMatch ? '<span style="color:var(--text-muted)">0</span>' : '<span style="color:var(--border)">-</span>');
+
     var search=(a.name+' '+a.artikelnummer+' '+a.lieferant+' '+a.lagerort).toLowerCase();
-    return '<tr class="wb-row'+(isOut?' wb-out':isLow?' wb-low':'')+'" data-idx="'+i+'" data-search="'+search+'" data-status="'+a.status.toLowerCase()+'" data-lager="'+(isOut?'out':isLow?'low':'ok')+'">'
+    var rowClass='wb-row'+(isZero?' wb-out':isLow?' wb-low':'');
+
+    return '<tr class="'+rowClass+'" data-idx="'+i+'" data-search="'+search+'" data-status="'+a.status.toLowerCase()+'" data-lager="'+(isZero?'out':isLow?'low':'ok')+'">'
       +'<td style="font-weight:600;color:var(--text)">'+a.name+'</td>'
-      +'<td style="color:var(--text-muted)">'+a.artikelnummer+'</td>'
+      +'<td style="color:var(--text-muted);font-size:.8rem">'+a.artikelnummer+'</td>'
       +'<td>'+mengeCell+'</td>'
+      +'<td style="text-align:center">'+imBestandCell+'</td>'
+      +'<td style="text-align:center">'+eingehendCell+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:'+verfuegbarColor+'">'+verfuegbarVal+'</td>'
       +'<td style="text-align:center;color:var(--text-muted);font-size:.8rem">'+a.mindestbestand+'</td>'
       +'<td>'+a.lieferant+'</td>'
       +'<td>'+a.lagerort+'</td>'
@@ -980,7 +1084,10 @@ function renderLagerTabelle() {
   content.innerHTML='<div class="wb-table-wrap"><table class="wb-table"><thead><tr>'
     +'<th class="wb-sort-hdr" data-col="name">Artikel <span class="sort-arrow">&#x21C5;</span></th>'
     +'<th>Artikelnr.</th>'
-    +'<th style="text-align:center;min-width:120px">Menge</th>'
+    +'<th style="text-align:center;min-width:120px">Lager</th>'
+    +'<th style="text-align:center" title="In Kundenprojekten aktiv (Lagernd / In Bearbeitung)">Im Einsatz</th>'
+    +'<th style="text-align:center" title="Bestellt / Unterwegs (Neu / Bestellt / Bestellung ausstehend)">Eingehend</th>'
+    +'<th style="text-align:center" class="wb-sort-hdr" data-col="verfuegbar">Verfuegbar <span class="sort-arrow">&#x21C5;</span></th>'
     +'<th style="text-align:center">Mindest.</th>'
     +'<th>Lieferant</th><th>Lagerort</th>'
     +'<th class="wb-sort-hdr" data-col="status">Status <span class="sort-arrow">&#x21C5;</span></th>'
@@ -996,7 +1103,13 @@ function renderLagerTabelle() {
       content.querySelectorAll('.wb-sort-hdr .sort-arrow').forEach(function(a){a.innerHTML='&#x21C5;';});
       th.querySelector('.sort-arrow').innerHTML=wbSortAsc?'&#x2191;':'&#x2193;';
       var tbody=document.getElementById('wb-tbody'),rowArr=Array.from(tbody.querySelectorAll('.wb-row'));
-      rowArr.sort(function(a,b){var av='',bv='';if(c==='name'){av=a.querySelectorAll('td')[0].textContent.trim();bv=b.querySelectorAll('td')[0].textContent.trim();}else if(c==='menge'){av=parseInt(lagerData[+a.dataset.idx].menge)||0;bv=parseInt(lagerData[+b.dataset.idx].menge)||0;return wbSortAsc?av-bv:bv-av;}else if(c==='status'){av=a.dataset.status;bv=b.dataset.status;}return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);});
+      rowArr.sort(function(a,b){
+        var ai=+a.dataset.idx, bi=+b.dataset.idx;
+        if(c==='name'){var av=a.querySelectorAll('td')[0].textContent.trim(),bv=b.querySelectorAll('td')[0].textContent.trim();return wbSortAsc?av.localeCompare(bv):bv.localeCompare(av);}
+        if(c==='verfuegbar'){var av2=lagerData[ai].verfuegbar,bv2=lagerData[bi].verfuegbar;return wbSortAsc?av2-bv2:bv2-av2;}
+        if(c==='status'){var av3=a.dataset.status,bv3=b.dataset.status;return wbSortAsc?av3.localeCompare(bv3):bv3.localeCompare(av3);}
+        return 0;
+      });
       rowArr.forEach(function(r){tbody.appendChild(r);});
     });
   });
@@ -1287,7 +1400,7 @@ function tableData(){return projectData.map(function(p){return{Projektname:p.nam
 function exportExcel(){var ws=XLSX.utils.json_to_sheet(tableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Projekte');XLSX.writeFile(wb,'welcome_projekte.xlsx');}
 function exportCSV(){var rows=tableData(),h=Object.keys(rows[0]);var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return'"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_projekte.csv';a.click();}
 function exportPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Projektuebersicht',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Projektname','Status','PM','Paket','AP gesamt','AP offen','Fortschritt (%)'];doc.autoTable({startY:24,head:[cols],body:tableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:7.5,cellPadding:2.5},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]}});doc.save('welcome_projekte.pdf');});}
-function wbTableData(){return lagerData.map(function(a){return{Artikel:a.name,Artikelnummer:a.artikelnummer,Menge:a.menge,Mindestbestand:a.mindestbestand,Lieferant:a.lieferant,Lagerort:a.lagerort,Status:a.status};});}
+function wbTableData(){return lagerData.map(function(a){return{Artikel:a.name,Artikelnummer:a.artikelnummer,'Lager (gesamt)':a.menge,'Im Einsatz':a.imBestand,'Eingehend':a.eingehend,'Verfuegbar':a.verfuegbar,Mindestbestand:a.mindestbestand,Lieferant:a.lieferant,Lagerort:a.lagerort,Status:a.status};});}
 function exportWBExcel(){var ws=XLSX.utils.json_to_sheet(wbTableData());var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Warenbestand');XLSX.writeFile(wb,'welcome_warenbestand.xlsx');}
 function exportWBCSV(){var rows=wbTableData(),h=Object.keys(rows[0]);var csv=[h.join(';')].concat(rows.map(function(r){return h.map(function(k){return'"'+(r[k]+'').replace(/"/g,'""')+'"';}).join(';');})).join('\n');var a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='welcome_warenbestand.csv';a.click();}
 function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Artikel','Artikelnummer','Menge','Mindestbestand','Lieferant','Lagerort','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]}});doc.save('welcome_warenbestand.pdf');});}
