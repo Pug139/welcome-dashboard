@@ -1551,7 +1551,10 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
     function makeWP(subject,parentId,isHW,extraFields,descText){
       wpCount++;
       var body={subject:subject,_links:{project:{href:'/api/v3/projects/'+projId}}};
-      if(isHW)body._links.type={href:'/api/v3/types/8'};
+      if(isHW){
+        body._links.type={href:'/api/v3/types/8'};
+        body.customField40=1; // Menge ist Pflichtfeld beim Hardware-Typ
+      }
       if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};
       if(extraFields)Object.keys(extraFields).forEach(function(k){body[k]=extraFields[k];});
       if(descText)body.description={format:'plain',raw:descText};
@@ -1582,8 +1585,9 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
         }
       });
       return chain.then(function(){
-        var errHtml=wpErrors.length?'<br><small style="opacity:.7">Fehler: '+wpErrors.join(', ')+'</small>':'';
-        showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>APs: '+wpCount+' angelegt ('+wpOk+' erfolgreich)'+errHtml+'<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>','success');
+        var errHtml=wpErrors.length?'<br><br><strong style="color:var(--error-c)">&#x26A0; '+wpErrors.length+' AP(s) fehlgeschlagen:</strong><br><small style="color:var(--error-c);opacity:.9">'+wpErrors.join('<br>')+'</small>':'';
+        var type=wpErrors.length?'warning':'success';
+        showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>APs: '+wpOk+' von '+wpCount+' erfolgreich angelegt'+errHtml+'<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>',type);
         loadFromAPI();
       });
     });
