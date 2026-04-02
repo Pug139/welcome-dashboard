@@ -1577,7 +1577,7 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
               var extraFields=null,descText=null;
               if(acc&&idx===0&&!hwZubehoerDone[hwItem.id]){
                 var zubehoer=getHwZubehoer(hwItem.id);
-                if(zubehoer){hwZubehoerDone[hwItem.id]=true;if(acc.type==='customfield'){extraFields={};extraFields[CF_HW_ZUBEHOER]=zubehoer;}else if(acc.type==='description'){descText=zubehoer;}}
+                if(zubehoer){hwZubehoerDone[hwItem.id]=true;if(acc.type==='customfield'){extraFields={};extraFields[CF_HW_ZUBEHOER]={format:'plain',raw:zubehoer};}else if(acc.type==='description'){descText=zubehoer;}}
               }
               return makeWP(label,null,true,extraFields,descText);
             });
