@@ -1470,6 +1470,8 @@ function updateWPPreview() {
   renderNodes(structure, 0);
   document.getElementById('wp-preview').innerHTML = html || '<div style="color:var(--text-muted);font-size:.8rem">Keine APs konfiguriert.</div>';
 }
+
+function buildAccSection(hwId) {
   var acc = HW_ACCESSORIES[hwId];
   if(!acc) return null;
   var html = '<div class="hw-acc-section" id="hw-acc-'+hwId+'"><div class="hw-acc-title">'+acc.title+'</div><div class="hw-acc-grid">';
@@ -1559,30 +1561,6 @@ function getHwZubehoer(hwId) {
     parts.push(f.label+': '+val);
   });
   return parts.length ? parts.join(' | ') : null;
-}
-
-function updateWPPreview() {
-  var outlookEl = document.querySelector('input[name="outlook"]:checked');
-  var adintEl   = document.querySelector('input[name="adint"]:checked');
-  var outlook = outlookEl ? outlookEl.value : 'Nicht Aktiv';
-  var adint   = adintEl   ? adintEl.value   : 'Nicht Aktiv';
-  var hw = getHwSelections();
-  var items = WP_BASIS.map(function(w){return {name:w.name, sub:false, note:''};});
-  if(outlook==='Beauftragt'||outlook==='Gewuenscht') items.push({name:'Outlook Add-in einrichten',sub:false,note:''});
-  if(adint==='Beauftragt'||adint==='Gewuenscht')     items.push({name:'AD-Integration konfigurieren',sub:false,note:''});
-  hw.forEach(function(h){
-    var zubehoer = getHwZubehoer(h.id);
-    for(var i=0;i<h.qty;i++){
-      var label = h.qty>1 ? h.name+' ('+(i+1)+'/'+h.qty+')' : h.name;
-      // Zubehör nur beim ersten AP eintragen
-      items.push({name:label, sub:false, note:(i===0&&zubehoer)?zubehoer:''});
-    }
-  });
-  document.getElementById('wp-preview').innerHTML = items.map(function(it){
-    return '<div class="np-wp-item'+(it.sub?' wp-sub':'')+'"><span class="wp-dot"></span>'
-      +it.name+(it.note?'<span style="color:var(--hint-text);font-size:.72rem;margin-left:6px">→ '+it.note+'</span>':'')
-      +'</div>';
-  }).join('');
 }
 
 function initRadios() {
