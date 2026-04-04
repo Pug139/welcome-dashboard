@@ -274,7 +274,12 @@ header p{font-size:.72rem;opacity:.7}
 .np-result.success{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c)}
 .np-result.error{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c)}
 .np-result.warning{background:rgba(240,136,62,.1);color:var(--at-risk-c);border:1px solid var(--at-risk-c)}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+.extra-ap-row{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px 10px}
+.extra-ap-row input{flex:1;padding:6px 10px;border:1px solid var(--input-border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:.83rem;font-family:inherit}
+.extra-ap-row input:focus{outline:none;border-color:var(--brand-light)}
+.extra-ap-row select{padding:6px 10px;border:1px solid var(--input-border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:.83rem;cursor:pointer;white-space:nowrap}
+.extra-ap-row .rm-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text-muted);font-size:.9rem;padding:3px 8px;cursor:pointer;flex-shrink:0}
+.extra-ap-row .rm-btn:hover{border-color:var(--error-c);color:var(--error-c)}
 @keyframes spin{to{transform:rotate(360deg)}}
 footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 14px}
 @media(max-width:640px){
@@ -498,6 +503,13 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         <div class="np-field"><label class="np-label">Bemerkungen</label><textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen..."></textarea></div>
       </div>
       <div class="np-section">
+        <div class="np-sec-title">Weitere Arbeitspakete</div>
+        <div id="extra-ap-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
+        <button type="button" onclick="addExtraAP()" class="btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-sub);font-size:.82rem;padding:7px 14px">
+          &#x2B; Weiteres AP hinzufügen
+        </button>
+      </div>
+      <div class="np-section">
         <div class="np-sec-title">Arbeitspakete (Vorschau)</div>
         <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="wp-preview"></div></div>
       </div>
@@ -649,8 +661,8 @@ var WP_STRUCTURE = [
       {name:'Admin Schulung', type:TYPE_TASK, cond:'schulung_admin'},
       {name:'User Schulung', type:TYPE_TASK, cond:'schulung_user'}
     ]},
-    {name:'Go-Live', type:TYPE_EPIC},
-    {name:'Abschluss', type:TYPE_EPIC}
+    {name:'Go-Live', type:TYPE_PHASE},
+    {name:'Abschluss', type:TYPE_PHASE}
   ]}
 ];
 
@@ -919,9 +931,13 @@ function loadProjectWPs(projId) {
   var el=document.getElementById('ap-body-'+projId);if(!el||el.dataset.loaded==='1')return;
   var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
   apiFetch('/projects/'+projId+'/work_packages?pageSize=100&filters='+f).then(function(data){
-    var wps=data._embedded&&data._embedded.elements?data._embedded.elements:[];
+    var wps=(data._embedded&&data._embedded.elements?data._embedded.elements:[])
+      .filter(function(wp){
+        var t=getLink(wp,'type').toLowerCase();
+        return t==='task'||t==='hardware';
+      });
     wps.sort(function(a,b){return(isWPClosed(getLink(a,'status'))?1:0)-(isWPClosed(getLink(b,'status'))?1:0);});
-    if(!wps.length){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Arbeitspakete.</div>';el.dataset.loaded='1';return;}
+    if(!wps.length){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Task / Hardware APs.</div>';el.dataset.loaded='1';return;}
     el.innerHTML=wps.map(function(wp){var status=getLink(wp,'status')||'-',type=getLink(wp,'type')||'-',closed=isWPClosed(status);return '<div class="ap-item'+(closed?' ap-closed':'')+'"><span class="ap-type">'+type+'</span><span class="ap-name">'+wp.subject+'</span><span class="ap-status'+(closed?' done':'')+'">'+status+'</span></div>';}).join('');
     el.dataset.loaded='1';
   }).catch(function(err){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: '+err.message+'</div>';el.dataset.loaded='0';});
@@ -966,7 +982,7 @@ function loadArchivedProjects() {
   document.getElementById('archiv-cards').innerHTML='<div class="wb-empty">Wird geladen...</div>';
   apiFetch('/projects?pageSize=200').then(function(data){
     var all=data._embedded&&data._embedded.elements?data._embedded.elements:[];
-    archivedData=all.filter(function(p){return isProjectClosed(getLink(p,'status')||p.status||'');}).map(function(p){return{name:p.name||'',status:getLink(p,'status')||p.status||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,updatedAt:p.updatedAt||''};});
+    archivedData=all.filter(function(p){return isProjectClosed(getLink(p,'status')||p.status||'');}).map(function(p){return{name:p.name||'',status:getLink(p,'status')||p.status||'',pm:p.customField39||getLink(p,'responsible')||'',identifier:p.identifier,_id:p.id,updatedAt:p.updatedAt||''};});
     renderArchivedCards();
   }).catch(function(err){document.getElementById('archiv-cards').innerHTML='<div class="wb-empty">Fehler: '+err.message+'</div>';});
 }
@@ -981,7 +997,45 @@ function renderArchivedCards() {
   document.getElementById('archiv-count').textContent=data.length+' von '+total+' abgeschlossenen Projekten';
   var wrap=document.getElementById('archiv-cards');
   if(!data.length){wrap.innerHTML='<div class="wb-empty">Keine abgeschlossenen Projekte gefunden.</div>';return;}
-  wrap.innerHTML=data.map(function(p){var date=p.updatedAt?p.updatedAt.substring(0,10):'';return '<div class="archiv-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div class="archiv-name">'+p.name+'</div><span class="badge badge-default">'+p.status+'</span></div><div class="archiv-meta">'+(p.pm?'<span>PM: '+p.pm+'</span>':'')+(date?'<span>Zuletzt: '+date+'</span>':'')+'</div>'+(p.identifier?'<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>':'')+'</div>';}).join('');
+  wrap.innerHTML=data.map(function(p){
+    var date=p.updatedAt?p.updatedAt.substring(0,10):'';
+    return '<div class="archiv-card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px"><div class="archiv-name">'+p.name+'</div><span class="badge badge-default">'+p.status+'</span></div>'
+      +'<div class="archiv-meta">'+(p.pm?'<span>PM: '+p.pm+'</span>':'')+(date?'<span>Zuletzt: '+date+'</span>':'')+'</div>'
+      +(p.identifier?'<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>':'')
+      +(p._id?'<button class="toggle-btn ap-load-btn" data-proj-id="'+p._id+'" style="margin-top:8px">Phasen anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-archiv-'+p._id+'"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Wird geladen...</div></div>':'')
+      +'</div>';
+  }).join('');
+  // Phasen-Toggle Events
+  wrap.querySelectorAll('.ap-load-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      var projId=b.dataset.projId;
+      var body=document.getElementById('ap-body-archiv-'+projId);
+      if(!body)return;
+      if(body.classList.contains('open')){body.classList.remove('open');b.classList.remove('open');}
+      else{body.classList.add('open');b.classList.add('open');loadArchivPhases(projId);}
+    });
+  });
+}
+
+function loadArchivPhases(projId) {
+  var el=document.getElementById('ap-body-archiv-'+projId);if(!el||el.dataset.loaded==='1')return;
+  var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+  apiFetch('/projects/'+projId+'/work_packages?pageSize=50&filters='+f).then(function(data){
+    var wps=(data._embedded&&data._embedded.elements?data._embedded.elements:[])
+      .filter(function(wp){return getLink(wp,'type').toLowerCase()==='phase';});
+    if(!wps.length){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Keine Phasen gefunden.</div>';el.dataset.loaded='1';return;}
+    el.innerHTML=wps.map(function(wp){
+      var status=getLink(wp,'status')||'-';
+      var closed=isWPClosed(status);
+      return '<div class="ap-item'+(closed?' ap-closed':'')+'">'
+        +'<span class="ap-type" style="background:rgba(74,144,217,.15);color:var(--brand-light);border:1px solid var(--brand-light)">Phase</span>'
+        +'<span class="ap-name">'+wp.subject+'</span>'
+        +'<span class="ap-status'+(closed?' done':'')+'">'+status+'</span>'
+        +'</div>';
+    }).join('');
+    el.dataset.loaded='1';
+  }).catch(function(err){el.innerHTML='<div style="padding:10px 12px;font-size:.78rem;color:var(--error-c)">Fehler: '+err.message+'</div>';el.dataset.loaded='0';});
 }
 document.getElementById('archiv-search').addEventListener('input',renderArchivedCards);
 document.getElementById('archiv-sort').addEventListener('change',renderArchivedCards);
@@ -1280,7 +1334,40 @@ function adjustMengeOP(idx, delta, evt) {
   });
 }
 
-/* ── Lager CRUD Modal ── */
+/* ── Extra APs ── */
+var extraApCounter = 0;
+function addExtraAP() {
+  extraApCounter++;
+  var id = 'extra-ap-' + extraApCounter;
+  var row = document.createElement('div');
+  row.className = 'extra-ap-row';
+  row.id = id;
+  row.innerHTML = '<input type="text" placeholder="AP-Name..." oninput="updateWPPreview()">'
+    + '<select onchange="updateWPPreview()">'
+    + '<option value="'+TYPE_TASK+'">Task</option>'
+    + '<option value="'+TYPE_HW+'">Hardware</option>'
+    + '</select>'
+    + '<button class="rm-btn" onclick="removeExtraAP(\''+id+'\')" title="Entfernen">&#x2715;</button>';
+  document.getElementById('extra-ap-list').appendChild(row);
+  row.querySelector('input').focus();
+  updateWPPreview();
+}
+function removeExtraAP(id) {
+  var el = document.getElementById(id);
+  if(el) el.remove();
+  updateWPPreview();
+}
+function getExtraAPs() {
+  return Array.from(document.querySelectorAll('#extra-ap-list .extra-ap-row')).map(function(row){
+    var name = row.querySelector('input').value.trim();
+    var type = parseInt(row.querySelector('select').value);
+    return name ? {name:name, type:type} : null;
+  }).filter(Boolean);
+}
+function resetExtraAPs() {
+  document.getElementById('extra-ap-list').innerHTML = '';
+  updateWPPreview();
+}
 function openLagerModalNew() {
   document.getElementById('lm-title').textContent='Artikel anlegen';
   document.getElementById('lm-sub').textContent='Neuen Artikel im Globalen Lager anlegen.';
@@ -1438,6 +1525,10 @@ function buildDynamicStructure(d) {
     var hwEpic = durchf.children.filter(function(c){return c.key==='hw_epic';})[0];
     if(hwEpic){hwEpic.children=(hwEpic.children||[]).concat(hwNodes);}
   }
+  // Extra APs ans Ende hängen (root-Ebene)
+  if(d.extraAPs && d.extraAPs.length){
+    d.extraAPs.forEach(function(ap){ structure.push({name:ap.name, type:ap.type}); });
+  }
   return structure;
 }
 
@@ -1447,7 +1538,8 @@ function updateWPPreview() {
     adint: (document.querySelector('input[name="adint"]:checked')||{}).value||'Nicht Aktiv',
     schulung_admin: document.getElementById('schulung-admin')?document.getElementById('schulung-admin').checked:false,
     schulung_user: document.getElementById('schulung-user')?document.getElementById('schulung-user').checked:false,
-    hw: getHwSelections()
+    hw: getHwSelections(),
+    extraAPs: getExtraAPs()
   };
   var conds = buildConds(d);
   var structure = buildDynamicStructure(d);
@@ -1590,6 +1682,7 @@ function getFormData() {
     schulung_admin:document.getElementById('schulung-admin').checked,
     schulung_user:document.getElementById('schulung-user').checked,
     hw:getHwSelections(),
+    extraAPs:getExtraAPs(),
     bemerkung:document.getElementById('np-bemerkung').value.trim()
   };
 }
@@ -1621,6 +1714,7 @@ function resetForm() {
   });
   var sa=document.getElementById('schulung-admin');if(sa)sa.checked=false;
   var su=document.getElementById('schulung-user');if(su)su.checked=false;
+  resetExtraAPs();
   document.getElementById('np-result').style.display='none';
   updateWPPreview();
 }
