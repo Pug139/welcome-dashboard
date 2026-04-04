@@ -603,8 +603,8 @@ var projFiltersInitialized = false, wbFiltersInitialized = false;
 var lagerStatusOptions = [];
 var raw = {proj:null, wp:null};
 var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal','globales lager','warenbestand'];
-var EXCL_WP_TYPES = ['phase','meilenstein'];
-var WAREN_TYPES = ['hardware','elo einrichtung'];
+var EXCL_WP_TYPES = ['phase','meilenstein','epic'];
+var WAREN_TYPES = ['hardware'];
 
 var PAKET_OPT = {S:'/api/v3/custom_options/4',M:'/api/v3/custom_options/5',L:'/api/v3/custom_options/6'};
 var OUTLOOK_OPT = {'Nicht Aktiv':'/api/v3/custom_options/10','Gewuenscht':'/api/v3/custom_options/14','Beauftragt':'/api/v3/custom_options/36','Aktiv':'/api/v3/custom_options/37'};
@@ -641,7 +641,7 @@ var WP_STRUCTURE = [
       {name:'AD-Integration konfigurieren', type:TYPE_TASK, cond:'adint'}
     ]},
     {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', children:[
-      {name:'ELO Einrichtung', type:TYPE_ELO, cond:'has_elo'}
+      {name:'ELO Einrichtung', type:TYPE_HW, cond:'has_elo'}
       /* HW-Items aus Formular werden dynamisch hier eingefügt */
     ]},
     {name:'Vor-Ort / Remote', type:TYPE_EPIC, children:[
