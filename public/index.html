@@ -475,6 +475,18 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
               <label class="np-radio-lbl"><input type="radio" name="adint" value="Aktiv"> Aktiv</label>
             </div>
           </div>
+          <div class="np-field"><label class="np-label">Schulungen</label>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
+              <label class="hw-item" style="border-radius:7px" id="schulung-admin-row">
+                <input type="checkbox" id="schulung-admin" onchange="updateWPPreview()" style="accent-color:var(--brand-light);width:15px;height:15px;cursor:pointer;flex-shrink:0">
+                <span class="hw-item-name">Admin Schulung anlegen</span>
+              </label>
+              <label class="hw-item" style="border-radius:7px" id="schulung-user-row">
+                <input type="checkbox" id="schulung-user" onchange="updateWPPreview()" style="accent-color:var(--brand-light);width:15px;height:15px;cursor:pointer;flex-shrink:0">
+                <span class="hw-item-name">User Schulung anlegen</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div class="np-section">
@@ -604,7 +616,43 @@ var HW_ITEMS = [
   {id:'customVKP',name:'Custom VKP800III'},{id:'bodenRM',name:'Bodenstaender RM-System'},
   {id:'tischRM',name:'Tischstaender RM-System'},{id:'bodenWallaby',name:'Bodenstaender Wallaby'}
 ];
-var WP_BASIS = [{name:'Kickoff & Projektplanung'},{name:'Systemeinrichtung'},{name:'Benutzerverwaltung'},{name:'Schulung'},{name:'Go-Live'},{name:'Abnahme & Dokumentation'}];
+/* ── WP-Typen ── */
+var TYPE_PHASE = 3, TYPE_EPIC = 5, TYPE_TASK = 1, TYPE_HW = 8, TYPE_ELO = 10;
+
+/* ── Hierarchische AP-Struktur ── */
+var WP_STRUCTURE = [
+  {name:'Kickoff & Projektplanung', type:TYPE_PHASE, children:[
+    {name:'Kick-Off / Workshop - Termin', type:TYPE_TASK},
+    {name:'Workloads definieren', type:TYPE_TASK},
+    {name:'Kundenanforderung & Informationen sammeln', type:TYPE_EPIC, children:[
+      {name:'R\u00fcckmeldung Kundenanforderungen', type:TYPE_TASK},
+      {name:'Benutzerliste', type:TYPE_TASK}
+    ]}
+  ]},
+  {name:'Durchf\u00fchrung', type:TYPE_PHASE, children:[
+    {name:'Einrichtung WELCOME Portal', type:TYPE_EPIC, children:[
+      {name:'WELCOME Portal f\u00fcr einen Mandanten', type:TYPE_TASK},
+      {name:'Einrichtung Check-In Bildschirme', type:TYPE_TASK},
+      {name:'Einrichtung Einladungsmail', type:TYPE_TASK},
+      {name:'Einrichtung Ausweislayout', type:TYPE_TASK},
+      {name:'Einrichtung Vereinbarungen', type:TYPE_TASK},
+      {name:'Einrichtung Wallet', type:TYPE_TASK},
+      {name:'Outlook Add-in einrichten', type:TYPE_TASK, cond:'outlook'},
+      {name:'AD-Integration konfigurieren', type:TYPE_TASK, cond:'adint'}
+    ]},
+    {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', children:[
+      {name:'ELO Einrichtung', type:TYPE_ELO, cond:'has_elo'}
+      /* HW-Items aus Formular werden dynamisch hier eingefügt */
+    ]},
+    {name:'Vor-Ort / Remote', type:TYPE_EPIC, children:[
+      {name:'Inbetriebnahme und Testl\u00e4ufe', type:TYPE_TASK},
+      {name:'Admin Schulung', type:TYPE_TASK, cond:'schulung_admin'},
+      {name:'User Schulung', type:TYPE_TASK, cond:'schulung_user'}
+    ]},
+    {name:'Go-Live', type:TYPE_EPIC},
+    {name:'Abschluss', type:TYPE_EPIC}
+  ]}
+];
 
 /* Zubehör-Konfiguration pro Hardware-Item
  * type 'customfield' → landet in CF_HW_ZUBEHOER des APs
@@ -1357,7 +1405,71 @@ document.addEventListener('keydown',function(e){
 });
 
 /* ── Hardware (Neues Projekt) ── */
-function buildAccSection(hwId) {
+function buildConds(d) {
+  return {
+    outlook: d.outlook==='Beauftragt'||d.outlook==='Gewuenscht',
+    adint: d.adint==='Beauftragt'||d.adint==='Gewuenscht',
+    has_elo: d.hw.some(function(h){return h.id==='elo22'||h.id==='elo15';}),
+    schulung_admin: d.schulung_admin,
+    schulung_user: d.schulung_user
+  };
+}
+
+function buildDynamicStructure(d) {
+  // Deep clone
+  var structure = JSON.parse(JSON.stringify(WP_STRUCTURE));
+  var hwZubehoerDone = {};
+  var hwNodes = [];
+  d.hw.forEach(function(h){
+    for(var i=0;i<h.qty;i++){
+      var label = h.qty>1 ? h.name+' ('+(i+1)+'/'+h.qty+')' : h.name;
+      var acc = HW_ACCESSORIES[h.id];
+      var node = {name:label, type:TYPE_HW};
+      if(acc && i===0 && !hwZubehoerDone[h.id]){
+        var z = getHwZubehoer(h.id);
+        if(z){hwZubehoerDone[h.id]=true;if(acc.type==='customfield')node.zubehoer=z;else if(acc.type==='description')node.descText=z;}
+      }
+      hwNodes.push(node);
+    }
+  });
+  // Inject into hw_epic
+  var durchf = structure[1];
+  if(durchf && durchf.children){
+    var hwEpic = durchf.children.filter(function(c){return c.key==='hw_epic';})[0];
+    if(hwEpic){hwEpic.children=(hwEpic.children||[]).concat(hwNodes);}
+  }
+  return structure;
+}
+
+function updateWPPreview() {
+  var d = {
+    outlook: (document.querySelector('input[name="outlook"]:checked')||{}).value||'Nicht Aktiv',
+    adint: (document.querySelector('input[name="adint"]:checked')||{}).value||'Nicht Aktiv',
+    schulung_admin: document.getElementById('schulung-admin')?document.getElementById('schulung-admin').checked:false,
+    schulung_user: document.getElementById('schulung-user')?document.getElementById('schulung-user').checked:false,
+    hw: getHwSelections()
+  };
+  var conds = buildConds(d);
+  var structure = buildDynamicStructure(d);
+  var html = '';
+  function renderNodes(nodes, depth){
+    nodes.forEach(function(node){
+      if(node.cond && !conds[node.cond]) return;
+      var indent = depth * 16;
+      var typeLabel = node.type===TYPE_PHASE?'Phase':node.type===TYPE_EPIC?'Epic':node.type===TYPE_HW?'HW':node.type===TYPE_ELO?'ELO':'Task';
+      var typeColor = node.type===TYPE_PHASE?'var(--brand-light)':node.type===TYPE_EPIC?'var(--at-risk-c)':node.type===TYPE_HW?'var(--on-track-c)':node.type===TYPE_ELO?'#a78bfa':'var(--text-muted)';
+      var noteLine = node.zubehoer||node.descText ? '<span style="color:var(--hint-text);font-size:.7rem;margin-left:6px">→ '+(node.zubehoer||node.descText)+'</span>' : '';
+      html += '<div class="np-wp-item" style="padding-left:'+indent+'px;border-bottom:1px solid var(--border)">'
+        +'<span class="wp-dot" style="background:'+typeColor+'"></span>'
+        +'<span style="font-size:.68rem;padding:1px 5px;border-radius:4px;background:'+typeColor+'22;color:'+typeColor+';margin-right:5px;font-weight:700">'+typeLabel+'</span>'
+        +node.name+noteLine
+        +'</div>';
+      if(node.children && node.children.length) renderNodes(node.children, depth+1);
+    });
+  }
+  renderNodes(structure, 0);
+  document.getElementById('wp-preview').innerHTML = html || '<div style="color:var(--text-muted);font-size:.8rem">Keine APs konfiguriert.</div>';
+}
   var acc = HW_ACCESSORIES[hwId];
   if(!acc) return null;
   var html = '<div class="hw-acc-section" id="hw-acc-'+hwId+'"><div class="hw-acc-title">'+acc.title+'</div><div class="hw-acc-grid">';
@@ -1497,6 +1609,8 @@ function getFormData() {
     paket:document.getElementById('np-paket').value,
     outlook:outlookEl?outlookEl.value:'Nicht Aktiv',
     adint:adintEl?adintEl.value:'Nicht Aktiv',
+    schulung_admin:document.getElementById('schulung-admin').checked,
+    schulung_user:document.getElementById('schulung-user').checked,
     hw:getHwSelections(),
     bemerkung:document.getElementById('np-bemerkung').value.trim()
   };
@@ -1527,6 +1641,8 @@ function resetForm() {
     var acc=HW_ACCESSORIES[hw.id];
     if(acc){acc.fields.forEach(function(f){var inp=document.getElementById('acc-'+hw.id+'-'+f.id);if(!inp)return;inp.value=f.type==='number'?(f.def||0):(f.type==='select'?'':'');});}
   });
+  var sa=document.getElementById('schulung-admin');if(sa)sa.checked=false;
+  var su=document.getElementById('schulung-user');if(su)su.checked=false;
   document.getElementById('np-result').style.display='none';
   updateWPPreview();
 }
@@ -1547,49 +1663,45 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
   }).then(function(proj){
     if(!proj)return;var projId=proj.id;btn.innerHTML='<span class="spinner"></span> Typen werden aktiviert...';
     var wpCount=0,wpOk=0,wpErrors=[];
-    // Typen 1 (Task), 8 (Hardware), 10 (ELO) fuer das neue Projekt aktivieren
-    function makeWP(subject,parentId,isHW,extraFields,descText){
+
+    function makeWPNode(node, parentId){
       wpCount++;
-      var body={subject:subject,_links:{project:{href:'/api/v3/projects/'+projId}}};
-      if(isHW){
-        body._links.type={href:'/api/v3/types/8'};
-        body.customField40=1; // Menge ist Pflichtfeld beim Hardware-Typ
-      }
+      var body={subject:node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+node.type}}};
       if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};
-      if(extraFields)Object.keys(extraFields).forEach(function(k){body[k]=extraFields[k];});
-      if(descText)body.description={format:'plain',raw:descText};
-      return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)}).then(function(r){wpOk++;return r.id;}).catch(function(err){wpErrors.push(subject+': '+(err.message||'Fehler'));return null;});
+      if(node.type===TYPE_HW) body.customField40=1;
+      if(node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:node.zubehoer};
+      if(node.descText) body.description={format:'plain',raw:node.descText};
+      return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)})
+        .then(function(wp){wpOk++;return wp.id;})
+        .catch(function(err){wpErrors.push(node.name+': '+(err.message||'Fehler'));return null;});
     }
-    // Erst Typen aktivieren, dann APs anlegen
-    return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[{href:'/api/v3/types/1'},{href:'/api/v3/types/8'},{href:'/api/v3/types/10'}]}})}).catch(function(){/* ignorieren falls kein Recht */}).then(function(){
-      btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
+
+    function createTree(nodes, parentId, conds){
       var chain=Promise.resolve();
-      WP_BASIS.forEach(function(wp){chain=chain.then(function(){return makeWP(wp.name,null,false);});});
-      if(d.outlook==='Beauftragt'||d.outlook==='Gewuenscht')chain=chain.then(function(){return makeWP('Outlook Add-in einrichten',null,false);});
-      if(d.adint==='Beauftragt'||d.adint==='Gewuenscht')chain=chain.then(function(){return makeWP('AD-Integration konfigurieren',null,false);});
-      var hwZubehoerDone={};
-      d.hw.forEach(function(h){
-        for(var qi=0;qi<h.qty;qi++){
-          (function(hwItem,idx){
-            chain=chain.then(function(){
-              var label=hwItem.qty>1?hwItem.name+' ('+(idx+1)+'/'+hwItem.qty+')':hwItem.name;
-              var acc=HW_ACCESSORIES[hwItem.id];
-              var extraFields=null,descText=null;
-              if(acc&&idx===0&&!hwZubehoerDone[hwItem.id]){
-                var zubehoer=getHwZubehoer(hwItem.id);
-                if(zubehoer){hwZubehoerDone[hwItem.id]=true;if(acc.type==='customfield'){extraFields={};extraFields[CF_HW_ZUBEHOER]={format:'plain',raw:zubehoer};}else if(acc.type==='description'){descText=zubehoer;}}
-              }
-              return makeWP(label,null,true,extraFields,descText);
-            });
-          })(h,qi);
-        }
+      nodes.forEach(function(node){
+        chain=chain.then(function(){
+          if(node.cond && !conds[node.cond]) return Promise.resolve(null);
+          return makeWPNode(node, parentId).then(function(newId){
+            if(!newId) return null;
+            if(node.children && node.children.length) return createTree(node.children, newId, conds);
+            return newId;
+          });
+        });
       });
-      return chain.then(function(){
-        var errHtml=wpErrors.length?'<br><br><strong style="color:var(--error-c)">&#x26A0; '+wpErrors.length+' AP(s) fehlgeschlagen:</strong><br><small style="color:var(--error-c);opacity:.9">'+wpErrors.join('<br>')+'</small>':'';
-        var type=wpErrors.length?'warning':'success';
-        showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>APs: '+wpOk+' von '+wpCount+' erfolgreich angelegt'+errHtml+'<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>',type);
-        loadFromAPI();
-      });
+      return chain;
+    }
+
+    var conds=buildConds(d);
+    var structure=buildDynamicStructure(d);
+
+    return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[{href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},{href:'/api/v3/types/'+TYPE_ELO},{href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}]}})}).catch(function(){}).then(function(){
+      btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
+      return createTree(structure, null, conds);
+    }).then(function(){
+      var errHtml=wpErrors.length?'<br><br><strong style="color:var(--error-c)">&#x26A0; '+wpErrors.length+' AP(s) fehlgeschlagen:</strong><br><small style="color:var(--error-c)">'+wpErrors.join('<br>')+'</small>':'';
+      var type=wpErrors.length?'warning':'success';
+      showNpResult('Projekt erfolgreich angelegt!<br><br>Name: '+d.name+'<br>APs: '+wpOk+' von '+wpCount+' erfolgreich'+errHtml+'<br><br><a href="'+OP_URL+'/projects/'+proj.identifier+'" target="_blank">In OpenProject oeffnen</a>',type);
+      loadFromAPI();
     });
   }).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
 });
