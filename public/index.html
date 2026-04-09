@@ -467,7 +467,6 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field"><label class="np-label">Outlook Add-in <span class="req">*</span></label>
             <div class="np-radio-group" id="np-outlook">
               <label class="np-radio-lbl"><input type="radio" name="outlook" value="Nicht Aktiv" checked> Nicht Aktiv</label>
-              <label class="np-radio-lbl"><input type="radio" name="outlook" value="Gewuenscht"> Gewuenscht</label>
               <label class="np-radio-lbl"><input type="radio" name="outlook" value="Beauftragt"> Beauftragt</label>
               <label class="np-radio-lbl"><input type="radio" name="outlook" value="Aktiv"> Aktiv</label>
             </div>
@@ -475,20 +474,19 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field"><label class="np-label">AD-Integration <span class="req">*</span></label>
             <div class="np-radio-group" id="np-adint">
               <label class="np-radio-lbl"><input type="radio" name="adint" value="Nicht Aktiv" checked> Nicht Aktiv</label>
-              <label class="np-radio-lbl"><input type="radio" name="adint" value="Gewuenscht"> Gewuenscht</label>
               <label class="np-radio-lbl"><input type="radio" name="adint" value="Beauftragt"> Beauftragt</label>
               <label class="np-radio-lbl"><input type="radio" name="adint" value="Aktiv"> Aktiv</label>
             </div>
           </div>
           <div class="np-field"><label class="np-label">Schulungen</label>
-            <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">
-              <label class="hw-item" style="border-radius:7px" id="schulung-admin-row">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px">
+              <label class="hw-item" style="border-radius:7px;flex:1;min-width:120px">
                 <input type="checkbox" id="schulung-admin" onchange="updateWPPreview()" style="accent-color:var(--brand-light);width:15px;height:15px;cursor:pointer;flex-shrink:0">
-                <span class="hw-item-name">Admin Schulung anlegen</span>
+                <span class="hw-item-name">Admin Schulung</span>
               </label>
-              <label class="hw-item" style="border-radius:7px" id="schulung-user-row">
+              <label class="hw-item" style="border-radius:7px;flex:1;min-width:120px">
                 <input type="checkbox" id="schulung-user" onchange="updateWPPreview()" style="accent-color:var(--brand-light);width:15px;height:15px;cursor:pointer;flex-shrink:0">
-                <span class="hw-item-name">User Schulung anlegen</span>
+                <span class="hw-item-name">User Schulung</span>
               </label>
             </div>
           </div>
@@ -499,25 +497,25 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         <div class="hw-list" id="hw-list"></div>
       </div>
       <div class="np-section">
-        <div class="np-sec-title">Weitere Infos</div>
-        <div class="np-field"><label class="np-label">Bemerkungen</label><textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen..."></textarea></div>
-      </div>
-      <div class="np-section">
         <div class="np-sec-title">Weitere Arbeitspakete</div>
         <div id="extra-ap-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"></div>
         <button type="button" onclick="addExtraAP()" class="btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-sub);font-size:.82rem;padding:7px 14px">
-          &#x2B; Weiteres AP hinzufügen
+          &#x2B; Weiteres AP hinzuf&uuml;gen
         </button>
       </div>
       <div class="np-section">
-        <div class="np-sec-title">Arbeitspakete (Vorschau)</div>
-        <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="wp-preview"></div></div>
+        <div class="np-sec-title">Weitere Infos</div>
+        <div class="np-field"><label class="np-label">Bemerkungen</label><textarea class="np-textarea" id="np-bemerkung" placeholder="Besondere Anforderungen..."></textarea></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
         <button class="btn btn-success" id="np-submit-btn" style="flex:1;min-width:200px;justify-content:center">Projekt in OpenProject anlegen</button>
         <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="resetForm()">Formular leeren</button>
       </div>
       <div class="np-result" id="np-result"></div>
+      <div class="np-section" style="margin-top:20px">
+        <div class="np-sec-title">Arbeitspakete (Vorschau)</div>
+        <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="wp-preview"></div></div>
+      </div>
     </div>
   </div>
 
@@ -614,7 +612,7 @@ var allMemberNames = [];
 var projFiltersInitialized = false, wbFiltersInitialized = false;
 var lagerStatusOptions = [];
 var raw = {proj:null, wp:null};
-var EXCL_PROJ = ['demo project','supportfaelle','test portl','draexlmaier main','wisag main','test portal','globales lager','warenbestand'];
+var EXCL_PROJ = ['demo project','supportfälle','supportfaelle','test portl','draexlmaier main','wisag main','test portal','globales lager','warenbestand'];
 var EXCL_WP_TYPES = ['phase','meilenstein','epic'];
 var WAREN_TYPES = ['hardware'];
 
@@ -625,8 +623,8 @@ var ADINT_OPT = {'Nicht Aktiv':'/api/v3/custom_options/34','Gewuenscht':'/api/v3
 var HW_ITEMS = [
   {id:'elo22',name:'ELO 22"'},{id:'elo15',name:'ELO 15"'},{id:'brother',name:'Brother 820NWB'},
   {id:'magicard600',name:'MagiCard 600'},{id:'magiCardPronto',name:'MagiCard Pronto'},
-  {id:'customVKP',name:'Custom VKP800III'},{id:'bodenRM',name:'Bodenstaender RM-System'},
-  {id:'tischRM',name:'Tischstaender RM-System'},{id:'bodenWallaby',name:'Bodenstaender Wallaby'}
+  {id:'customVKP',name:'Custom VKP800III'},{id:'bodenRM',name:'Bodenst\u00e4nder RM-System'},
+  {id:'bodenWallaby',name:'Bodenst\u00e4nder Wallaby'},{id:'tischRM',name:'Tischst\u00e4nder RM-System'}
 ];
 /* ── WP-Typen ── */
 var TYPE_PHASE = 3, TYPE_EPIC = 5, TYPE_TASK = 1, TYPE_HW = 8, TYPE_ELO = 10;
@@ -670,42 +668,56 @@ var WP_STRUCTURE = [
  * type 'customfield' → landet in CF_HW_ZUBEHOER des APs
  * type 'description' → landet in der AP-Beschreibung */
 var HW_ACCESSORIES = {
+  elo22: {
+    type:'both', title:'Zubehör ELO 22"',
+    fields:[
+      {id:'sonstiges',label:'Sonstiges Zubehör',type:'text',placeholder:'z.B. Kabel, Halterung...'}
+    ]
+  },
+  elo15: {
+    type:'both', title:'Zubehör ELO 15"',
+    fields:[
+      {id:'sonstiges',label:'Sonstiges Zubehör',type:'text',placeholder:'z.B. Kabel, Halterung...'}
+    ]
+  },
   brother: {
     type:'customfield', title:'Papier',
     fields:[
       {id:'paper-type',label:'Papiertyp',type:'select',options:[
         {v:'',l:'-- Kein Papier --'},
-        {v:'DK-N55224 Endlospapierrolle 54mm 30,48m',l:'DK-N55224 – Endlospapierrolle 54mm'},
-        {v:'DK-44205 Endlosetiketten 62mm 30,48m wiederabloesbar',l:'DK-44205 – Endlosetiketten 62mm'},
-        {v:'DK-22251 Endlosetiketten schwarz-rot 62mm 15,24m',l:'DK-22251 – Endlosetiketten schwarz-rot 62mm'}
+        {v:'DK-N55224 Endlospapierrolle 54mm 30,48m',l:'DK-N55224 \u2013 Endlospapierrolle 54mm'},
+        {v:'DK-44205 Endlosetiketten 62mm 30,48m wiederabloesbar',l:'DK-44205 \u2013 Endlosetiketten 62mm'},
+        {v:'DK-22251 Endlosetiketten schwarz-rot 62mm 15,24m',l:'DK-22251 \u2013 Endlosetiketten schwarz-rot 62mm'}
       ]},
       {id:'paper-qty',label:'Menge (Rollen)',type:'number',min:1,def:1}
     ]
   },
   magicard600: {
-    type:'customfield', title:'Zubehör MagiCard 600',
+    type:'customfield', title:'Zubeh\u00f6r MagiCard 600',
     fields:[
       {id:'karten-qty',label:'Karten (Anzahl)',type:'number',min:0,def:0},
       {id:'cleaning-qty',label:'Cleaning Kit (Anzahl)',type:'number',min:0,def:0},
-      {id:'sonstiges',label:'Sonstiges Zubehör',type:'text',placeholder:'z.B. Ribbon, Overlay...'}
+      {id:'sonstiges',label:'Sonstiges Zubeh\u00f6r',type:'text',placeholder:'z.B. Ribbon, Overlay...'}
     ]
   },
   magiCardPronto: {
-    type:'customfield', title:'Zubehör MagiCard Pronto',
+    type:'customfield', title:'Zubeh\u00f6r MagiCard Pronto',
     fields:[
       {id:'karten-qty',label:'Karten (Anzahl)',type:'number',min:0,def:0},
       {id:'cleaning-qty',label:'Cleaning Kit (Anzahl)',type:'number',min:0,def:0},
-      {id:'sonstiges',label:'Sonstiges Zubehör',type:'text',placeholder:'z.B. Ribbon, Overlay...'}
+      {id:'sonstiges',label:'Sonstiges Zubeh\u00f6r',type:'text',placeholder:'z.B. Ribbon, Overlay...'}
     ]
   },
   bodenRM: {
-    type:'description', title:'Bodenstaender RM-System – Optionen',
+    type:'description', title:'Bodenst\u00e4nder RM-System \u2013 Optionen',
+    perUnit:true, /* eigene Sektion pro Einheit */
     fields:[
-      {id:'geraet',label:'Geraet',type:'select',options:[
-        {v:'',l:'-- Bitte waehlen --'},
+      {id:'geraet',label:'Ger\u00e4t',type:'select',options:[
+        {v:'',l:'-- Bitte w\u00e4hlen --'},
         {v:'Pronto',l:'Pronto'},
         {v:'Brother',l:'Brother'}
       ]},
+      {id:'farbe',label:'Farbe / Variante',type:'text',placeholder:'z.B. Schwarz, Silber...'},
       {id:'sonstiges',label:'Sonstiges',type:'text',placeholder:'Weitere Infos...'}
     ]
   }
@@ -1494,8 +1506,8 @@ document.addEventListener('keydown',function(e){
 /* ── Hardware (Neues Projekt) ── */
 function buildConds(d) {
   return {
-    outlook: d.outlook==='Beauftragt'||d.outlook==='Gewuenscht',
-    adint: d.adint==='Beauftragt'||d.adint==='Gewuenscht',
+    outlook: d.outlook==='Beauftragt'||d.outlook==='Aktiv',
+    adint: d.adint==='Beauftragt'||d.adint==='Aktiv',
     has_elo: d.hw.some(function(h){return h.id==='elo22'||h.id==='elo15';}),
     schulung_admin: d.schulung_admin,
     schulung_user: d.schulung_user
@@ -1503,29 +1515,29 @@ function buildConds(d) {
 }
 
 function buildDynamicStructure(d) {
-  // Deep clone
   var structure = JSON.parse(JSON.stringify(WP_STRUCTURE));
-  var hwZubehoerDone = {};
   var hwNodes = [];
   d.hw.forEach(function(h){
+    var acc = HW_ACCESSORIES[h.id];
     for(var i=0;i<h.qty;i++){
       var label = h.qty>1 ? h.name+' ('+(i+1)+'/'+h.qty+')' : h.name;
-      var acc = HW_ACCESSORIES[h.id];
       var node = {name:label, type:TYPE_HW};
-      if(acc && i===0 && !hwZubehoerDone[h.id]){
-        var z = getHwZubehoer(h.id);
-        if(z){hwZubehoerDone[h.id]=true;if(acc.type==='customfield')node.zubehoer=z;else if(acc.type==='description')node.descText=z;}
+      if(acc){
+        var z = acc.perUnit ? getHwZubehoer(h.id, i) : (i===0 ? getHwZubehoer(h.id) : null);
+        if(z){
+          if(acc.type==='customfield') node.zubehoer=z;
+          else if(acc.type==='description') node.descText=z;
+          else if(acc.type==='both'){node.zubehoer=z; node.descExtra=z;}
+        }
       }
       hwNodes.push(node);
     }
   });
-  // Inject into hw_epic
   var durchf = structure[1];
   if(durchf && durchf.children){
     var hwEpic = durchf.children.filter(function(c){return c.key==='hw_epic';})[0];
     if(hwEpic){hwEpic.children=(hwEpic.children||[]).concat(hwNodes);}
   }
-  // Extra APs ans Ende hängen (root-Ebene)
   if(d.extraAPs && d.extraAPs.length){
     d.extraAPs.forEach(function(ap){ structure.push({name:ap.name, type:ap.type}); });
   }
@@ -1563,12 +1575,14 @@ function updateWPPreview() {
   document.getElementById('wp-preview').innerHTML = html || '<div style="color:var(--text-muted);font-size:.8rem">Keine APs konfiguriert.</div>';
 }
 
-function buildAccSection(hwId) {
+function buildAccSection(hwId, instanceIdx) {
   var acc = HW_ACCESSORIES[hwId];
   if(!acc) return null;
-  var html = '<div class="hw-acc-section" id="hw-acc-'+hwId+'"><div class="hw-acc-title">'+acc.title+'</div><div class="hw-acc-grid">';
+  var suffix = (instanceIdx !== undefined) ? '-'+instanceIdx : '';
+  var titleSuffix = (instanceIdx !== undefined) ? ' '+(instanceIdx+1) : '';
+  var html = '<div class="hw-acc-section" id="hw-acc-'+hwId+suffix+'"><div class="hw-acc-title">'+acc.title+titleSuffix+'</div><div class="hw-acc-grid">';
   acc.fields.forEach(function(f){
-    var fid = 'acc-'+hwId+'-'+f.id;
+    var fid = 'acc-'+hwId+suffix+'-'+f.id;
     html += '<div class="np-field'+(f.type==='text'&&acc.fields.length>2?' hw-acc-full':'')+'"><label class="np-label">'+f.label+'</label>';
     if(f.type==='select'){
       html += '<select class="np-select" id="'+fid+'" onchange="updateWPPreview()">';
@@ -1589,9 +1603,9 @@ function initHardware() {
   var list = document.getElementById('hw-list');
   list.innerHTML = '';
   HW_ITEMS.forEach(function(hw){
-    // Wrapper damit Acc-Section direkt darunter liegt
     var wrap = document.createElement('div');
     wrap.style.marginBottom = '4px';
+    wrap.id = 'hw-wrap-'+hw.id;
     var row = document.createElement('div');
     row.className = 'hw-item';
     row.id = 'hw-row-'+hw.id;
@@ -1602,14 +1616,35 @@ function initHardware() {
       +'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',1)">+</button>'
       +'</div>';
     wrap.appendChild(row);
-    // Acc-Section direkt nach dem Item einfügen
-    if(HW_ACCESSORIES[hw.id]){
+    // Acc-Sections: perUnit items get one section per unit, others get one section
+    var acc = HW_ACCESSORIES[hw.id];
+    if(acc){
       var accDiv = document.createElement('div');
-      accDiv.innerHTML = buildAccSection(hw.id);
-      wrap.appendChild(accDiv.firstChild);
+      accDiv.id = 'hw-acc-wrap-'+hw.id;
+      if(!acc.perUnit){
+        accDiv.innerHTML = buildAccSection(hw.id)||'';
+      }
+      wrap.appendChild(accDiv);
     }
     list.appendChild(wrap);
   });
+}
+
+function rebuildPerUnitAcc(hwId) {
+  var acc = HW_ACCESSORIES[hwId];
+  if(!acc || !acc.perUnit) return;
+  var qty = parseInt(document.getElementById('hw-qty-val-'+hwId).textContent)||1;
+  var wrap = document.getElementById('hw-acc-wrap-'+hwId);
+  if(!wrap) return;
+  wrap.innerHTML = '';
+  var isVisible = document.getElementById('hw-cb-'+hwId) && document.getElementById('hw-cb-'+hwId).checked;
+  if(!isVisible) return;
+  for(var i=0;i<qty;i++){
+    var div = document.createElement('div');
+    div.innerHTML = buildAccSection(hwId, i)||'';
+    if(div.firstChild) div.firstChild.classList.add('visible');
+    wrap.appendChild(div.firstChild||div);
+  }
 }
 
 function hwChanged(id) {
@@ -1619,13 +1654,22 @@ function hwChanged(id) {
   var acc = document.getElementById('hw-acc-'+id);
   row.classList.toggle('selected', cb.checked);
   if(qty) qty.style.display = cb.checked ? 'flex' : 'none';
-  if(acc) acc.classList.toggle('visible', cb.checked);
+  // perUnit: rebuild acc sections
+  var accCfg = HW_ACCESSORIES[id];
+  if(accCfg && accCfg.perUnit){
+    if(cb.checked) rebuildPerUnitAcc(id);
+    else { var w=document.getElementById('hw-acc-wrap-'+id); if(w)w.innerHTML=''; }
+  } else if(acc) {
+    acc.classList.toggle('visible', cb.checked);
+  }
   updateWPPreview();
 }
 
 function hwQty(id, delta) {
   var el = document.getElementById('hw-qty-val-'+id);
   el.textContent = Math.max(1, (parseInt(el.textContent)||1) + delta);
+  var accCfg = HW_ACCESSORIES[id];
+  if(accCfg && accCfg.perUnit) rebuildPerUnitAcc(id);
   updateWPPreview();
 }
 
@@ -1638,21 +1682,24 @@ function getHwSelections() {
   });
 }
 
-function getHwZubehoer(hwId) {
+function getHwZubehoerForInstance(hwId, suffix) {
   var acc = HW_ACCESSORIES[hwId];
   if(!acc) return null;
-  var el = document.getElementById('hw-acc-'+hwId);
-  if(!el || !el.classList.contains('visible')) return null;
   var parts = [];
   acc.fields.forEach(function(f){
-    var inp = document.getElementById('acc-'+hwId+'-'+f.id);
+    var inp = document.getElementById('acc-'+hwId+suffix+'-'+f.id);
     if(!inp) return;
     var val = inp.value.trim();
-    if(!val || val === '0' || val === '') return;
+    if(!val || val === '0') return;
     if(f.type==='number' && parseInt(val)===0) return;
     parts.push(f.label+': '+val);
   });
   return parts.length ? parts.join(' | ') : null;
+}
+
+function getHwZubehoer(hwId, instanceIdx) {
+  var suffix = (instanceIdx !== undefined) ? '-'+instanceIdx : '';
+  return getHwZubehoerForInstance(hwId, suffix);
 }
 
 function initRadios() {
@@ -1692,6 +1739,15 @@ function buildDescription(d) {
   var lines=['Kundenname: '+d.name,'Standort: '+d.standort,'Ansprechpartner: '+d.ap,'Paket: '+d.paket];
   if(hwText)lines.push('Hardware: '+hwText);
   lines.push('Outlook Add-in: '+d.outlook,'AD-Integration: '+d.adint);
+  // ELO sonstiges Zubehör in Beschreibung
+  d.hw.forEach(function(h){
+    var acc=HW_ACCESSORIES[h.id];
+    if(!acc||acc.type!=='both') return;
+    for(var i=0;i<h.qty;i++){
+      var z=getHwZubehoer(h.id,i);
+      if(z){var label=h.qty>1?h.name+' '+(i+1):h.name;lines.push('Zubehör '+label+': '+z);}
+    }
+  });
   if(d.bemerkung)lines.push('Bemerkungen: '+d.bemerkung);
   return lines.join('\n');
 }
@@ -1742,7 +1798,7 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
       if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};
       if(node.type===TYPE_HW) body.customField40=1;
       if(node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:node.zubehoer};
-      if(node.descText) body.description={format:'plain',raw:node.descText};
+      if(node.descText||node.descExtra) body.description={format:'plain',raw:node.descText||node.descExtra};
       return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)})
         .then(function(wp){wpOk++;return wp.id;})
         .catch(function(err){wpErrors.push(node.name+': '+(err.message||'Fehler'));return null;});
