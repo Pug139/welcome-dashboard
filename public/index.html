@@ -1835,9 +1835,113 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
 });
 
 function updateExistingProject(projId) {
-  var d=getFormData(),btn=document.getElementById('np-submit-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert...';
-  var links={};if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
-  apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({description:{format:'markdown',raw:buildDescription(d)},customField11:d.name,customField12:d.standort,customField24:{format:'plain',raw:d.ap},_links:links})}).then(function(){showNpResult('Projekt erfolgreich aktualisiert!','success');loadFromAPI();}).catch(function(err){showNpResult('Fehler: '+err.message,'error');}).then(function(){btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';});
+  var d=getFormData(),btn=document.getElementById('np-submit-btn');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert...';
+  var links={};
+  if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};
+  if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};
+  if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
+
+  // 1) Projektfelder aktualisieren
+  apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({
+    description:{format:'markdown',raw:buildDescription(d)},
+    customField11:d.name,customField12:d.standort,
+    customField24:{format:'plain',raw:d.ap},_links:links
+  })}).then(function(){
+    btn.innerHTML='<span class="spinner"></span> APs werden synchronisiert...';
+    // 2) Bestehende APs laden
+    var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+    return apiFetch('/projects/'+projId+'/work_packages?pageSize=200&filters='+f);
+  }).then(function(data){
+    var existingWPs=data._embedded&&data._embedded.elements?data._embedded.elements:[];
+
+    // 3) Soll-Zustand berechnen (flache Liste aller AP-Namen+Typen)
+    var conds=buildConds(d);
+    var structure=buildDynamicStructure(d);
+    var expected=[]; // {name, type}
+    function flattenStructure(nodes){
+      nodes.forEach(function(node){
+        if(node.cond && !conds[node.cond]) return;
+        expected.push({name:node.name, type:node.type, zubehoer:node.zubehoer||null, descText:node.descText||null});
+        if(node.children) flattenStructure(node.children);
+      });
+    }
+    flattenStructure(structure);
+
+    // 4) Bestehende nach Name+Typ indexieren
+    var existingByKey={};
+    existingWPs.forEach(function(wp){
+      var t=getLink(wp,'type').toLowerCase();
+      var key=wp.subject+'||'+t;
+      existingByKey[key]={id:wp.id,lockVersion:wp.lockVersion||0};
+    });
+
+    // 5) Erwartete nach Key indexieren
+    var expectedKeys={};
+    expected.forEach(function(e){
+      var typeNames={1:'task',3:'phase',5:'epic',8:'hardware',10:'elo'};
+      var key=e.name+'||'+(typeNames[e.type]||'task');
+      expectedKeys[key]=e;
+    });
+
+    var ops=[];
+
+    // 6) Fehlende anlegen
+    expected.forEach(function(e){
+      var typeNames={1:'task',3:'phase',5:'epic',8:'hardware',10:'elo'};
+      var key=e.name+'||'+(typeNames[e.type]||'task');
+      if(!existingByKey[key]){
+        ops.push({action:'create',node:e});
+      }
+    });
+
+    // 7) Überschüssige löschen (nur Task+Hardware — Phase/Epic nie automatisch löschen)
+    existingWPs.forEach(function(wp){
+      var t=getLink(wp,'type').toLowerCase();
+      if(t==='phase'||t==='epic') return; // Struktur-APs nie anfassen
+      var key=wp.subject+'||'+t;
+      if(!expectedKeys[key]){
+        ops.push({action:'delete',id:wp.id,name:wp.subject});
+      }
+    });
+
+    // 8) Ops sequenziell ausführen
+    var done=0,created=0,deleted=0,errors=[];
+    var chain=apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[{href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},{href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}]}})}).catch(function(){});
+
+    ops.forEach(function(op){
+      chain=chain.then(function(){
+        if(op.action==='create'){
+          var body={subject:op.node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+op.node.type}}};
+          if(op.node.type===TYPE_HW) body.customField40=1;
+          if(op.node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:op.node.zubehoer};
+          if(op.node.descText) body.description={format:'plain',raw:op.node.descText};
+          return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)})
+            .then(function(){created++;}).catch(function(e){errors.push('Anlegen '+op.node.name+': '+e.message);});
+        } else {
+          return apiFetch('/work_packages/'+op.id,{method:'DELETE'})
+            .then(function(){deleted++;}).catch(function(e){
+              if(e.message&&(e.message.includes('JSON')||e.message.includes('204')))deleted++;
+              else errors.push('Löschen '+op.name+': '+e.message);
+            });
+        }
+      });
+    });
+
+    return chain.then(function(){
+      var msg='Projekt aktualisiert!';
+      if(created) msg+='<br>&#x2705; '+created+' AP(s) angelegt';
+      if(deleted) msg+='<br>&#x1F5D1; '+deleted+' AP(s) gelöscht';
+      if(!created&&!deleted) msg+='<br>Keine Änderungen an APs nötig.';
+      if(errors.length) msg+='<br><small style="color:var(--error-c)">'+errors.join('<br>')+'</small>';
+      showNpResult(msg,'success');
+      loadFromAPI();
+    });
+  }).catch(function(err){
+    showNpResult('Fehler: '+err.message,'error');
+  }).then(function(){
+    btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';
+  });
 }
 
 /* ── Exports ── */
