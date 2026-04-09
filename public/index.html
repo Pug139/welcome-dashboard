@@ -917,7 +917,7 @@ function buildDashboard() {
 function renderCards(projects) {
   var wrap=document.getElementById('cards');wrap.innerHTML='';var tw=0,to=0,td=0;
   projects.forEach(function(p,i){
-    var sk=statusKey(p.status),pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):0;
+    var sk=statusKey(p.status),pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):100;
     var fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
     tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
     var card=document.createElement('div');
