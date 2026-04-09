@@ -650,7 +650,7 @@ var WP_STRUCTURE = [
       {name:'Outlook Add-in einrichten', type:TYPE_TASK, cond:'outlook'},
       {name:'AD-Integration konfigurieren', type:TYPE_TASK, cond:'adint'}
     ]},
-    {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', children:[
+    {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', cond:'has_hw', children:[
       {name:'ELO Einrichtung', type:TYPE_HW, cond:'has_elo'}
       /* HW-Items aus Formular werden dynamisch hier eingefügt */
     ]},
@@ -922,7 +922,7 @@ function renderCards(projects) {
   var wrap=document.getElementById('cards');wrap.innerHTML='';var tw=0,to=0,td=0;
   projects.forEach(function(p,i){
     var sk=statusKey(p.status),pct=p.wp_total>0?Math.round((p.wp_closed/p.wp_total)*100):100;
-    var fill=p.wp_total===0?'fill-none':pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
+    var fill=pct>=70?'fill-high':pct>=40?'fill-medium':'fill-low';
     tw+=p.wp_total;to+=p.wp_total-p.wp_closed;td+=p.wp_closed;
     var card=document.createElement('div');
     card.className='project-card status-'+sk;card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();card.dataset.members='';if(p._id)card.dataset.projId=p._id;
@@ -1513,6 +1513,7 @@ function buildConds(d) {
     outlook: d.outlook==='Beauftragt'||d.outlook==='Aktiv',
     adint: d.adint==='Beauftragt'||d.adint==='Aktiv',
     has_elo: d.hw.some(function(h){return h.id==='elo22'||h.id==='elo15';}),
+    has_hw: d.hw.length>0,
     schulung_admin: d.schulung_admin,
     schulung_user: d.schulung_user
   };
