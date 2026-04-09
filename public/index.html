@@ -449,8 +449,9 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field"><label class="np-label">Kundenname / Projektname <span class="req">*</span></label><input class="np-input" id="np-name" type="text" placeholder="z.B. Mustermann GmbH"></div>
           <div class="np-field"><label class="np-label">Standort <span class="req">*</span></label><input class="np-input" id="np-standort" type="text" placeholder="z.B. Muenchen"></div>
           <div class="np-field"><label class="np-label">Ansprechpartner <span class="req">*</span></label><input class="np-input" id="np-ap" type="text" placeholder="Vor- und Nachname"></div>
-          <div class="np-field"><label class="np-label">Telefon</label><input class="np-input" id="np-telefon" type="text" placeholder="+49 89 ..."></div>
-          <div class="np-field"><label class="np-label">E-Mail</label><input class="np-input" id="np-email" type="text" placeholder="name@firma.de"></div>
+          <div class="np-field"><label class="np-label">E-Mail <span class="req">*</span></label><input class="np-input" id="np-email" type="text" placeholder="name@firma.de"></div>
+          <div class="np-field"><label class="np-label">Mobilnummer</label><input class="np-input" id="np-mobil" type="text" placeholder="+49 151 ..."></div>
+          <div class="np-field"><label class="np-label">Festnetznummer</label><input class="np-input" id="np-telefon" type="text" placeholder="+49 89 ..."></div>
         </div>
       </div>
       <div class="np-section">
@@ -641,7 +642,7 @@ var WP_STRUCTURE = [
   ]},
   {name:'Durchf\u00fchrung', type:TYPE_PHASE, children:[
     {name:'Einrichtung WELCOME Portal', type:TYPE_EPIC, children:[
-      {name:'WELCOME Portal f\u00fcr einen Mandanten', type:TYPE_TASK},
+      {name:'WELCOME Portal / Mandanten', type:TYPE_TASK},
       {name:'Einrichtung Check-In Bildschirme', type:TYPE_TASK},
       {name:'Einrichtung Einladungsmail', type:TYPE_TASK},
       {name:'Einrichtung Ausweislayout', type:TYPE_TASK},
@@ -651,7 +652,6 @@ var WP_STRUCTURE = [
       {name:'AD-Integration konfigurieren', type:TYPE_TASK, cond:'adint'}
     ]},
     {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', cond:'has_hw', children:[
-      {name:'ELO Einrichtung', type:TYPE_HW, cond:'has_elo'}
       /* HW-Items aus Formular werden dynamisch hier eingefügt */
     ]},
     {name:'Vor-Ort / Remote', type:TYPE_EPIC, children:[
@@ -1526,6 +1526,13 @@ function buildDynamicStructure(d) {
     var acc = HW_ACCESSORIES[h.id];
     for(var i=0;i<h.qty;i++){
       var label = h.qty>1 ? h.name+' ('+(i+1)+'/'+h.qty+')' : h.name;
+      // bodenRM: Gerät-Auswahl direkt in den Titel
+      if(h.id==='bodenRM' && acc && acc.perUnit){
+        var geraetEl = document.getElementById('acc-bodenRM-'+i+'-geraet');
+        if(geraetEl && geraetEl.value){
+          label = h.name+' '+geraetEl.value+(h.qty>1?' ('+(i+1)+'/'+h.qty+')':'');
+        }
+      }
       var node = {name:label, type:TYPE_HW};
       if(acc){
         var z = acc.perUnit ? getHwZubehoer(h.id, i) : (i===0 ? getHwZubehoer(h.id) : null);
@@ -1721,8 +1728,14 @@ function initRadios() {
 }
 
 function getFormData() {
-  var ap=document.getElementById('np-ap').value.trim(),tel=document.getElementById('np-telefon').value.trim(),email=document.getElementById('np-email').value.trim();
-  var parts=[ap];if(tel)parts.push('Tel: '+tel);if(email)parts.push('E-Mail: '+email);
+  var ap=document.getElementById('np-ap').value.trim();
+  var email=document.getElementById('np-email').value.trim();
+  var mobil=document.getElementById('np-mobil').value.trim();
+  var telefon=document.getElementById('np-telefon').value.trim();
+  var parts=[ap];
+  if(email)parts.push('E-Mail: '+email);
+  if(mobil)parts.push('Mobil: '+mobil);
+  if(telefon)parts.push('Tel: '+telefon);
   var outlookEl=document.querySelector('input[name="outlook"]:checked'),adintEl=document.querySelector('input[name="adint"]:checked');
   return{
     name:document.getElementById('np-name').value.trim(),
@@ -1760,7 +1773,7 @@ function buildDescription(d) {
 function showNpResult(msg,type){var el=document.getElementById('np-result');el.innerHTML=msg;el.className='np-result '+type;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}
 
 function resetForm() {
-  ['np-name','np-standort','np-ap','np-telefon','np-email','np-bemerkung'].forEach(function(id){document.getElementById(id).value='';});
+  ['np-name','np-standort','np-ap','np-telefon','np-email','np-mobil','np-bemerkung'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('np-paket').value='';
   document.querySelectorAll('input[name="outlook"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
   document.querySelectorAll('input[name="adint"]').forEach(function(r){r.checked=r.value==='Nicht Aktiv';});
@@ -1782,7 +1795,7 @@ function resetForm() {
 
 document.getElementById('np-submit-btn').addEventListener('click',function(){
   var d=getFormData(),btn=document.getElementById('np-submit-btn'),valid=true;
-  ['np-name','np-standort','np-ap'].forEach(function(id){var el=document.getElementById(id);if(!el.value.trim()){el.classList.add('invalid');valid=false;}else el.classList.remove('invalid');});
+  ['np-name','np-standort','np-ap','np-email'].forEach(function(id){var el=document.getElementById(id);if(!el.value.trim()){el.classList.add('invalid');valid=false;}else el.classList.remove('invalid');});
   if(!d.paket){document.getElementById('np-paket').classList.add('invalid');valid=false;}else document.getElementById('np-paket').classList.remove('invalid');
   if(!valid){showNpResult('Bitte alle Pflichtfelder ausfuellen.','error');return;}
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird geprueft...';
