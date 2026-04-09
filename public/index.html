@@ -873,7 +873,7 @@ function loadFromAPI() {
       var pm=p.customField39||getLink(p,'responsible')||'';
       return {name:p.name||'',status:getLink(p,'status')||p.status||'',pm:pm,paket:'',wp_total:0,wp_closed:0,_id:p.id,identifier:p.identifier};
     });
-    var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
+    var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}},{"type":{"operator":"!","values":[String(TYPE_PHASE),String(TYPE_EPIC)]}}]));
     return Promise.all([apiFetch('/work_packages?pageSize=500&filters='+fa),Promise.resolve(projects)]);
   }).then(function(res){
     var allWPs=res[0]._embedded&&res[0]._embedded.elements?res[0]._embedded.elements:[];
@@ -881,6 +881,10 @@ function loadFromAPI() {
     var wpByProj={};
     allWPs.forEach(function(wp){
       var pId=getLink(wp,'project','href');if(pId)pId=pId.split('/').pop();
+      var typeHref=getLink(wp,'type','href')||'';
+      var typeId=typeHref.split('/').pop();
+      // Phasen (3) und Epics (5) nicht zählen
+      if(typeId===''+TYPE_PHASE||typeId===''+TYPE_EPIC) return;
       var t=getLink(wp,'type').toLowerCase();if(EXCL_WP_TYPES.includes(t))return;
       if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};
       wpByProj[pId].total++;if(isWPClosed(getLink(wp,'status')))wpByProj[pId].closed++;
