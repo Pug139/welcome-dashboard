@@ -1566,7 +1566,7 @@ function updateWPPreview() {
       if(node.cond && !conds[node.cond]) return;
       var indent = depth * 16;
       var typeLabel = node.type===TYPE_PHASE?'Phase':node.type===TYPE_EPIC?'Epic':node.type===TYPE_HW?'HW':node.type===TYPE_ELO?'ELO':'Task';
-      var typeColor = node.type===TYPE_PHASE?'var(--brand-light)':node.type===TYPE_EPIC?'var(--at-risk-c)':node.type===TYPE_HW?'var(--on-track-c)':node.type===TYPE_ELO?'#a78bfa':'var(--text-muted)';
+      var typeColor = node.type===TYPE_PHASE?'var(--at-risk-c)':node.type===TYPE_EPIC?'var(--brand-light)':node.type===TYPE_HW?'var(--on-track-c)':node.type===TYPE_ELO?'#a78bfa':'var(--text-muted)';
       var noteLine = node.zubehoer||node.descText ? '<span style="color:var(--hint-text);font-size:.7rem;margin-left:6px">→ '+(node.zubehoer||node.descText)+'</span>' : '';
       html += '<div class="np-wp-item" style="padding-left:'+indent+'px;border-bottom:1px solid var(--border)">'
         +'<span class="wp-dot" style="background:'+typeColor+'"></span>'
