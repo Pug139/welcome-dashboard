@@ -651,9 +651,7 @@ var WP_STRUCTURE = [
       {name:'Outlook Add-in einrichten', type:TYPE_TASK, cond:'outlook'},
       {name:'AD-Integration konfigurieren', type:TYPE_TASK, cond:'adint'}
     ]},
-    {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', cond:'has_hw', children:[
-      /* HW-Items aus Formular werden dynamisch hier eingefügt */
-    ]},
+    {name:'Hardware', type:TYPE_EPIC, key:'hw_epic', cond:'has_hw', children:[]},
     {name:'Vor-Ort / Remote', type:TYPE_EPIC, children:[
       {name:'Inbetriebnahme und Testl\u00e4ufe', type:TYPE_TASK},
       {name:'Admin Schulung', type:TYPE_TASK, cond:'schulung_admin'},
@@ -927,7 +925,7 @@ function renderCards(projects) {
     var card=document.createElement('div');
     card.className='project-card status-'+sk;card.dataset.name=p.name.toLowerCase();card.dataset.status=sk;card.dataset.pm=(p.pm||'').toLowerCase();card.dataset.members='';if(p._id)card.dataset.projId=p._id;
     var html='<div class="proj-header"><div class="proj-name">'+p.name+'</div><span class="badge badge-'+sk+'">'+statusLabel(sk)+'</span></div>';
-    html+='<div class="proj-meta">';if(p.pm)html+='<div class="meta-item"><strong>PM:</strong> '+p.pm+'</div>';if(p.paket)html+='<div class="meta-item"><strong>Paket:</strong> '+p.paket+'</div>';html+='<div class="meta-item"><strong>APs:</strong> '+p.wp_total+'</div></div>';
+    html+='<div class="proj-meta">';if(p.pm)html+='<div class="meta-item"><strong>PM:</strong> '+p.pm+'</div>';if(p.paket)html+='<div class="meta-item"><strong>Paket:</strong> '+p.paket+'</div>';html+='</div>';
     if(p._id)html+='<div id="proj-members-'+p._id+'" style="display:none;flex-wrap:wrap;gap:6px;margin-top:8px"></div>';
     html+='<div class="progress-section"><div class="progress-label"><span>Fortschritt</span><span>'+p.wp_closed+'/'+p.wp_total+' - '+pct+'%</span></div><div class="prog-track"><div class="prog-fill '+fill+'" style="width:'+pct+'%"></div></div></div>';
     if(p._id&&p.identifier)html+='<a class="op-link" href="'+OP_URL+'/projects/'+p.identifier+'" target="_blank">&#x1F517; In OpenProject oeffnen</a>';
