@@ -372,7 +372,10 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <label class="ms-option"><input type="checkbox" value="default"> Kein Status</label>
         </div>
       </div>
-      <select class="filter-select" id="proj-member-filter"><option value="">Alle Mitglieder</option></select>
+      <select class="filter-select" id="proj-member-filter">
+        <option value="">Alle Mitglieder</option>
+        <option value="__keine__">Ohne Mitglieder</option>
+      </select>
       <button class="clear-btn" id="proj-clear-btn">Reset</button>
       <span class="filter-count" id="proj-filter-count"></span>
     </div>
@@ -970,7 +973,8 @@ function setupProjFilters() {
 }
 function updateMemberFilter(names) {
   names.forEach(function(n){if(!allMemberNames.includes(n))allMemberNames.push(n);});allMemberNames.sort();
-  var sel=document.getElementById('proj-member-filter');if(!sel)return;var cur=sel.value;sel.innerHTML='<option value="">Alle Mitglieder</option>';
+  var sel=document.getElementById('proj-member-filter');if(!sel)return;var cur=sel.value;
+  sel.innerHTML='<option value="">Alle Mitglieder</option><option value="__keine__">Ohne Mitglieder</option>';
   allMemberNames.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});sel.value=cur;
 }
 function applyProjFilter() {
@@ -979,7 +983,13 @@ function applyProjFilter() {
   var member=document.getElementById('proj-member-filter').value.toLowerCase();
   var v=0;
   document.querySelectorAll('#cards .project-card').forEach(function(c){
-    var m=(!q||c.dataset.name.includes(q)||(c.dataset.members||'').includes(q))&&(!statuses.length||statuses.includes(c.dataset.status))&&(!member||(c.dataset.members||'').includes(member));
+    var members=c.dataset.members||'';
+    var memberMatch = !member
+      || (member==='__keine__' && members.trim()==='')
+      || (member!=='__keine__' && members.includes(member));
+    var m=(!q||c.dataset.name.includes(q)||members.includes(q))
+      &&(!statuses.length||statuses.includes(c.dataset.status))
+      &&memberMatch;
     c.classList.toggle('hidden',!m);if(m)v++;
   });
   document.getElementById('no-results').style.display=v===0?'block':'none';
@@ -1858,93 +1868,95 @@ function updateExistingProject(projId) {
   if(ADINT_OPT[d.adint])links.customField6={href:ADINT_OPT[d.adint]};
   if(OUTLOOK_OPT[d.outlook])links.customField4={href:OUTLOOK_OPT[d.outlook]};
 
-  // 1) Projektfelder aktualisieren
   apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({
     description:{format:'markdown',raw:buildDescription(d)},
     customField11:d.name,customField12:d.standort,
     customField24:{format:'plain',raw:d.ap},_links:links
   })}).then(function(){
     btn.innerHTML='<span class="spinner"></span> APs werden synchronisiert...';
-    // 2) Bestehende APs laden
     var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
     return apiFetch('/projects/'+projId+'/work_packages?pageSize=200&filters='+f);
   }).then(function(data){
     var existingWPs=data._embedded&&data._embedded.elements?data._embedded.elements:[];
-
-    // 3) Soll-Zustand berechnen (flache Liste aller AP-Namen+Typen)
     var conds=buildConds(d);
     var structure=buildDynamicStructure(d);
-    var expected=[]; // {name, type}
-    function flattenStructure(nodes){
-      nodes.forEach(function(node){
-        if(node.cond && !conds[node.cond]) return;
-        expected.push({name:node.name, type:node.type, zubehoer:node.zubehoer||null, descText:node.descText||null});
-        if(node.children) flattenStructure(node.children);
-      });
-    }
-    flattenStructure(structure);
+    var created=0,deleted=0,errors=[];
 
-    // 4) Bestehende nach Name+Typ indexieren
+    // Index bestehender APs: "name||typeId" → wp.id
     var existingByKey={};
     existingWPs.forEach(function(wp){
-      var t=getLink(wp,'type').toLowerCase();
-      var key=wp.subject+'||'+t;
-      existingByKey[key]={id:wp.id,lockVersion:wp.lockVersion||0};
+      var typeHref=getLink(wp,'type','href')||'';
+      var typeId=typeHref.split('/').pop();
+      existingByKey[wp.subject+'||'+typeId]=wp.id;
     });
 
-    // 5) Erwartete nach Key indexieren
+    // Welche Keys laut Soll-Struktur erwartet werden
     var expectedKeys={};
-    expected.forEach(function(e){
-      var typeNames={1:'task',3:'phase',5:'epic',8:'hardware',10:'elo'};
-      var key=e.name+'||'+(typeNames[e.type]||'task');
-      expectedKeys[key]=e;
-    });
+    function collectExpected(nodes){
+      nodes.forEach(function(node){
+        if(node.cond && !conds[node.cond]) return;
+        expectedKeys[node.name+'||'+node.type]=true;
+        if(node.children) collectExpected(node.children);
+      });
+    }
+    collectExpected(structure);
 
-    var ops=[];
+    // Typen aktivieren, dann löschen, dann tree-sync
+    return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[
+      {href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},
+      {href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}
+    ]}})}).catch(function(){}).then(function(){
 
-    // 6) Fehlende anlegen
-    expected.forEach(function(e){
-      var typeNames={1:'task',3:'phase',5:'epic',8:'hardware',10:'elo'};
-      var key=e.name+'||'+(typeNames[e.type]||'task');
-      if(!existingByKey[key]){
-        ops.push({action:'create',node:e});
-      }
-    });
-
-    // 7) Überschüssige löschen (nur Task+Hardware — Phase/Epic nie automatisch löschen)
-    existingWPs.forEach(function(wp){
-      var t=getLink(wp,'type').toLowerCase();
-      if(t==='phase'||t==='epic') return; // Struktur-APs nie anfassen
-      var key=wp.subject+'||'+t;
-      if(!expectedKeys[key]){
-        ops.push({action:'delete',id:wp.id,name:wp.subject});
-      }
-    });
-
-    // 8) Ops sequenziell ausführen
-    var done=0,created=0,deleted=0,errors=[];
-    var chain=apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[{href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},{href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}]}})}).catch(function(){});
-
-    ops.forEach(function(op){
-      chain=chain.then(function(){
-        if(op.action==='create'){
-          var body={subject:op.node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+op.node.type}}};
-          if(op.node.type===TYPE_HW) body.customField40=1;
-          if(op.node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:op.node.zubehoer};
-          if(op.node.descText) body.description={format:'plain',raw:op.node.descText};
-          return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)})
-            .then(function(){created++;}).catch(function(e){errors.push('Anlegen '+op.node.name+': '+e.message);});
-        } else {
-          return apiFetch('/work_packages/'+op.id,{method:'DELETE'})
-            .then(function(){deleted++;}).catch(function(e){
-              if(e.message&&(e.message.includes('JSON')||e.message.includes('204')))deleted++;
-              else errors.push('Löschen '+op.name+': '+e.message);
-            });
+      // Überschüssige Task/Hardware löschen
+      var delChain=Promise.resolve();
+      existingWPs.forEach(function(wp){
+        var typeHref=getLink(wp,'type','href')||'';
+        var typeId=parseInt(typeHref.split('/').pop());
+        if(typeId===TYPE_PHASE||typeId===TYPE_EPIC) return;
+        if(!expectedKeys[wp.subject+'||'+typeId]){
+          delChain=delChain.then(function(){
+            return apiFetch('/work_packages/'+wp.id,{method:'DELETE'})
+              .then(function(){deleted++;})
+              .catch(function(e){
+                if(e.message&&(e.message.includes('JSON')||e.message.includes('204')))deleted++;
+                else errors.push('Löschen '+wp.subject+': '+e.message);
+              });
+          });
         }
       });
-    });
 
-    return chain.then(function(){
+      return delChain.then(function(){
+        // Tree-basierter Sync: Hierarchie wird korrekt aufgebaut
+        function syncTree(nodes, parentId){
+          var chain=Promise.resolve();
+          nodes.forEach(function(node){
+            chain=chain.then(function(){
+              if(node.cond && !conds[node.cond]) return Promise.resolve(null);
+              var existingId=existingByKey[node.name+'||'+node.type];
+              if(existingId){
+                // Existiert — Kinder trotzdem rekursiv prüfen
+                if(node.children && node.children.length) return syncTree(node.children, existingId);
+                return Promise.resolve(existingId);
+              }
+              // Neu anlegen mit korrektem Parent
+              var body={subject:node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+node.type}}};
+              if(parentId) body._links.parent={href:'/api/v3/work_packages/'+parentId};
+              if(node.type===TYPE_HW) body.customField40=1;
+              if(node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:node.zubehoer};
+              if(node.descText||node.descExtra) body.description={format:'plain',raw:node.descText||node.descExtra};
+              return apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)}).then(function(wp){
+                created++;
+                existingByKey[node.name+'||'+node.type]=wp.id;
+                if(node.children && node.children.length) return syncTree(node.children, wp.id);
+                return wp.id;
+              }).catch(function(e){errors.push('Anlegen '+node.name+': '+e.message);return null;});
+            });
+          });
+          return chain;
+        }
+        return syncTree(structure, null);
+      });
+    }).then(function(){
       var msg='Projekt aktualisiert!';
       if(created) msg+='<br>&#x2705; '+created+' AP(s) angelegt';
       if(deleted) msg+='<br>&#x1F5D1; '+deleted+' AP(s) gelöscht';
