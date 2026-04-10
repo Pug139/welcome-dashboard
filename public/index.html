@@ -1510,8 +1510,8 @@ document.addEventListener('keydown',function(e){
 /* ── Hardware (Neues Projekt) ── */
 function buildConds(d) {
   return {
-    outlook: d.outlook==='Beauftragt'||d.outlook==='Aktiv',
-    adint: d.adint==='Beauftragt'||d.adint==='Aktiv',
+    outlook: d.outlook==='Beauftragt',
+    adint: d.adint==='Beauftragt',
     has_elo: d.hw.some(function(h){return h.id==='elo22'||h.id==='elo15';}),
     has_hw: d.hw.length>0,
     schulung_admin: d.schulung_admin,
