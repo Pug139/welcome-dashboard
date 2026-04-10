@@ -1542,10 +1542,8 @@ function buildDynamicStructure(d) {
         }
       }
       var node = {name:label, type:TYPE_HW};
-      if(acc && d.hwZubehoer){
-        var z = acc.perUnit
-          ? (d.hwZubehoer[h.id] ? d.hwZubehoer[h.id][i] : null)
-          : (i===0 ? d.hwZubehoer[h.id] : null);
+      if(acc){
+        var z = acc.perUnit ? getHwZubehoer(h.id, i) : (i===0 ? getHwZubehoer(h.id) : null);
         if(z){
           if(acc.type==='customfield') node.zubehoer=z;
           else if(acc.type==='description') node.descText=z;
@@ -1709,7 +1707,10 @@ function getHwZubehoerForInstance(hwId, suffix) {
   if(!acc) return null;
   var parts = [];
   acc.fields.forEach(function(f){
-    var inp = document.getElementById('acc-'+hwId+suffix+'-'+f.id);
+    // Versuche zuerst mit Suffix, dann ohne als Fallback
+    var fid = 'acc-'+hwId+suffix+'-'+f.id;
+    var inp = document.getElementById(fid);
+    if(!inp && suffix==='') inp = document.getElementById('acc-'+hwId+'-'+f.id);
     if(!inp) return;
     var val = inp.value.trim();
     if(!val || val === '0') return;
@@ -1747,20 +1748,6 @@ function getFormData() {
   if(mobil)parts.push('Mobil: '+mobil);
   if(telefon)parts.push('Tel: '+telefon);
   var outlookEl=document.querySelector('input[name="outlook"]:checked'),adintEl=document.querySelector('input[name="adint"]:checked');
-  var hwSel=getHwSelections();
-  // Zubehör jetzt aus DOM lesen und in Daten speichern
-  var hwZubehoer={};
-  hwSel.forEach(function(h){
-    var acc=HW_ACCESSORIES[h.id];
-    if(!acc) return;
-    if(acc.perUnit){
-      var list=[];
-      for(var i=0;i<h.qty;i++){list.push(getHwZubehoer(h.id,i));}
-      hwZubehoer[h.id]=list;
-    } else {
-      hwZubehoer[h.id]=getHwZubehoer(h.id);
-    }
-  });
   return{
     name:document.getElementById('np-name').value.trim(),
     standort:document.getElementById('np-standort').value.trim(),
@@ -1770,8 +1757,7 @@ function getFormData() {
     adint:adintEl?adintEl.value:'Nicht Aktiv',
     schulung_admin:document.getElementById('schulung-admin').checked,
     schulung_user:document.getElementById('schulung-user').checked,
-    hw:hwSel,
-    hwZubehoer:hwZubehoer,
+    hw:getHwSelections(),
     extraAPs:getExtraAPs(),
     bemerkung:document.getElementById('np-bemerkung').value.trim()
   };
@@ -1782,22 +1768,20 @@ function buildDescription(d) {
   var lines=['Kundenname: '+d.name,'Standort: '+d.standort,'Ansprechpartner: '+d.ap,'Paket: '+d.paket];
   if(hwText)lines.push('Hardware: '+hwText);
   lines.push('Outlook Add-in: '+d.outlook,'AD-Integration: '+d.adint);
-  // Zubehör aus gesammelten Daten
-  if(d.hwZubehoer){
-    d.hw.forEach(function(h){
-      var acc=HW_ACCESSORIES[h.id];
-      if(!acc||!d.hwZubehoer[h.id]) return;
-      if(acc.perUnit){
-        var list=d.hwZubehoer[h.id];
-        list.forEach(function(z,i){
-          if(z){var label=h.qty>1?h.name+' '+(i+1):h.name;lines.push('Zubehör '+label+': '+z);}
-        });
-      } else {
-        var z=d.hwZubehoer[h.id];
-        if(z) lines.push('Zubehör '+h.name+': '+z);
+  // Zubehör aller Hardware direkt aus DOM
+  d.hw.forEach(function(h){
+    var acc=HW_ACCESSORIES[h.id];
+    if(!acc) return;
+    if(acc.perUnit){
+      for(var i=0;i<h.qty;i++){
+        var z=getHwZubehoer(h.id,i);
+        if(z){var label=h.qty>1?h.name+' '+(i+1):h.name;lines.push('Zubeh\u00f6r '+label+': '+z);}
       }
-    });
-  }
+    } else {
+      var z=getHwZubehoer(h.id);
+      if(z) lines.push('Zubeh\u00f6r '+h.name+': '+z);
+    }
+  });
   if(d.bemerkung)lines.push('Bemerkungen: '+d.bemerkung);
   return lines.join('\n');
 }
