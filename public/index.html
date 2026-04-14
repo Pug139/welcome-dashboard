@@ -280,6 +280,26 @@ header p{font-size:.72rem;opacity:.7}
 .extra-ap-row select{padding:6px 10px;border:1px solid var(--input-border);border-radius:6px;background:var(--input-bg);color:var(--text);font-size:.83rem;cursor:pointer;white-space:nowrap}
 .extra-ap-row .rm-btn{background:none;border:1px solid var(--border);border-radius:5px;color:var(--text-muted);font-size:.9rem;padding:3px 8px;cursor:pointer;flex-shrink:0}
 .extra-ap-row .rm-btn:hover{border-color:var(--error-c);color:var(--error-c)}
+/* ── Neues Projekt: Modus-Toggle ── */
+.np-mode-bar{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:4px;gap:4px;margin-bottom:16px}
+.np-mode-btn{flex:1;padding:10px;border:none;border-radius:7px;cursor:pointer;font-size:.88rem;font-weight:600;color:var(--text-muted);background:none;transition:all .2s}
+.np-mode-btn.active{background:var(--brand);color:white}
+.np-mode-btn:hover:not(.active){background:var(--bg3);color:var(--text)}
+/* ── Bestandskunde: PDF Drop Zone ── */
+.pdf-dz{border:2px dashed var(--drop-border);border-radius:9px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:var(--drop-bg)}
+.pdf-dz:hover,.pdf-dz.over{border-color:var(--brand-light);background:var(--drop-over)}
+.pdf-dz.loaded{border-color:var(--on-track-c);background:var(--drop-loaded)}
+.pdf-dz input{display:none}
+.pdf-dz-lbl{font-size:.83rem;color:var(--text-muted);margin-top:6px}
+.pdf-dz.loaded .pdf-dz-lbl{color:var(--on-track-c);font-weight:600}
+.bs-extract-btn{width:100%;margin-top:10px;padding:10px;border:none;border-radius:7px;background:var(--brand);color:white;font-size:.85rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s}
+.bs-extract-btn:hover:not(:disabled){background:var(--brand-dark)}
+.bs-extract-btn:disabled{opacity:.4;cursor:not-allowed}
+.bs-extract-status{font-size:.8rem;padding:8px 12px;border-radius:7px;margin-top:8px;display:none}
+.bs-extract-status.loading{background:var(--hint-bg);color:var(--hint-text);border:1px solid var(--hint-border);display:block}
+.bs-extract-status.ok{background:var(--success-bg);color:var(--success-c);border:1px solid var(--success-c);display:block}
+.bs-extract-status.err{background:var(--error-bg);color:var(--error-c);border:1px solid var(--error-c);display:block}
+.np-input.pre,.np-select.pre{border-color:var(--on-track-c)}
 @keyframes spin{to{transform:rotate(360deg)}}
 footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 14px}
 @media(max-width:640px){
@@ -443,6 +463,89 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
 
   <!-- NEUES PROJEKT -->
   <div class="tab-panel" id="tab-neu">
+
+    <!-- Modus-Toggle -->
+    <div class="np-mode-bar">
+      <button class="np-mode-btn active" id="btn-neukunde" onclick="setNpMode('neukunde')">&#x2728; Neukunde</button>
+      <button class="np-mode-btn" id="btn-bestand" onclick="setNpMode('bestand')">&#x1F504; Bestandskunde</button>
+    </div>
+
+    <!-- BESTANDSKUNDE PANEL -->
+    <div id="np-bestand-panel" style="display:none">
+      <div class="np-card">
+        <h2>Bestandskunde anlegen</h2>
+        <p class="np-sub">PDF-Steckbrief hochladen oder Daten manuell eingeben &ndash; das Projekt wird direkt in OpenProject angelegt.</p>
+
+        <div class="np-section">
+          <div class="np-sec-title">Steckbrief importieren (optional)</div>
+          <div class="pdf-dz" id="bs-pdf-zone">
+            <div style="font-size:1.8rem">&#x1F4CB;</div>
+            <div class="pdf-dz-lbl" id="bs-pdf-lbl">PDF-Steckbrief hier ablegen oder klicken</div>
+            <input type="file" id="bs-pdf-input" accept=".pdf">
+          </div>
+          <button class="bs-extract-btn" id="bs-extract-btn" disabled onclick="bsExtractPDF()">&#x1F916; Felder automatisch bef&uuml;llen</button>
+          <div class="bs-extract-status" id="bs-extract-status"></div>
+        </div>
+
+        <div class="np-section">
+          <div class="np-sec-title">Kundendaten</div>
+          <div class="np-grid">
+            <div class="np-field" style="grid-column:1/-1"><label class="np-label">Kundenname / Projektname <span class="req">*</span></label><input class="np-input" id="bs-name" type="text" placeholder="z.B. SAYV GmbH"></div>
+            <div class="np-field"><label class="np-label">Kundennummer</label><input class="np-input" id="bs-kundennr" type="text" placeholder="z.B. kunde002577"><span style="font-size:.7rem;color:var(--text-muted);margin-top:3px;display:block">Wird in Projektbeschreibung &uuml;bernommen</span></div>
+            <div class="np-field"><label class="np-label">Standort</label><input class="np-input" id="bs-standort" type="text" placeholder="z.B. F&uuml;rth"></div>
+          </div>
+        </div>
+
+        <div class="np-section">
+          <div class="np-sec-title">Ansprechpartner (Kunde)</div>
+          <div class="np-grid">
+            <div class="np-field" style="grid-column:1/-1"><label class="np-label">Name</label><input class="np-input" id="bs-ap-name" type="text" placeholder="Vor- und Nachname"></div>
+            <div class="np-field"><label class="np-label">E-Mail</label><input class="np-input" id="bs-ap-mail" type="email" placeholder="name@firma.de"></div>
+            <div class="np-field"><label class="np-label">Telefon</label><input class="np-input" id="bs-ap-tel" type="text" placeholder="0911 / 123 456"></div>
+          </div>
+        </div>
+
+        <div class="np-section">
+          <div class="np-sec-title">Integrationen</div>
+          <div class="np-grid">
+            <div class="np-field">
+              <label class="np-label">Outlook Add-in</label>
+              <select class="np-select" id="bs-outlook" onchange="bsUpdatePreview()">
+                <option value="unbekannt">&#x2753; Unbekannt / kein Hinweis</option>
+                <option value="Nicht Aktiv">&#x274C; Nicht Aktiv</option>
+                <option value="Gewuenscht">&#x1F550; Gew&uuml;nscht</option>
+                <option value="Beauftragt">&#x23F3; Beauftragt</option>
+                <option value="Aktiv">&#x2705; Aktiv</option>
+              </select>
+            </div>
+            <div class="np-field">
+              <label class="np-label">AD-Integration</label>
+              <select class="np-select" id="bs-adint" onchange="bsUpdatePreview()">
+                <option value="unbekannt">&#x2753; Unbekannt / kein Hinweis</option>
+                <option value="Nicht Aktiv">&#x274C; Nicht Aktiv</option>
+                <option value="Gewuenscht">&#x1F550; Gew&uuml;nscht</option>
+                <option value="Beauftragt">&#x23F3; Beauftragt</option>
+                <option value="Aktiv">&#x2705; Aktiv</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="np-section">
+          <div class="np-sec-title">Arbeitspakete (Vorschau)</div>
+          <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="bs-wp-preview"></div></div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn btn-success" id="bs-submit-btn" style="flex:1;min-width:200px;justify-content:center" onclick="bsCreate()">Bestandskunden-Projekt anlegen</button>
+          <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="bsReset()">Formular leeren</button>
+        </div>
+        <div class="np-result" id="bs-result"></div>
+      </div>
+    </div>
+
+    <!-- NEUKUNDE PANEL (unveraendert) -->
+    <div id="np-neukunde-panel">
     <div class="np-card">
       <h2>Neues Projekt anlegen</h2>
       <p class="np-sub">Kundendaten eintragen - das Projekt wird per API in OpenProject angelegt.</p>
@@ -521,7 +624,9 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="wp-preview"></div></div>
       </div>
     </div>
-  </div>
+    </div><!-- /np-neukunde-panel -->
+
+  </div><!-- /tab-neu -->
 
 </div>
 
@@ -665,21 +770,14 @@ var WP_STRUCTURE = [
   ]}
 ];
 
-/* Zubehör-Konfiguration pro Hardware-Item
- * type 'customfield' → landet in CF_HW_ZUBEHOER des APs
- * type 'description' → landet in der AP-Beschreibung */
 var HW_ACCESSORIES = {
   elo22: {
-    type:'both', title:'Zubehör ELO 22"',
-    fields:[
-      {id:'sonstiges',label:'Sonstiges Zubehör',type:'text',placeholder:'z.B. Kabel, Halterung...'}
-    ]
+    type:'both', title:'Zubeh\u00f6r ELO 22"',
+    fields:[{id:'sonstiges',label:'Sonstiges Zubeh\u00f6r',type:'text',placeholder:'z.B. Kabel, Halterung...'}]
   },
   elo15: {
-    type:'both', title:'Zubehör ELO 15"',
-    fields:[
-      {id:'sonstiges',label:'Sonstiges Zubehör',type:'text',placeholder:'z.B. Kabel, Halterung...'}
-    ]
+    type:'both', title:'Zubeh\u00f6r ELO 15"',
+    fields:[{id:'sonstiges',label:'Sonstiges Zubeh\u00f6r',type:'text',placeholder:'z.B. Kabel, Halterung...'}]
   },
   brother: {
     type:'customfield', title:'Papier',
@@ -711,7 +809,7 @@ var HW_ACCESSORIES = {
   },
   bodenRM: {
     type:'description', title:'Bodenst\u00e4nder RM-System \u2013 Optionen',
-    perUnit:true, /* eigene Sektion pro Einheit */
+    perUnit:true,
     fields:[
       {id:'geraet',label:'Ger\u00e4t',type:'select',options:[
         {v:'',l:'-- Bitte w\u00e4hlen --'},
@@ -884,7 +982,6 @@ function loadFromAPI() {
       var pId=getLink(wp,'project','href');if(pId)pId=pId.split('/').pop();
       var typeHref=getLink(wp,'type','href')||'';
       var typeId=typeHref.split('/').pop();
-      // Phasen (3) und Epics (5) nicht zählen
       if(typeId===''+TYPE_PHASE||typeId===''+TYPE_EPIC) return;
       var t=getLink(wp,'type').toLowerCase();if(EXCL_WP_TYPES.includes(t))return;
       if(!wpByProj[pId])wpByProj[pId]={total:0,closed:0};
@@ -1030,7 +1127,6 @@ function renderArchivedCards() {
       +(p._id?'<button class="toggle-btn ap-load-btn" data-proj-id="'+p._id+'" style="margin-top:8px">Phasen anzeigen <span class="arrow">&#x25BC;</span></button><div class="ap-body" id="ap-body-archiv-'+p._id+'"><div style="padding:10px 12px;font-size:.78rem;color:var(--text-muted)">Wird geladen...</div></div>':'')
       +'</div>';
   }).join('');
-  // Phasen-Toggle Events
   wrap.querySelectorAll('.ap-load-btn').forEach(function(b){
     b.addEventListener('click',function(){
       var projId=b.dataset.projId;
@@ -1076,7 +1172,6 @@ function loadLagerStatuses() {
 }
 
 /* ── Warenbestand ── */
-/* Status-Gruppen fuer Artikelnummer-Matching */
 var STATUS_EINGEHEND   = ['neu','bestellt','bestellung ausstehend'];
 var STATUS_IM_BESTAND  = ['lagernd','in bearbeitung'];
 var STATUS_AUSGELIEFERT= ['versendet','geliefert','erledigt','abgeschlossen','done','fertig','delivered'];
@@ -1090,7 +1185,6 @@ function renderWarenbestand() {
   var content=document.getElementById('wb-content');
   var fa=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}}]));
 
-  // 1) Lager-APs laden (Projekt 80)
   var pLager = apiFetch('/projects/'+LAGER_PROJ_ID+'/work_packages?pageSize=100&filters='+fa).then(function(data){
     lagerData=(data._embedded&&data._embedded.elements?data._embedded.elements:[])
       .filter(function(wp){return getLink(wp,'type').toLowerCase()==='hardware';})
@@ -1105,14 +1199,12 @@ function renderWarenbestand() {
           lagerort:wp.customField43||'-',
           status:getLink(wp,'status')||'-',
           statusHref:(wp._links&&wp._links.status&&wp._links.status.href)||'',
-          // Matching-Felder werden unten befuellt
           eingehend:0, imBestand:0, ausgeliefert:0, verfuegbar:0,
           bestellungenDetails:[]
         };
       });
   });
 
-  // 2) ALLE Hardware-APs aus Kundenprojekten laden (alle Status)
   var fAll=encodeURIComponent(JSON.stringify([{"type":{"operator":"=","values":["8"]}},{"status":{"operator":"*","values":[]}}]));
   var pWPs = apiFetch('/work_packages?pageSize=500&filters='+fAll).then(function(pd){
     return (pd._embedded&&pd._embedded.elements?pd._embedded.elements:[])
@@ -1137,13 +1229,10 @@ function renderWarenbestand() {
   Promise.all([pLager, pWPs]).then(function(res){
     var alleKundenWPs = res[1];
 
-    // Bestellungen ausstehend fuer den unteren Bereich
     warenData = alleKundenWPs.filter(function(wp){
       return matchesStatusGroup(wp.status, ['bestellung ausstehend']);
     });
 
-    // 3) Matching: Artikelnummer-basiert
-    // Lager-Artikel ohne Artikelnummer koennen nicht gematcht werden
     var lagerByArtNr = {};
     lagerData.forEach(function(a){
       if(a.artikelnummer && a.artikelnummer!=='-' && a.artikelnummer!==''){
@@ -1151,7 +1240,6 @@ function renderWarenbestand() {
       }
     });
 
-    // Kunden-APs nach Artikelnummer auf Lager-Artikel matchen
     alleKundenWPs.forEach(function(wp){
       var artnr = (wp.artikelnummer||'').toLowerCase();
       if(!artnr) return;
@@ -1168,7 +1256,6 @@ function renderWarenbestand() {
       }
     });
 
-    // Verfuegbarer Bestand = Lager-Menge - Im Bestand (in Projekten reserviert/genutzt)
     lagerData.forEach(function(a){
       a.verfuegbar = Math.max(0, a.menge - a.imBestand);
     });
@@ -1183,7 +1270,6 @@ function renderWarenbestand() {
 function renderLagerTabelle() {
   var content=document.getElementById('wb-content');
 
-  // Alarm basiert auf verfuegbar (nicht menge)
   var lowCount=lagerData.filter(function(a){return a.mindestbestand>0&&a.verfuegbar<=a.mindestbestand;}).length;
   document.getElementById('wb-total').textContent=lagerData.length;
   document.getElementById('wb-proj-count').textContent=lowCount;
@@ -1203,8 +1289,8 @@ function renderLagerTabelle() {
   var rows=lagerData.map(function(a,i){
     var hasMatch = a.artikelnummer && a.artikelnummer!=='-' && a.artikelnummer!=='';
     var isLow = a.mindestbestand>0 && a.verfuegbar<=a.mindestbestand;
-    var isOut = a.verfuegbar===0 && a.menge>0; // Alles reserviert/raus
-    var isZero = a.menge===0; // Nichts auf Lager
+    var isOut = a.verfuegbar===0 && a.menge>0;
+    var isZero = a.menge===0;
 
     var verfuegbarColor = isZero||isOut ? 'var(--error-c)' : isLow ? 'var(--at-risk-c)' : 'var(--on-track-c)';
     var verfuegbarVal = isZero ? '0 &#x26A0;' : isOut ? a.verfuegbar+' &#x26A0;' : isLow ? a.verfuegbar+' &#x26A0;' : a.verfuegbar;
@@ -1215,7 +1301,6 @@ function renderLagerTabelle() {
       +'<button class="btn-icon menge-btn" onclick="adjustMengeOP('+i+',1,event)" title="Menge +1">+</button>'
       +'</div>';
 
-    // Im Einsatz: Tooltip mit Projektliste
     var imBestandCell = a.imBestand > 0
       ? '<span style="color:var(--at-risk-c);font-weight:600;cursor:default" title="'+
           a.bestellungenDetails.map(function(d){return d.projekt+': '+d.titel+' ('+d.status+')';}).join('\n')+
@@ -1261,7 +1346,6 @@ function renderLagerTabelle() {
     +'</tr></thead><tbody id="wb-tbody">'+rows+'</tbody></table>'
     +'<div class="wb-no-results" id="wb-no-results" style="display:none">Keine Artikel gefunden.</div></div>';
 
-  // Sortierung
   var wbSortCol=null,wbSortAsc=true;
   content.querySelectorAll('.wb-sort-hdr').forEach(function(th){
     th.addEventListener('click',function(){
@@ -1332,7 +1416,6 @@ function adjustMengeOP(idx, delta, evt) {
   var a=lagerData[idx];if(!a)return;
   var newMenge=Math.max(0,a.menge+delta);
   if(newMenge===a.menge)return;
-  // Optimistisch in UI updaten
   a.menge=newMenge;
   var row=document.querySelector('#wb-tbody .wb-row[data-idx="'+idx+'"]');
   if(row){
@@ -1342,16 +1425,13 @@ function adjustMengeOP(idx, delta, evt) {
     var valEl=row.querySelector('.menge-val');
     if(valEl){valEl.style.color=isOut?'var(--error-c)':isLow?'var(--at-risk-c)':'var(--text)';valEl.innerHTML=newMenge+(isOut?' &#x26A0;':isLow?' &#x26A0;':'');}
   }
-  // Update Stat-Karte
   var lowCount=lagerData.filter(function(x){return x.mindestbestand>0&&x.menge<=x.mindestbestand;}).length;
   document.getElementById('wb-proj-count').textContent=lowCount;
-  // OP speichern
   apiFetch('/work_packages/'+a.id).then(function(wpData){
     return apiFetch('/work_packages/'+a.id,{method:'PATCH',body:JSON.stringify({lockVersion:wpData.lockVersion,customField40:newMenge})});
   }).then(function(updated){
     a.lockVersion=updated.lockVersion||a.lockVersion;
   }).catch(function(err){
-    // Bei Fehler: revert
     a.menge=a.menge-delta;
     renderLagerTabelle();
     alert('Fehler beim Speichern: '+err.message);
@@ -1424,7 +1504,6 @@ function openLagerModal(idx, evt) {
   document.getElementById('lm-lagerort').value=a.lagerort!=='-'?a.lagerort:'';
   document.getElementById('lm-menge').value=a.menge;
   document.getElementById('lm-mindestbestand').value=a.mindestbestand;
-  // Status setzen
   var sel=document.getElementById('lm-status-sel');
   sel.value=a.statusHref||'';
   document.getElementById('lm-err').style.display='none';
@@ -1471,11 +1550,9 @@ function saveLagerArtikel() {
 
   var promise;
   if(wpId){
-    // PATCH - Update
     body.lockVersion=lockVersion;
     promise=apiFetch('/work_packages/'+wpId,{method:'PATCH',body:JSON.stringify(body)});
   } else {
-    // POST - Neu anlegen
     promise=apiFetch('/work_packages',{method:'POST',body:JSON.stringify(body)});
   }
 
@@ -1497,8 +1574,6 @@ function deleteLagerArtikel(idx, evt) {
   apiFetch('/work_packages/'+a.id,{method:'DELETE'}).then(function(){
     renderWarenbestand();
   }).catch(function(err){
-    // OP gibt bei DELETE oft 204 zurueck, was kein JSON ist
-    // Daher: wenn Fehler "JSON" related, trotzdem neu laden
     if(err.message&&(err.message.includes('JSON')||err.message.includes('Unexpected')||err.message.includes('204'))){
       renderWarenbestand();
     } else {
@@ -1507,7 +1582,6 @@ function deleteLagerArtikel(idx, evt) {
   });
 }
 
-/* ── Lager Modal schliessen mit Escape und Klick auf Overlay ── */
 document.getElementById('lagerModal').addEventListener('click',function(e){
   if(e.target===document.getElementById('lagerModal'))closeLagerModal();
 });
@@ -1534,7 +1608,6 @@ function buildDynamicStructure(d) {
     var acc = HW_ACCESSORIES[h.id];
     for(var i=0;i<h.qty;i++){
       var label = h.qty>1 ? h.name+' ('+(i+1)+'/'+h.qty+')' : h.name;
-      // bodenRM: Gerät-Auswahl direkt in den Titel
       if(h.id==='bodenRM' && acc && acc.perUnit){
         var geraetEl = document.getElementById('acc-bodenRM-'+i+'-geraet');
         if(geraetEl && geraetEl.value){
@@ -1582,7 +1655,7 @@ function updateWPPreview() {
       var indent = depth * 16;
       var typeLabel = node.type===TYPE_PHASE?'Phase':node.type===TYPE_EPIC?'Epic':node.type===TYPE_HW?'HW':node.type===TYPE_ELO?'ELO':'Task';
       var typeColor = node.type===TYPE_PHASE?'var(--at-risk-c)':node.type===TYPE_EPIC?'var(--brand-light)':node.type===TYPE_HW?'var(--on-track-c)':node.type===TYPE_ELO?'#a78bfa':'var(--text-muted)';
-      var noteLine = node.zubehoer||node.descText ? '<span style="color:var(--hint-text);font-size:.7rem;margin-left:6px">→ '+(node.zubehoer||node.descText)+'</span>' : '';
+      var noteLine = node.zubehoer||node.descText ? '<span style="color:var(--hint-text);font-size:.7rem;margin-left:6px">&#x2192; '+(node.zubehoer||node.descText)+'</span>' : '';
       html += '<div class="np-wp-item" style="padding-left:'+indent+'px;border-bottom:1px solid var(--border)">'
         +'<span class="wp-dot" style="background:'+typeColor+'"></span>'
         +'<span style="font-size:.68rem;padding:1px 5px;border-radius:4px;background:'+typeColor+'22;color:'+typeColor+';margin-right:5px;font-weight:700">'+typeLabel+'</span>'
@@ -1636,7 +1709,6 @@ function initHardware() {
       +'<button class="hw-qty-btn" onclick="hwQty(\''+hw.id+'\',1)">+</button>'
       +'</div>';
     wrap.appendChild(row);
-    // Acc-Sections: perUnit items get one section per unit, others get one section
     var acc = HW_ACCESSORIES[hw.id];
     if(acc){
       var accDiv = document.createElement('div');
@@ -1674,7 +1746,6 @@ function hwChanged(id) {
   var acc = document.getElementById('hw-acc-'+id);
   row.classList.toggle('selected', cb.checked);
   if(qty) qty.style.display = cb.checked ? 'flex' : 'none';
-  // perUnit: rebuild acc sections
   var accCfg = HW_ACCESSORIES[id];
   if(accCfg && accCfg.perUnit){
     if(cb.checked) rebuildPerUnitAcc(id);
@@ -1707,7 +1778,6 @@ function getHwZubehoerForInstance(hwId, suffix) {
   if(!acc) return null;
   var parts = [];
   acc.fields.forEach(function(f){
-    // Versuche zuerst mit Suffix, dann ohne als Fallback
     var fid = 'acc-'+hwId+suffix+'-'+f.id;
     var inp = document.getElementById(fid);
     if(!inp && suffix==='') inp = document.getElementById('acc-'+hwId+'-'+f.id);
@@ -1768,7 +1838,6 @@ function buildDescription(d) {
   var lines=['Kundenname: '+d.name,'Standort: '+d.standort,'Ansprechpartner: '+d.ap,'Paket: '+d.paket];
   if(hwText)lines.push('Hardware: '+hwText);
   lines.push('Outlook Add-in: '+d.outlook,'AD-Integration: '+d.adint);
-  // Zubehör aller Hardware direkt aus DOM
   d.hw.forEach(function(h){
     var acc=HW_ACCESSORIES[h.id];
     if(!acc) return;
@@ -1798,7 +1867,6 @@ function resetForm() {
     var cb=document.getElementById('hw-cb-'+hw.id);
     if(cb)cb.checked=false;
     hwChanged(hw.id);
-    // Acc-Felder zurücksetzen
     var acc=HW_ACCESSORIES[hw.id];
     if(acc){acc.fields.forEach(function(f){var inp=document.getElementById('acc-'+hw.id+'-'+f.id);if(!inp)return;inp.value=f.type==='number'?(f.def||0):(f.type==='select'?'':'');});}
   });
@@ -1890,7 +1958,6 @@ function updateExistingProject(projId) {
     var structure=buildDynamicStructure(d);
     var created=0,deleted=0,errors=[];
 
-    // Index bestehender APs: "name||typeId" → wp.id
     var existingByKey={};
     existingWPs.forEach(function(wp){
       var typeHref=getLink(wp,'type','href')||'';
@@ -1898,7 +1965,6 @@ function updateExistingProject(projId) {
       existingByKey[wp.subject+'||'+typeId]=wp.id;
     });
 
-    // Welche Keys laut Soll-Struktur erwartet werden
     var expectedKeys={};
     function collectExpected(nodes){
       nodes.forEach(function(node){
@@ -1909,13 +1975,11 @@ function updateExistingProject(projId) {
     }
     collectExpected(structure);
 
-    // Typen aktivieren, dann löschen, dann tree-sync
     return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[
       {href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},
       {href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}
     ]}})}).catch(function(){}).then(function(){
 
-      // Überschüssige Task/Hardware löschen
       var delChain=Promise.resolve();
       existingWPs.forEach(function(wp){
         var typeHref=getLink(wp,'type','href')||'';
@@ -1927,14 +1991,13 @@ function updateExistingProject(projId) {
               .then(function(){deleted++;})
               .catch(function(e){
                 if(e.message&&(e.message.includes('JSON')||e.message.includes('204')))deleted++;
-                else errors.push('Löschen '+wp.subject+': '+e.message);
+                else errors.push('L\u00f6schen '+wp.subject+': '+e.message);
               });
           });
         }
       });
 
       return delChain.then(function(){
-        // Tree-basierter Sync: Hierarchie wird korrekt aufgebaut
         function syncTree(nodes, parentId){
           var chain=Promise.resolve();
           nodes.forEach(function(node){
@@ -1942,11 +2005,9 @@ function updateExistingProject(projId) {
               if(node.cond && !conds[node.cond]) return Promise.resolve(null);
               var existingId=existingByKey[node.name+'||'+node.type];
               if(existingId){
-                // Existiert — Kinder trotzdem rekursiv prüfen
                 if(node.children && node.children.length) return syncTree(node.children, existingId);
                 return Promise.resolve(existingId);
               }
-              // Neu anlegen mit korrektem Parent
               var body={subject:node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+node.type}}};
               if(parentId) body._links.parent={href:'/api/v3/work_packages/'+parentId};
               if(node.type===TYPE_HW) body.customField40=1;
@@ -1967,8 +2028,8 @@ function updateExistingProject(projId) {
     }).then(function(){
       var msg='Projekt aktualisiert!';
       if(created) msg+='<br>&#x2705; '+created+' AP(s) angelegt';
-      if(deleted) msg+='<br>&#x1F5D1; '+deleted+' AP(s) gelöscht';
-      if(!created&&!deleted) msg+='<br>Keine Änderungen an APs nötig.';
+      if(deleted) msg+='<br>&#x1F5D1; '+deleted+' AP(s) gel\u00f6scht';
+      if(!created&&!deleted) msg+='<br>Keine \u00c4nderungen an APs n\u00f6tig.';
       if(errors.length) msg+='<br><small style="color:var(--error-c)">'+errors.join('<br>')+'</small>';
       showNpResult(msg,'success');
       loadFromAPI();
@@ -1978,6 +2039,292 @@ function updateExistingProject(projId) {
   }).then(function(){
     btn.disabled=false;btn.innerHTML='Projekt in OpenProject anlegen';
   });
+}
+
+/* ────────────────────────────────────────────────────────
+   NEUES PROJEKT: Modus-Toggle (Neukunde / Bestandskunde)
+──────────────────────────────────────────────────────── */
+function setNpMode(mode) {
+  document.getElementById('btn-neukunde').classList.toggle('active', mode === 'neukunde');
+  document.getElementById('btn-bestand').classList.toggle('active',  mode === 'bestand');
+  document.getElementById('np-neukunde-panel').style.display = mode === 'neukunde' ? 'block' : 'none';
+  document.getElementById('np-bestand-panel').style.display  = mode === 'bestand'  ? 'block' : 'none';
+}
+
+/* ── Bestandskunde: PDF Drop Zone ── */
+var bsPdfBase64 = null;
+
+(function(){
+  var zone = document.getElementById('bs-pdf-zone');
+  var inp  = document.getElementById('bs-pdf-input');
+  zone.addEventListener('click', function(){ inp.click(); });
+  inp.addEventListener('change', function(){ if(inp.files[0]) bsLoadPDF(inp.files[0]); });
+  ['dragenter','dragover'].forEach(function(ev){
+    zone.addEventListener(ev, function(e){ e.preventDefault(); e.stopPropagation(); zone.classList.add('over'); });
+  });
+  zone.addEventListener('dragleave', function(e){ e.preventDefault(); e.stopPropagation(); zone.classList.remove('over'); });
+  zone.addEventListener('drop', function(e){
+    e.preventDefault(); e.stopPropagation(); zone.classList.remove('over');
+    if(e.dataTransfer.files[0]) bsLoadPDF(e.dataTransfer.files[0]);
+  });
+})();
+
+function bsLoadPDF(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    bsPdfBase64 = e.target.result.split(',')[1];
+    document.getElementById('bs-pdf-zone').classList.add('loaded');
+    document.getElementById('bs-pdf-lbl').textContent = '\u2705 ' + file.name;
+    document.getElementById('bs-extract-btn').disabled = false;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function bsExtractPDF() {
+  if (!bsPdfBase64) return;
+  var status = document.getElementById('bs-extract-status');
+  var btn    = document.getElementById('bs-extract-btn');
+  status.className = 'bs-extract-status loading';
+  status.textContent = '\uD83E\uDD16 KI analysiert Steckbrief\u2026';
+  btn.disabled = true;
+
+  try {
+    var resp = await fetch('/extract-pdf', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({pdfBase64: bsPdfBase64})
+    });
+    var result = await resp.json();
+    if (!resp.ok || result.error) throw new Error(result.error || 'Fehler bei der Extraktion');
+
+    var d = result.data;
+    var filled = 0;
+    function fill(id, val) {
+      if (val && val !== 'null' && val !== 'undefined' && String(val).trim() !== '') {
+        var el = document.getElementById(id);
+        if (el) { el.value = String(val).trim(); el.classList.add('pre'); filled++; }
+      }
+    }
+    fill('bs-name',    d.projektname);
+    fill('bs-kundennr',d.kundennummer);
+    fill('bs-standort',d.standort);
+    fill('bs-ap-name', d.ansprechpartner_name);
+    fill('bs-ap-mail', d.ansprechpartner_mail);
+    fill('bs-ap-tel',  d.ansprechpartner_telefon);
+
+    var olMap = {
+      'aktiv':'Aktiv','beauftragt':'Beauftragt',
+      'gew\u00fcnscht':'Gewuenscht','gewuenscht':'Gewuenscht',
+      'nicht_aktiv':'Nicht Aktiv','nicht aktiv':'Nicht Aktiv'
+    };
+    var olVal = olMap[(d.outlook||'').toLowerCase().trim()];
+    if (olVal) {
+      var olSel = document.getElementById('bs-outlook');
+      olSel.value = olVal; olSel.classList.add('pre');
+    }
+
+    var adMap = {
+      'aktiv':'Aktiv','beauftragt':'Beauftragt',
+      'gew\u00fcnscht':'Gewuenscht','gewuenscht':'Gewuenscht',
+      'nicht_aktiv':'Nicht Aktiv','nicht aktiv':'Nicht Aktiv'
+    };
+    var adVal = adMap[(d.ad_integration||'').toLowerCase().trim()];
+    if (adVal) {
+      var adSel = document.getElementById('bs-adint');
+      adSel.value = adVal; adSel.classList.add('pre');
+    }
+
+    bsUpdatePreview();
+    status.className = 'bs-extract-status ok';
+    status.textContent = '\u2705 ' + filled + ' Felder bef\u00fcllt \u2013 bitte pr\u00fcfen!';
+  } catch(e) {
+    status.className = 'bs-extract-status err';
+    status.textContent = '\u274C ' + e.message + ' (Manuelle Eingabe m\u00f6glich)';
+  }
+  btn.disabled = false;
+}
+
+function bsUpdatePreview() {
+  var ol = document.getElementById('bs-outlook').value;
+  var ad = document.getElementById('bs-adint').value;
+  var c = {phase:'var(--at-risk-c)', epic:'var(--brand-light)', ok:'var(--on-track-c)', warn:'var(--at-risk-c)', muted:'var(--text-muted)'};
+
+  function phaseRow(label) {
+    return '<div class="np-wp-item"><span class="wp-dot" style="background:'+c.phase+'"></span>'
+      +'<span style="font-size:.68rem;padding:1px 5px;border-radius:4px;background:rgba(240,136,62,.2);color:'+c.phase+';margin-right:5px;font-weight:700">Phase</span>'+label+'</div>';
+  }
+  function epicRow(label) {
+    return '<div class="np-wp-item wp-sub"><span class="wp-dot"></span>'
+      +'<span style="font-size:.68rem;padding:1px 5px;border-radius:4px;background:rgba(74,144,217,.2);color:'+c.epic+';margin-right:5px;font-weight:700">Epic</span>'+label+'</div>';
+  }
+  function taskRow(label, color, strikethrough) {
+    var style = 'padding-left:32px'+(strikethrough?';opacity:.45;text-decoration:line-through':'');
+    return '<div class="np-wp-item" style="'+style+'"><span class="wp-dot" style="background:'+color+'"></span>'
+      +'<span style="font-size:.68rem;padding:1px 5px;border-radius:4px;background:'+color+'22;color:'+color+';margin-right:5px;font-weight:700">Task</span>'+label+'</div>';
+  }
+
+  var html = phaseRow('Bestandskundenpflege')
+    + epicRow('Kundenkommunikation &amp; Integration')
+    + taskRow('&#x2705; Kunden ansprechen', c.ok, false);
+
+  if (ad === 'Aktiv')
+    html += taskRow('&#x26D4; AD-Integration (bereits aktiv \u2013 kein AP)', c.muted, true);
+  else if (ad === 'unbekannt')
+    html += taskRow('&#x2753; AD-Integration pr\u00fcfen', c.warn, false);
+  else
+    html += taskRow('&#x1F527; AD-Integration', c.ok, false);
+
+  if (ol === 'Aktiv')
+    html += taskRow('&#x26D4; Outlook Addin (bereits aktiv \u2013 kein AP)', c.muted, true);
+  else if (ol === 'unbekannt')
+    html += taskRow('&#x2753; Outlook Addin pr\u00fcfen', c.warn, false);
+  else
+    html += taskRow('&#x1F4E7; Outlook Addin anbieten', c.ok, false);
+
+  document.getElementById('bs-wp-preview').innerHTML = html;
+}
+
+async function bsCreate() {
+  var name     = document.getElementById('bs-name').value.trim();
+  var kundennr = document.getElementById('bs-kundennr').value.trim();
+  var standort = document.getElementById('bs-standort').value.trim();
+  var apName   = document.getElementById('bs-ap-name').value.trim();
+  var apMail   = document.getElementById('bs-ap-mail').value.trim();
+  var apTel    = document.getElementById('bs-ap-tel').value.trim();
+  var outlook  = document.getElementById('bs-outlook').value;
+  var adint    = document.getElementById('bs-adint').value;
+
+  if (!name) {
+    document.getElementById('bs-name').classList.add('invalid');
+    var r = document.getElementById('bs-result');
+    r.innerHTML = 'Bitte Projektname eingeben.';
+    r.className = 'np-result error';
+    r.style.display = 'block';
+    return;
+  }
+  document.getElementById('bs-name').classList.remove('invalid');
+
+  var btn    = document.getElementById('bs-submit-btn');
+  var result = document.getElementById('bs-result');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Wird angelegt\u2026';
+  result.style.display = 'none';
+
+  try {
+    /* Projektbeschreibung */
+    var apParts = [apName, apMail, apTel].filter(Boolean);
+    var apText  = apParts.join(' | ');
+    var descLines = ['Bestandskunde'];
+    if (kundennr) descLines.push('Kundennummer: ' + kundennr);
+    if (standort) descLines.push('Standort: ' + standort);
+    if (apText)   descLines.push('Ansprechpartner: ' + apText);
+    descLines.push('Outlook: ' + outlook, 'AD-Integration: ' + adint);
+
+    var projLinks = {};
+    if (outlook !== 'unbekannt' && OUTLOOK_OPT[outlook]) projLinks.customField4 = {href: OUTLOOK_OPT[outlook]};
+    if (adint   !== 'unbekannt' && ADINT_OPT[adint])     projLinks.customField6 = {href: ADINT_OPT[adint]};
+
+    var projBody = {
+      name: name,
+      description: {format: 'markdown', raw: descLines.join('\n')},
+      customField11: name
+    };
+    if (standort) projBody.customField12 = standort;
+    if (apText)   projBody.customField24 = {format: 'plain', raw: apText};
+    if (Object.keys(projLinks).length) projBody._links = projLinks;
+
+    /* 1. Projekt anlegen */
+    btn.innerHTML = '<span class="spinner"></span> 1/4 Projekt anlegen\u2026';
+    var proj   = await apiFetch('/projects', {method: 'POST', body: JSON.stringify(projBody)});
+    var projId = proj.id;
+
+    /* 2. Typen aktivieren */
+    btn.innerHTML = '<span class="spinner"></span> 2/4 Typen aktivieren\u2026';
+    await apiFetch('/projects/' + projId, {method: 'PATCH', body: JSON.stringify({
+      _links: {types: [
+        {href: '/api/v3/types/' + TYPE_PHASE},
+        {href: '/api/v3/types/' + TYPE_EPIC},
+        {href: '/api/v3/types/' + TYPE_TASK}
+      ]}
+    })}).catch(function(){});
+
+    /* 3. Phase + Epic */
+    btn.innerHTML = '<span class="spinner"></span> 3/4 Phase &amp; Epic\u2026';
+    var phase = await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify({
+      subject: 'Bestandskundenpflege',
+      _links: {project: {href: '/api/v3/projects/' + projId}, type: {href: '/api/v3/types/' + TYPE_PHASE}}
+    })});
+    var epic  = await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify({
+      subject: 'Kundenkommunikation & Integration',
+      _links: {
+        project: {href: '/api/v3/projects/' + projId},
+        type:    {href: '/api/v3/types/' + TYPE_EPIC},
+        parent:  {href: '/api/v3/work_packages/' + phase.id}
+      }
+    })});
+
+    /* 4. Tasks */
+    btn.innerHTML = '<span class="spinner"></span> 4/4 Arbeitspakete\u2026';
+    var taskNames = ['Kunden ansprechen'];
+    if      (adint   === 'unbekannt') taskNames.push('AD-Integration pr\u00fcfen');
+    else if (adint   !== 'Aktiv')     taskNames.push('AD-Integration');
+    if      (outlook === 'unbekannt') taskNames.push('Outlook Addin pr\u00fcfen');
+    else if (outlook !== 'Aktiv')     taskNames.push('Outlook Addin anbieten');
+
+    var wpOk = 0, wpErrors = [];
+    for (var i = 0; i < taskNames.length; i++) {
+      try {
+        await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify({
+          subject: taskNames[i],
+          _links: {
+            project: {href: '/api/v3/projects/'       + projId},
+            type:    {href: '/api/v3/types/'           + TYPE_TASK},
+            parent:  {href: '/api/v3/work_packages/'  + epic.id}
+          }
+        })});
+        wpOk++;
+      } catch(e) { wpErrors.push(taskNames[i] + ': ' + e.message); }
+    }
+
+    var errHtml = wpErrors.length
+      ? '<br><small style="color:var(--error-c)">' + wpErrors.join('<br>') + '</small>' : '';
+    result.innerHTML = '\u2705 Projekt <strong>' + name + '</strong> angelegt!<br>'
+      + wpOk + ' Arbeitspakete: ' + taskNames.join(', ')
+      + errHtml
+      + '<br><br><a href="' + OP_URL + '/projects/' + proj.identifier
+      + '" target="_blank" style="color:var(--brand-light)">\u2192 In OpenProject \u00f6ffnen</a>';
+    result.className = 'np-result ' + (wpErrors.length ? 'warning' : 'success');
+    result.style.display = 'block';
+    result.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+    loadFromAPI();
+    bsReset();
+
+  } catch(e) {
+    result.innerHTML = '\u274C Fehler: ' + e.message;
+    result.className = 'np-result error';
+    result.style.display = 'block';
+  }
+  btn.disabled = false;
+  btn.innerHTML = 'Bestandskunden-Projekt anlegen';
+}
+
+function bsReset() {
+  ['bs-name','bs-kundennr','bs-standort','bs-ap-name','bs-ap-mail','bs-ap-tel'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.value = ''; el.classList.remove('pre','invalid'); }
+  });
+  ['bs-outlook','bs-adint'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el){ el.value = 'unbekannt'; el.classList.remove('pre'); }
+  });
+  bsPdfBase64 = null;
+  var zone = document.getElementById('bs-pdf-zone');
+  zone.classList.remove('loaded');
+  document.getElementById('bs-pdf-lbl').textContent = 'PDF-Steckbrief hier ablegen oder klicken';
+  document.getElementById('bs-extract-btn').disabled = true;
+  document.getElementById('bs-extract-status').className = 'bs-extract-status';
+  document.getElementById('bs-result').style.display = 'none';
+  bsUpdatePreview();
 }
 
 /* ── Exports ── */
@@ -1993,7 +2340,7 @@ function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientati
 
 document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
 
-initHardware();initRadios();updateWPPreview();
+initHardware();initRadios();updateWPPreview();bsUpdatePreview();
 </script>
 </body>
 </html>
