@@ -3,6 +3,9 @@ const fetch   = require('node-fetch');
 const path    = require('path');
 const app     = express();
 
+// Browser-aehnlicher User-Agent: node-fetch/2.x wird von Bot-Schutz haeufig geblockt
+const BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36';
+
 app.use(express.json({ limit: '15mb' }));
 
 // CORS + Teams iframe headers
@@ -31,12 +34,31 @@ app.all('/proxy/*', async (req, res) => {
       method: req.method,
       headers: {
         'Authorization': 'Basic ' + Buffer.from('apikey:' + opKey).toString('base64'),
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'User-Agent': BROWSER_UA
       },
       body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined
     });
-    const data = await response.json();
-    res.status(response.status).json(data);
+
+    const text  = await response.text();
+    const ctype = response.headers.get('content-type') || '-';
+
+    // Leerer Body (z.B. 204 nach DELETE) ist kein Fehler
+    if (!text) return res.status(response.status).end();
+
+    try {
+      return res.status(response.status).json(JSON.parse(text));
+    } catch (parseErr) {
+      console.error('[proxy] Kein JSON von OpenProject:', response.status, ctype,
+                    text.slice(0, 200).replace(/\s+/g, ' '));
+      return res.status(502).json({
+        error: 'OpenProject lieferte kein JSON',
+        opStatus: response.status,
+        contentType: ctype,
+        preview: text.slice(0, 300)
+      });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
