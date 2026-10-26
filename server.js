@@ -146,6 +146,75 @@ Regeln für outlook und ad_integration:
   }
 });
 
+// ────────────────────────────────────────────────────────
+// Einsatzbericht: Datei als Anhang an ein Arbeitspaket hochladen.
+// Der generische /proxy/* reicht den Body als JSON weiter, OpenProject
+// erwartet fuer Anhaenge aber multipart/form-data (Teile "metadata" + "file").
+// Body: { wpId, fileName, base64, contentType?, description? }
+// ────────────────────────────────────────────────────────
+app.post('/upload-attachment', async (req, res) => {
+  const opUrl = req.headers['x-op-url'];
+  const opKey = req.headers['x-op-key'];
+  const { wpId, fileName, base64, contentType, description } = req.body || {};
+  if (!opUrl || !opKey) return res.status(400).json({ error: 'Missing headers' });
+  if (!/^\d+$/.test(String(wpId || '')) || !fileName || !base64) {
+    return res.status(400).json({ error: 'wpId, fileName und base64 sind erforderlich' });
+  }
+
+  const fileBuf  = Buffer.from(base64, 'base64');
+  const mime     = contentType || 'application/pdf';
+  const asciiName = String(fileName).replace(/[^\x20-\x7E]/g, '_').replace(/"/g, '');
+  const boundary = '----welcomeEB' + Date.now().toString(16) + Math.random().toString(16).slice(2);
+  const metadata = JSON.stringify(description
+    ? { fileName, description: { raw: description } }
+    : { fileName });
+
+  const body = Buffer.concat([
+    Buffer.from(
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="metadata"\r\n` +
+      `Content-Type: application/json; charset=utf-8\r\n\r\n` +
+      `${metadata}\r\n` +
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="file"; filename="${asciiName}"\r\n` +
+      `Content-Type: ${mime}\r\n\r\n`, 'utf8'),
+    fileBuf,
+    Buffer.from(`\r\n--${boundary}--\r\n`, 'utf8')
+  ]);
+
+  const targetUrl = opUrl.replace(/\/$/, '') + `/api/v3/work_packages/${wpId}/attachments`;
+  try {
+    const response = await fetch(targetUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Basic ' + Buffer.from('apikey:' + opKey).toString('base64'),
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': String(body.length),
+        'Accept': 'application/json',
+        'User-Agent': BROWSER_UA
+      },
+      body
+    });
+    const text  = await response.text();
+    const ctype = response.headers.get('content-type') || '-';
+    if (!text) return res.status(response.status).end();
+    try {
+      return res.status(response.status).json(JSON.parse(text));
+    } catch (parseErr) {
+      console.error('[upload-attachment] Kein JSON von OpenProject:', response.status, ctype,
+                    text.slice(0, 200).replace(/\s+/g, ' '));
+      return res.status(502).json({
+        error: 'OpenProject lieferte kein JSON',
+        opStatus: response.status,
+        contentType: ctype,
+        preview: text.slice(0, 300)
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3000;
