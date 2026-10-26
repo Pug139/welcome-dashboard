@@ -636,6 +636,17 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-wp-section"><div class="np-wp-title">Folgende APs werden angelegt:</div><div class="np-wp-list" id="bs-wp-preview"></div></div>
         </div>
 
+        <div class="np-section">
+        <div class="np-sec-title">Projektteam</div>
+        <div class="np-grid">
+          <div class="np-field"><label class="np-label">Verantwortlicher</label>
+            <select class="np-select pm-select" id="bs-resp"><option value="">&ndash; nicht festlegen &ndash;</option></select>
+            <span class="eb-hint">Wird Project admin + Member und Verantwortlicher in allen APs.</span></div>
+          <div class="np-field"><label class="np-label">Zugewiesen an</label>
+            <select class="np-select pm-select" id="bs-assignee"><option value="">&ndash; nicht festlegen &ndash;</option></select>
+            <span class="eb-hint">Wird Member und in allen Tasks zugewiesen.</span></div>
+        </div>
+      </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
           <button class="btn btn-success" id="bs-submit-btn" style="flex:1;min-width:200px;justify-content:center" onclick="bsCreate()">Bestandskunden-Projekt anlegen</button>
           <button class="btn" style="background:var(--bg3);color:var(--text-muted);border:1px solid var(--border)" onclick="bsReset()">Formular leeren</button>
@@ -709,6 +720,17 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
         <button type="button" onclick="addExtraAP()" class="btn" style="background:var(--bg3);border:1px solid var(--border);color:var(--text-sub);font-size:.82rem;padding:7px 14px">
           &#x2B; Weiteres AP hinzuf&uuml;gen
         </button>
+      </div>
+      <div class="np-section">
+        <div class="np-sec-title">Projektteam</div>
+        <div class="np-grid">
+          <div class="np-field"><label class="np-label">Verantwortlicher</label>
+            <select class="np-select pm-select" id="np-resp"><option value="">&ndash; nicht festlegen &ndash;</option></select>
+            <span class="eb-hint">Wird Project admin + Member und Verantwortlicher in allen APs.</span></div>
+          <div class="np-field"><label class="np-label">Zugewiesen an</label>
+            <select class="np-select pm-select" id="np-assignee"><option value="">&ndash; nicht festlegen &ndash;</option></select>
+            <span class="eb-hint">Wird Member und in allen Tasks zugewiesen.</span></div>
+        </div>
       </div>
       <div class="np-section">
         <div class="np-sec-title">Weitere Infos</div>
@@ -1980,6 +2002,7 @@ function resetForm() {
 
 document.getElementById('np-submit-btn').addEventListener('click',function(){
   var d=getFormData(),btn=document.getElementById('np-submit-btn'),valid=true;
+  var team=getTeam('np');
   ['np-name','np-standort','np-ap','np-email'].forEach(function(id){var el=document.getElementById(id);if(!el.value.trim()){el.classList.add('invalid');valid=false;}else el.classList.remove('invalid');});
   if(!d.paket){document.getElementById('np-paket').classList.add('invalid');valid=false;}else document.getElementById('np-paket').classList.remove('invalid');
   if(!valid){showNpResult('Bitte alle Pflichtfelder ausfuellen.','error');return;}
@@ -1999,6 +2022,7 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
       wpCount++;
       var body={subject:node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+node.type}}};
       if(parentId)body._links.parent={href:'/api/v3/work_packages/'+parentId};
+      applyTeam(body,node.type,team);
       if(node.type===TYPE_HW) body.customField40=1;
       if(node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:node.zubehoer};
       if(node.descText||node.descExtra) body.description={format:'plain',raw:node.descText||node.descExtra};
@@ -2026,8 +2050,12 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
     var structure=buildDynamicStructure(d);
 
     return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[{href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},{href:'/api/v3/types/'+TYPE_ELO},{href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}]}})}).catch(function(){}).then(function(){
-      btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
-      return createTree(structure, null, conds);
+      btn.innerHTML='<span class="spinner"></span> Projektteam wird eingetragen...';
+      return addProjectMembers(projId,team).then(function(me){
+        me.forEach(function(x){wpErrors.push(x);});
+        btn.innerHTML='<span class="spinner"></span> Arbeitspakete werden angelegt...';
+        return createTree(structure, null, conds);
+      });
     }).then(function(){
       var errHtml=wpErrors.length?'<br><br><strong style="color:var(--error-c)">&#x26A0; '+wpErrors.length+' AP(s) fehlgeschlagen:</strong><br><small style="color:var(--error-c)">'+wpErrors.join('<br>')+'</small>':'';
       var type=wpErrors.length?'warning':'success';
@@ -2039,6 +2067,7 @@ document.getElementById('np-submit-btn').addEventListener('click',function(){
 
 function updateExistingProject(projId) {
   var d=getFormData(),btn=document.getElementById('np-submit-btn');
+  var team=getTeam('np');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Wird aktualisiert...';
   var links={};
   if(PAKET_OPT[d.paket])links.customField2={href:PAKET_OPT[d.paket]};
@@ -2102,6 +2131,8 @@ function updateExistingProject(projId) {
       });
 
       return delChain.then(function(){
+        return addProjectMembers(projId,team).then(function(me){ me.forEach(function(x){errors.push(x);}); });
+      }).then(function(){
         function syncTree(nodes, parentId){
           var chain=Promise.resolve();
           nodes.forEach(function(node){
@@ -2114,6 +2145,7 @@ function updateExistingProject(projId) {
               }
               var body={subject:node.name,_links:{project:{href:'/api/v3/projects/'+projId},type:{href:'/api/v3/types/'+node.type}}};
               if(parentId) body._links.parent={href:'/api/v3/work_packages/'+parentId};
+              applyTeam(body,node.type,team);
               if(node.type===TYPE_HW) body.customField40=1;
               if(node.zubehoer) body[CF_HW_ZUBEHOER]={format:'plain',raw:node.zubehoer};
               if(node.descText||node.descExtra) body.description={format:'plain',raw:node.descText||node.descExtra};
@@ -2341,6 +2373,8 @@ async function bsCreate() {
     btn.innerHTML = '<span class="spinner"></span> 1/4 Projekt anlegen\u2026';
     var proj   = await apiFetch('/projects', {method: 'POST', body: JSON.stringify(projBody)});
     var projId = proj.id;
+    var team   = getTeam('bs');
+    var memberErrs = await addProjectMembers(projId, team);
 
     /* 2. Typen aktivieren */
     btn.innerHTML = '<span class="spinner"></span> 2/4 Typen aktivieren\u2026';
@@ -2354,18 +2388,18 @@ async function bsCreate() {
 
     /* 3. Phase + Epic */
     btn.innerHTML = '<span class="spinner"></span> 3/4 Phase &amp; Epic\u2026';
-    var phase = await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify({
+    var phase = await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify(applyTeam({
       subject: 'Bestandskundenpflege',
       _links: {project: {href: '/api/v3/projects/' + projId}, type: {href: '/api/v3/types/' + TYPE_PHASE}}
-    })});
-    var epic  = await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify({
+    }, TYPE_PHASE, team))});
+    var epic  = await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify(applyTeam({
       subject: 'Kundenkommunikation & Integration',
       _links: {
         project: {href: '/api/v3/projects/' + projId},
         type:    {href: '/api/v3/types/' + TYPE_EPIC},
         parent:  {href: '/api/v3/work_packages/' + phase.id}
       }
-    })});
+    }, TYPE_EPIC, team))});
 
     /* 4. Tasks */
     btn.innerHTML = '<span class="spinner"></span> 4/4 Arbeitspakete\u2026';
@@ -2375,17 +2409,17 @@ async function bsCreate() {
     if      (outlook === 'unbekannt') taskNames.push('Outlook Addin pr\u00fcfen');
     else if (outlook !== 'Aktiv')     taskNames.push('Outlook Addin anbieten');
 
-    var wpOk = 0, wpErrors = [];
+    var wpOk = 0, wpErrors = memberErrs.slice();
     for (var i = 0; i < taskNames.length; i++) {
       try {
-        await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify({
+        await apiFetch('/work_packages', {method: 'POST', body: JSON.stringify(applyTeam({
           subject: taskNames[i],
           _links: {
             project: {href: '/api/v3/projects/'       + projId},
             type:    {href: '/api/v3/types/'           + TYPE_TASK},
             parent:  {href: '/api/v3/work_packages/'  + epic.id}
           }
-        })});
+        }, TYPE_TASK, team))});
         wpOk++;
       } catch(e) { wpErrors.push(taskNames[i] + ': ' + e.message); }
     }
@@ -2443,6 +2477,71 @@ function exportWBCSV(){var rows=wbTableData(),h=Object.keys(rows[0]);var csv=[h.
 function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Artikel','Artikelnummer','Menge','Mindestbestand','Lieferant','Lagerort','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]}});doc.save('welcome_warenbestand.pdf');});}
 
 document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
+
+/* ────────────────────────────────────────────────────────
+   PROJEKTTEAM (Neues Projekt): Verantwortlicher + Zugewiesener
+   Quelle: OP-Gruppe "Projektmanagement"; Rollen: Project admin + Member
+──────────────────────────────────────────────────────── */
+var PM_GROUP_ID = 7, ROLE_PROJECT_ADMIN = 5, ROLE_MEMBER = 3, pmUsersLoaded = false;
+
+function loadPmUsers() {
+  if (pmUsersLoaded) return Promise.resolve();
+  return Promise.all([apiFetch('/groups/'+PM_GROUP_ID), apiFetch('/users/me').catch(function(){return null;})]).then(function(res){
+    var users=((res[0]._links&&res[0]._links.members)||[]).map(function(m){return {id:String(m.href||'').split('/').pop(), name:m.title||''};})
+      .filter(function(u){return u.id;}).sort(function(a,b){return a.name.localeCompare(b.name,'de');});
+    var me=res[1];
+    document.querySelectorAll('.pm-select').forEach(function(sel){
+      var cur=sel.value;
+      sel.innerHTML='<option value="">\u2013 nicht festlegen \u2013</option>'+users.map(function(u){return '<option value="'+u.id+'">'+ebEsc(u.name)+'</option>';}).join('');
+      if (cur) sel.value=cur;
+      else if (me && /-resp$/.test(sel.id) && users.some(function(u){return u.id===String(me.id);})) sel.value=String(me.id);
+    });
+    pmUsersLoaded=true;
+  }).catch(function(err){ console.error('[Projektteam] Gruppe konnte nicht geladen werden:', err); });
+}
+
+function getTeam(prefix) {
+  var r=document.getElementById(prefix+'-resp'), a=document.getElementById(prefix+'-assignee');
+  return {resp:r?r.value:'', assignee:a?a.value:''};
+}
+
+function applyTeam(body, typeId, team) {
+  if (!team) return body;
+  body._links=body._links||{};
+  if (team.resp) body._links.responsible={href:'/api/v3/users/'+team.resp};
+  if (team.assignee && typeId===TYPE_TASK) body._links.assignee={href:'/api/v3/users/'+team.assignee};
+  return body;
+}
+
+function ensureMembership(projId, userId, roleIds) {
+  var rl=function(ids){return ids.map(function(id){return {href:'/api/v3/roles/'+id};});};
+  var f=encodeURIComponent(JSON.stringify([{"project":{"operator":"=","values":[String(projId)]}},{"principal":{"operator":"=","values":[String(userId)]}}]));
+  return apiFetch('/memberships?filters='+f).then(function(d){
+    var m=((d._embedded&&d._embedded.elements)||[])[0];
+    if (!m) return apiFetch('/memberships',{method:'POST',body:JSON.stringify({_links:{
+      project:{href:'/api/v3/projects/'+projId}, principal:{href:'/api/v3/users/'+userId}, roles:rl(roleIds)}})});
+    var have=((m._links&&m._links.roles)||[]).map(function(r){return parseInt(String(r.href).split('/').pop());});
+    var all=have.slice(); roleIds.forEach(function(r){ if(all.indexOf(r)<0) all.push(r); });
+    if (all.length===have.length) return m;
+    return apiFetch('/memberships/'+m.id,{method:'PATCH',body:JSON.stringify({_links:{roles:rl(all)}})});
+  });
+}
+
+/* liefert Array mit Fehlermeldungen (leer = alles ok), bricht nie ab */
+function addProjectMembers(projId, team) {
+  var want={}, errs=[], chain=Promise.resolve();
+  if (team && team.resp) want[team.resp]=[ROLE_PROJECT_ADMIN, ROLE_MEMBER];
+  if (team && team.assignee) { want[team.assignee]=want[team.assignee]||[]; if(want[team.assignee].indexOf(ROLE_MEMBER)<0) want[team.assignee].push(ROLE_MEMBER); }
+  Object.keys(want).forEach(function(uid){
+    chain=chain.then(function(){ return ensureMembership(projId, uid, want[uid]).catch(function(e){ errs.push('Mitgliedschaft Benutzer '+uid+': '+e.message); }); });
+  });
+  return chain.then(function(){ return errs; });
+}
+
+(function(){
+  var tb=document.querySelector('.tab-btn[data-tab="neu"]');
+  if (tb) tb.addEventListener('click', loadPmUsers);
+})();
 
 /* ────────────────────────────────────────────────────────
    EINSATZBERICHT
