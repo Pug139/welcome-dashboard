@@ -372,6 +372,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <button class="tab-btn" data-tab="warenbestand">Warenbestand</button>
   <button class="tab-btn" data-tab="neu">Neues Projekt</button>
   <button class="tab-btn" data-tab="einsatz">Einsatzbericht</button>
+  <button class="tab-btn" data-tab="inventree">InvenTree (Test)</button>
 </div>
 
 <div class="main">
@@ -479,6 +480,44 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   </div>
 
   <!-- NEUES PROJEKT -->
+  <!-- INVENTREE (TEST) -->
+  <div class="tab-panel" id="tab-inventree">
+    <div class="np-card">
+      <h2>InvenTree &ndash; Testlauf</h2>
+      <p class="np-sub">Hardware eines OP-Projekts in InvenTree reservieren und bei Entnahme ausbuchen. Der Token wird nur in diesem Browserfenster gehalten.</p>
+      <div class="np-result" id="inv-result"></div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Verbindung</div>
+        <div class="np-grid">
+          <div class="np-field"><label class="np-label">InvenTree-Token (op-dashboard)</label><input class="np-input" id="inv-token" type="password" autocomplete="off"></div>
+          <div class="np-field" style="justify-content:flex-end"><button class="btn btn-primary" id="inv-connect" onclick="invConnect()">Verbinden</button></div>
+        </div>
+        <div class="eb-hint" id="inv-conn-state" style="margin-top:6px"></div>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Projekt</div>
+        <input class="np-input" id="inv-proj-search" type="search" placeholder="&#x1F50D; Projekt suchen..." autocomplete="off" style="margin-bottom:6px">
+        <select class="np-select" id="inv-proj"><option value="">&ndash; Projekt w&auml;hlen &ndash;</option></select>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Hardware-Arbeitspakete</div>
+        <div id="inv-table"><div class="eb-hint">Bitte verbinden und ein Projekt w&auml;hlen.</div></div>
+        <div class="eb-actions" style="margin-top:12px">
+          <button class="btn btn-primary" id="inv-reserve" onclick="invReserveAll()" disabled>&#x1F4CC; Offene Hardware reservieren</button>
+          <button class="btn btn-csv" onclick="invLoadProject()">&#x21BB; Neu laden</button>
+        </div>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Protokoll</div>
+        <div id="inv-log" style="font-family:monospace;font-size:.75rem;color:var(--text-sub);background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- EINSATZBERICHT -->
   <div class="tab-panel" id="tab-einsatz">
     <div class="np-card">
@@ -644,7 +683,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
             <span class="eb-hint">Wird Project admin + Member und Verantwortlicher in allen APs.</span></div>
           <div class="np-field"><label class="np-label">Zugewiesen an</label>
             <select class="np-select pm-select" id="bs-assignee"><option value="">&ndash; nicht festlegen &ndash;</option></select>
-            <span class="eb-hint">Wird Member und in allen Tasks zugewiesen.</span></div>
+            <span class="eb-hint">Wird Member und in allen Tasks und Hardware-APs zugewiesen.</span></div>
         </div>
       </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
@@ -729,7 +768,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
             <span class="eb-hint">Wird Project admin + Member und Verantwortlicher in allen APs.</span></div>
           <div class="np-field"><label class="np-label">Zugewiesen an</label>
             <select class="np-select pm-select" id="np-assignee"><option value="">&ndash; nicht festlegen &ndash;</option></select>
-            <span class="eb-hint">Wird Member und in allen Tasks zugewiesen.</span></div>
+            <span class="eb-hint">Wird Member und in allen Tasks und Hardware-APs zugewiesen.</span></div>
         </div>
       </div>
       <div class="np-section">
@@ -2509,7 +2548,7 @@ function applyTeam(body, typeId, team) {
   if (!team) return body;
   body._links=body._links||{};
   if (team.resp) body._links.responsible={href:'/api/v3/users/'+team.resp};
-  if (team.assignee && typeId===TYPE_TASK) body._links.assignee={href:'/api/v3/users/'+team.assignee};
+  if (team.assignee && (typeId===TYPE_TASK || typeId===TYPE_HW)) body._links.assignee={href:'/api/v3/users/'+team.assignee};
   return body;
 }
 
@@ -2961,6 +3000,237 @@ function ebReset() {
   document.getElementById('eb-ap').addEventListener('input',ebSyncSigner);
   document.getElementById('eb-signer').addEventListener('input',function(){ EB.signerTouched=!!this.value.trim(); });
   document.querySelectorAll('#tab-einsatz .eb-time').forEach(function(el){ el.addEventListener('input',ebUpdateSum); });
+})();
+
+/* ────────────────────────────────────────────────────────
+   INVENTREE (TEST)
+   - Auftrag je OP-Projekt (customer_reference "OP-<projId>"), Kunde = Firma
+   - je Hardware-AP eine Sendung "AP-<wpId>" mit Reservierung (Zuweisung)
+   - "Entnahme buchen" = Sendung versenden (Bestand raus) + OP-Status Lagernd
+──────────────────────────────────────────────────────── */
+var INV = {token:'', projId:null, proj:null, order:null, rows:[], parts:{}};
+var INV_LOCATION_ID = 1;          // InvenTree-Lagerort "Lager"
+var OP_STATUS_LAGERND = 18;
+var CF_HW_ZUB = 'customField46';
+// Zuordnung OP-AP-Betreff -> InvenTree-IPN (nur Testartikel)
+var INV_MAP = [
+  {match:/^ELO 22"/i,          ipn:'HW-TERM-001'},
+  {match:/^Brother 820NWB/i,   ipn:'HW-DRK-001'}
+];
+// Papierrollen aus dem Zubehoer-Feld des Brother-APs
+var INV_PAPER_MAP = [
+  {match:/DK-22205/i, ipn:'VM-ETI-001'}
+];
+
+function invLog(msg) {
+  var el=document.getElementById('inv-log'), t=new Date().toLocaleTimeString('de-DE');
+  el.textContent += '['+t+'] '+msg+'\n'; el.scrollTop=el.scrollHeight;
+}
+function invMsg(html,type){ var el=document.getElementById('inv-result'); el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none'; }
+
+async function invFetch(path, opts) {
+  opts=opts||{};
+  var res=await fetch('/inv'+path,{method:opts.method||'GET',
+    headers:{'Content-Type':'application/json','X-INV-TOKEN':INV.token},
+    body:opts.body?JSON.stringify(opts.body):undefined});
+  var txt=await res.text(), data=null;
+  try{ data=txt?JSON.parse(txt):null; }catch(e){ data={raw:txt.slice(0,200)}; }
+  if(!res.ok){
+    var m=data&&(data.detail||data.error||data.non_field_errors) ? (data.detail||data.error||data.non_field_errors) : JSON.stringify(data).slice(0,300);
+    throw new Error('InvenTree '+res.status+': '+(Array.isArray(m)?m.join(' '):m));
+  }
+  return data;
+}
+async function invList(path) {
+  var d=await invFetch(path);
+  return Array.isArray(d) ? d : ((d&&d.results)||[]);
+}
+
+/* ── Verbindung ── */
+async function invConnect() {
+  INV.token=ebVal('inv-token');
+  if(!INV.token){ invMsg('Bitte Token eingeben.','error'); return; }
+  try{
+    var me=await invFetch('/user/me/');
+    document.getElementById('inv-conn-state').textContent='Verbunden als '+me.username;
+    invMsg('','');
+    invLog('Verbunden als '+me.username);
+    invFillProjects();
+  }catch(e){ document.getElementById('inv-conn-state').textContent=''; invMsg('Verbindung fehlgeschlagen: '+ebEsc(e.message),'error'); }
+}
+
+function invFillProjects() {
+  var sel=document.getElementById('inv-proj'), cur=sel.value, q=ebVal('inv-proj-search').toLowerCase();
+  var list=(projectData||[]).filter(function(p){return p._id && (!q||p.name.toLowerCase().indexOf(q)>=0);})
+    .sort(function(a,b){return a.name.localeCompare(b.name,'de');});
+  sel.innerHTML='<option value="">\u2013 Projekt w\u00e4hlen \u2013</option>'+list.map(function(p){return '<option value="'+p._id+'">'+ebEsc(p.name)+'</option>';}).join('');
+  if(list.some(function(p){return String(p._id)===String(cur);})) sel.value=cur;
+  else if(q && list.length===1){ sel.value=list[0]._id; invLoadProject(); }
+}
+
+/* ── Zuordnung AP -> Artikel ── */
+function invNeedsForAP(wp) {
+  var needs=[], subj=wp.subject||'';
+  var m=INV_MAP.filter(function(x){return x.match.test(subj);})[0];
+  if(m) needs.push({ipn:m.ipn, qty:1});
+  var zub=wp[CF_HW_ZUB]; zub=zub&&typeof zub==='object'?(zub.raw||''):(zub||'');
+  INV_PAPER_MAP.forEach(function(p){
+    if(p.match.test(zub)){ var q=(zub.match(/Menge \(Rollen\):\s*(\d+)/)||[])[1]; needs.push({ipn:p.ipn, qty:parseInt(q)||1}); }
+  });
+  return needs;
+}
+async function invPart(ipn) {
+  if(INV.parts[ipn]) return INV.parts[ipn];
+  var hits=await invList('/part/?search='+encodeURIComponent(ipn));
+  var p=hits.filter(function(x){return (x.IPN||'')===ipn;})[0];
+  if(!p) throw new Error('Artikel mit IPN '+ipn+' nicht gefunden');
+  INV.parts[ipn]=p; return p;
+}
+
+/* ── Projekt laden ── */
+async function invLoadProject() {
+  var id=ebVal('inv-proj'); INV.projId=id||null; INV.order=null; INV.rows=[]; INV.parts={};
+  var box=document.getElementById('inv-table'); document.getElementById('inv-reserve').disabled=true;
+  if(!id){ box.innerHTML='<div class="eb-hint">Bitte ein Projekt w\u00e4hlen.</div>'; return; }
+  if(!INV.token){ box.innerHTML='<div class="eb-hint">Bitte zuerst verbinden.</div>'; return; }
+  box.innerHTML='<div class="eb-hint">Lade...</div>';
+  try{
+    INV.proj=await apiFetch('/projects/'+id);
+    var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}},{"type":{"operator":"=","values":[String(TYPE_HW)]}}]));
+    var wps=((await apiFetch('/projects/'+id+'/work_packages?pageSize=200&filters='+f))._embedded||{}).elements||[];
+
+    var orders=await invList('/order/so/?search='+encodeURIComponent('OP-'+id)+'&limit=50');
+    INV.order=orders.filter(function(o){return o.customer_reference==='OP-'+id;})[0]||null;
+    var ships={};
+    if(INV.order){ (await invList('/order/so-shipment/?order='+INV.order.pk+'&limit=200')).forEach(function(s){ships[s.reference]=s;}); }
+
+    for(var i=0;i<wps.length;i++){
+      var wp=wps[i], needs=invNeedsForAP(wp), s=ships['AP-'+wp.id];
+      for(var n=0;n<needs.length;n++){ try{ needs[n].part=await invPart(needs[n].ipn); }catch(e){ needs[n].err=e.message; } }
+      INV.rows.push({wp:wp, needs:needs, ship:s||null,
+        state: !needs.length ? 'unmapped' : (!s ? 'open' : (s.shipment_date ? 'shipped' : 'reserved'))});
+    }
+    invRender();
+    invLog('Projekt '+INV.proj.name+': '+wps.length+' Hardware-AP(s)'+(INV.order?', Auftrag '+INV.order.reference:', noch kein Auftrag'));
+  }catch(e){ box.innerHTML='<div class="eb-hint" style="color:var(--error-c)">Fehler: '+ebEsc(e.message)+'</div>'; invLog('Fehler: '+e.message); }
+}
+
+function invRender() {
+  var box=document.getElementById('inv-table');
+  if(!INV.rows.length){ box.innerHTML='<div class="eb-hint">Keine Hardware-Arbeitspakete in diesem Projekt.</div>'; return; }
+  var label={unmapped:'kein Artikel zugeordnet',open:'nicht reserviert',reserved:'reserviert',shipped:'ausgebucht'};
+  var color={unmapped:'var(--text-muted)',open:'var(--at-risk-c)',reserved:'var(--brand-light)',shipped:'var(--on-track-c)'};
+  var html='<div class="wb-table-wrap" style="overflow-x:auto"><table class="wb-table"><thead><tr><th>Arbeitspaket</th><th>Artikel</th><th>Verf\u00fcgbar</th><th>OP-Status</th><th>InvenTree</th><th></th></tr></thead><tbody>';
+  INV.rows.forEach(function(r,i){
+    var arts=r.needs.map(function(n){return n.err?'<span style="color:var(--error-c)">'+ebEsc(n.err)+'</span>':ebEsc(n.qty+'\u00d7 '+n.ipn);}).join('<br>')||'\u2013';
+    var avail=r.needs.map(function(n){return n.part?(n.part.unallocated_stock!=null?n.part.unallocated_stock:'?')+' / '+(n.part.in_stock!=null?n.part.in_stock:'?'):'\u2013';}).join('<br>')||'\u2013';
+    var btn=r.state==='reserved'?'<button class="btn btn-excel" style="padding:5px 10px;font-size:.75rem" onclick="invShip('+i+')">Entnahme buchen</button>':'';
+    html+='<tr><td>'+ebEsc(r.wp.subject)+' <span class="eb-hint">#'+r.wp.id+'</span></td><td>'+arts+'</td><td>'+avail+'</td><td>'+ebEsc(getLink(r.wp,'status'))+'</td>'
+      +'<td style="color:'+color[r.state]+';font-weight:600">'+label[r.state]+'</td><td>'+btn+'</td></tr>';
+  });
+  html+='</tbody></table></div><div class="eb-hint" style="margin-top:6px">Verf\u00fcgbar = frei / physisch im Lager</div>';
+  box.innerHTML=html;
+  document.getElementById('inv-reserve').disabled=!INV.rows.some(function(r){return r.state==='open';});
+}
+
+/* ── Kunde / Auftrag / Verantwortlicher ── */
+async function invEnsureCompany(name) {
+  var hits=await invList('/company/?search='+encodeURIComponent(name)+'&is_customer=true&limit=50');
+  var c=hits.filter(function(x){return (x.name||'').toLowerCase()===name.toLowerCase();})[0];
+  if(c) return c;
+  invLog('Lege Kunde an: '+name);
+  return await invFetch('/company/',{method:'POST',body:{name:name,is_customer:true,is_supplier:false,is_manufacturer:false,description:'aus OpenProject'}});
+}
+async function invResponsibleOwner() {
+  try{
+    var href=INV.rows.map(function(r){return getLink(r.wp,'responsible','href');}).filter(Boolean)[0];
+    if(!href) return null;
+    var u=await apiFetch(href.replace('/api/v3',''));
+    if(!u.email){ invLog('Hinweis: E-Mail des OP-Verantwortlichen nicht lesbar \u2013 Auftrag ohne Verantwortlichen'); return null; }
+    var users=await invList('/user/?search='+encodeURIComponent(u.email));
+    var iu=users.filter(function(x){return (x.email||'').toLowerCase()===u.email.toLowerCase();})[0];
+    if(!iu){ invLog('Hinweis: kein InvenTree-Benutzer mit '+u.email); return null; }
+    var owners=await invList('/user/owner/');
+    var o=owners.filter(function(x){return x.owner_model==='user' && x.owner_id===iu.pk;})[0];
+    return o?o.pk:null;
+  }catch(e){ invLog('Hinweis Verantwortlicher: '+e.message); return null; }
+}
+async function invEnsureOrder() {
+  if(INV.order) return INV.order;
+  var p=INV.proj, kunde=ebCfText(p.customField11)||p.name;
+  var company=await invEnsureCompany(kunde);
+  var owner=await invResponsibleOwner();
+  var body={customer:company.pk, customer_reference:'OP-'+p.id, description:p.name+' (OpenProject #'+p.id+')',
+            link:OP_URL+'/projects/'+(p.identifier||p.id)};
+  if(owner) body.responsible=owner;
+  INV.order=await invFetch('/order/so/',{method:'POST',body:body});
+  invLog('Auftrag angelegt: '+INV.order.reference+(owner?' (Verantwortlicher gesetzt)':''));
+  try{ await invFetch('/order/so/'+INV.order.pk+'/issue/',{method:'POST',body:{}}); invLog('Auftrag freigegeben'); }
+  catch(e){ invLog('Hinweis Freigabe: '+e.message); }
+  return INV.order;
+}
+
+/* ── Reservieren ── */
+async function invReserveRow(r, lines) {
+  var order=INV.order;
+  var ship=await invFetch('/order/so-shipment/',{method:'POST',body:{order:order.pk, reference:'AP-'+r.wp.id}});
+  var items=[];
+  for(var n=0;n<r.needs.length;n++){
+    var need=r.needs[n]; if(!need.part) throw new Error(need.err||'Artikel fehlt');
+    var line=lines[need.part.pk];
+    if(line){ line=await invFetch('/order/so-line/'+line.pk+'/',{method:'PATCH',body:{quantity:parseFloat(line.quantity)+need.qty}}); }
+    else { line=await invFetch('/order/so-line/',{method:'POST',body:{order:order.pk, part:need.part.pk, quantity:need.qty}}); }
+    lines[need.part.pk]=line;
+    var stock=await invList('/stock/?part='+need.part.pk+'&location='+INV_LOCATION_ID+'&in_stock=true&limit=100');
+    var rest=need.qty;
+    stock.forEach(function(s){
+      if(rest<=0) return;
+      var free=parseFloat(s.quantity)-parseFloat(s.allocated||0);
+      if(free<=0) return;
+      var q=Math.min(free,rest); items.push({line_item:line.pk, stock_item:s.pk, quantity:q}); rest-=q;
+    });
+    if(rest>0) throw new Error('Nicht genug freier Bestand f\u00fcr '+need.ipn+' (fehlen '+rest+')');
+  }
+  await invFetch('/order/so/'+order.pk+'/allocate/',{method:'POST',body:{items:items, shipment:ship.pk}});
+  invLog('Reserviert: '+r.wp.subject+' \u2192 Sendung AP-'+r.wp.id);
+}
+
+async function invReserveAll() {
+  var btn=document.getElementById('inv-reserve'); btn.disabled=true;
+  var open=INV.rows.filter(function(r){return r.state==='open';}), ok=0, errs=[];
+  try{
+    await invEnsureOrder();
+    var lines={}; (await invList('/order/so-line/?order='+INV.order.pk+'&limit=200')).forEach(function(l){lines[l.part]=l;});
+    for(var i=0;i<open.length;i++){
+      try{ await invReserveRow(open[i], lines); ok++; }
+      catch(e){ errs.push(open[i].wp.subject+': '+e.message); invLog('Fehler '+open[i].wp.subject+': '+e.message); }
+    }
+    invMsg('&#x2705; '+ok+' AP(s) reserviert'+(errs.length?'<br><small>'+errs.map(ebEsc).join('<br>')+'</small>':''), errs.length?'warning':'success');
+  }catch(e){ invMsg('Fehler: '+ebEsc(e.message),'error'); invLog('Fehler: '+e.message); }
+  await invLoadProject();
+}
+
+/* ── Entnahme ── */
+async function invShip(i) {
+  var r=INV.rows[i]; if(!r||!r.ship) return;
+  if(!confirm('Entnahme f\u00fcr \u201e'+r.wp.subject+'\u201c buchen? Der Bestand wird in InvenTree ausgebucht und das AP in OP auf \u201eLagernd\u201c gesetzt.')) return;
+  try{
+    var today=ebToday();
+    await invFetch('/order/so-shipment/'+r.ship.pk+'/ship/',{method:'POST',body:{shipment_date:today}});
+    invLog('Ausgebucht: '+r.wp.subject);
+    var wp=await apiFetch('/work_packages/'+r.wp.id);
+    await apiFetch('/work_packages/'+r.wp.id,{method:'PATCH',body:JSON.stringify({lockVersion:wp.lockVersion,_links:{status:{href:'/api/v3/statuses/'+OP_STATUS_LAGERND}}})});
+    invLog('OP-Status \u2192 Lagernd: #'+r.wp.id);
+    invMsg('&#x2705; Entnahme gebucht: '+ebEsc(r.wp.subject),'success');
+  }catch(e){ invMsg('Fehler: '+ebEsc(e.message),'error'); invLog('Fehler Entnahme: '+e.message); }
+  await invLoadProject();
+}
+
+(function(){
+  var tb=document.querySelector('.tab-btn[data-tab="inventree"]');
+  if(tb) tb.addEventListener('click',function(){ if(INV.token) invFillProjects(); });
+  document.getElementById('inv-proj').addEventListener('change',invLoadProject);
+  document.getElementById('inv-proj-search').addEventListener('input',invFillProjects);
 })();
 
 initHardware();initRadios();updateWPPreview();bsUpdatePreview();
