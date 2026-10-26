@@ -3102,7 +3102,7 @@ async function invLoadProject() {
     var orders=await invList('/order/so/?search='+encodeURIComponent('OP-'+id)+'&limit=50');
     INV.order=orders.filter(function(o){return o.customer_reference==='OP-'+id;})[0]||null;
     var ships={};
-    if(INV.order){ (await invList('/order/so-shipment/?order='+INV.order.pk+'&limit=200')).forEach(function(s){ships[s.reference]=s;}); }
+    if(INV.order){ (await invList('/order/so/shipment/?order='+INV.order.pk+'&limit=200')).forEach(function(s){ships[s.reference]=s;}); }
 
     for(var i=0;i<wps.length;i++){
       var wp=wps[i], needs=invNeedsForAP(wp), s=ships['AP-'+wp.id];
@@ -3173,7 +3173,7 @@ async function invEnsureOrder() {
 /* ── Reservieren ── */
 async function invReserveRow(r, lines) {
   var order=INV.order;
-  var ship=await invFetch('/order/so-shipment/',{method:'POST',body:{order:order.pk, reference:'AP-'+r.wp.id}});
+  var ship=await invFetch('/order/so/shipment/',{method:'POST',body:{order:order.pk, reference:'AP-'+r.wp.id}});
   var items=[];
   for(var n=0;n<r.needs.length;n++){
     var need=r.needs[n]; if(!need.part) throw new Error(need.err||'Artikel fehlt');
@@ -3216,7 +3216,7 @@ async function invShip(i) {
   if(!confirm('Entnahme f\u00fcr \u201e'+r.wp.subject+'\u201c buchen? Der Bestand wird in InvenTree ausgebucht und das AP in OP auf \u201eLagernd\u201c gesetzt.')) return;
   try{
     var today=ebToday();
-    await invFetch('/order/so-shipment/'+r.ship.pk+'/ship/',{method:'POST',body:{shipment_date:today}});
+    await invFetch('/order/so/shipment/'+r.ship.pk+'/ship/',{method:'POST',body:{shipment_date:today}});
     invLog('Ausgebucht: '+r.wp.subject);
     var wp=await apiFetch('/work_packages/'+r.wp.id);
     await apiFetch('/work_packages/'+r.wp.id,{method:'PATCH',body:JSON.stringify({lockVersion:wp.lockVersion,_links:{status:{href:'/api/v3/statuses/'+OP_STATUS_LAGERND}}})});
