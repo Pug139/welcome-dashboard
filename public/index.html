@@ -312,6 +312,22 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   .filter-bar{flex-direction:column;align-items:stretch}
   .export-bar,.wb-export-bar{flex-direction:column}
 }
+/* ── Einsatzbericht ── */
+.eb-pad{width:100%;height:170px;background:#fff;border:1.5px dashed var(--input-border);border-radius:8px;touch-action:none;cursor:crosshair;display:block}
+.eb-pad.locked{cursor:default;opacity:.85}
+.eb-pad-bar{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--text-muted);margin-top:4px}
+.eb-pad-clear{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.72rem;color:var(--text-muted);cursor:pointer}
+.eb-pad-clear:hover{border-color:var(--brand-light);color:var(--brand-light)}
+.eb-sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.eb-sign-text{font-size:.8rem;color:var(--text-sub);background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:14px;line-height:1.5}
+.eb-hw-list{display:flex;flex-direction:column}
+.eb-hw-item{display:grid;grid-template-columns:auto 1fr 80px;gap:10px;align-items:center;font-size:.82rem;color:var(--text-sub);padding:6px 0;border-bottom:1px solid var(--border)}
+.eb-hw-item .np-input{padding:6px 8px}
+.eb-hint{font-size:.75rem;color:var(--text-muted)}
+.eb-sum{font-size:.8rem;color:var(--text-sub);margin-top:10px;font-weight:600}
+.eb-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.eb-actions .btn{flex:1;justify-content:center;min-width:180px}
+@media(max-width:640px){.eb-sign-grid{grid-template-columns:1fr}.eb-hw-item{grid-template-columns:auto 1fr 64px}}
 </style>
 </head>
 <body>
@@ -355,6 +371,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <button class="tab-btn" data-tab="archiv">Abgeschlossen</button>
   <button class="tab-btn" data-tab="warenbestand">Warenbestand</button>
   <button class="tab-btn" data-tab="neu">Neues Projekt</button>
+  <button class="tab-btn" data-tab="einsatz">Einsatzbericht</button>
 </div>
 
 <div class="main">
@@ -462,6 +479,87 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   </div>
 
   <!-- NEUES PROJEKT -->
+  <!-- EINSATZBERICHT -->
+  <div class="tab-panel" id="tab-einsatz">
+    <div class="np-card">
+      <h2>Einsatzbericht</h2>
+      <p class="np-sub">Bericht vor Ort erfassen, vom Kunden unterschreiben lassen &ndash; das PDF wird als neues Arbeitspaket &bdquo;Einsatzbericht&ldquo; im Kundenprojekt abgelegt.</p>
+      <div class="np-result" id="eb-result"></div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Projekt &amp; Kunde</div>
+        <div class="np-grid">
+          <div class="np-field" style="grid-column:1/-1"><label class="np-label">Projekt <span class="req">*</span></label>
+            <select class="np-select" id="eb-proj"><option value="">&ndash; Projekt w&auml;hlen &ndash;</option></select></div>
+          <div class="np-field"><label class="np-label">Kunde</label><input class="np-input" id="eb-kunde" type="text"></div>
+          <div class="np-field"><label class="np-label">Standort</label><input class="np-input" id="eb-standort" type="text"></div>
+          <div class="np-field" style="grid-column:1/-1"><label class="np-label">Ansprechpartner</label><input class="np-input" id="eb-ap" type="text"></div>
+        </div>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Einsatz</div>
+        <div class="np-grid">
+          <div class="np-field"><label class="np-label">Datum <span class="req">*</span></label><input class="np-input" id="eb-date" type="date"></div>
+          <div class="np-field"><label class="np-label">Einsatzart</label>
+            <select class="np-select" id="eb-art"><option>Vor-Ort</option><option>Remote</option></select></div>
+          <div class="np-field" style="grid-column:1/-1"><label class="np-label">Techniker <span class="req">*</span></label><input class="np-input" id="eb-tech" type="text"></div>
+          <div class="np-field"><label class="np-label">Arbeitsbeginn <span class="req">*</span></label><input class="np-input eb-time" id="eb-start" type="time"></div>
+          <div class="np-field"><label class="np-label">Arbeitsende <span class="req">*</span></label><input class="np-input eb-time" id="eb-end" type="time"></div>
+          <div class="np-field"><label class="np-label">Pause (Min.)</label><input class="np-input eb-time" id="eb-pause" type="number" min="0" step="5" value="0"></div>
+          <div class="np-field"><label class="np-label">Anfahrt (Min.)</label><input class="np-input eb-time" id="eb-anfahrt" type="number" min="0" step="5" value="0"></div>
+        </div>
+        <div class="eb-sum" id="eb-sum"></div>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Durchgef&uuml;hrte T&auml;tigkeiten <span class="req" style="color:var(--at-risk-c)">*</span></div>
+        <textarea class="np-textarea" id="eb-taetigkeit" rows="6" placeholder="z.B. Inbetriebnahme Check-In-Terminal Empfang, Einrichtung Ausweisdrucker, Test Besucheranmeldung..."></textarea>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Verbaute / gelieferte Hardware</div>
+        <div class="eb-hw-list" id="eb-hw-list"><div class="eb-hint">Bitte zuerst ein Projekt w&auml;hlen.</div></div>
+        <div class="np-field" style="margin-top:10px"><label class="np-label">Weiteres Material (optional)</label>
+          <textarea class="np-textarea" id="eb-material" rows="2" placeholder="z.B. 2x Patchkabel 3 m"></textarea></div>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Offene Punkte / Bemerkungen</div>
+        <textarea class="np-textarea" id="eb-offen" rows="3"></textarea>
+        <div class="np-field" style="margin-top:10px"><label class="np-label">Abnahme</label>
+          <select class="np-select" id="eb-abnahme">
+            <option value="ok">Arbeiten ohne M&auml;ngel abgenommen</option>
+            <option value="vorbehalt">Abgenommen mit Vorbehalt (siehe offene Punkte)</option>
+          </select></div>
+      </div>
+
+      <div class="np-section">
+        <div class="np-sec-title">Unterschriften</div>
+        <div class="eb-sign-text" id="eb-sign-text"></div>
+        <div class="eb-sign-grid">
+          <div>
+            <label class="np-label">Unterschrift Techniker</label>
+            <canvas class="eb-pad" id="eb-pad-tech"></canvas>
+            <div class="eb-pad-bar"><span>optional</span><button type="button" class="eb-pad-clear" onclick="ebPads.tech.clear()">L&ouml;schen</button></div>
+          </div>
+          <div>
+            <label class="np-label">Unterschrift Kunde <span class="req">*</span></label>
+            <canvas class="eb-pad" id="eb-pad-kunde"></canvas>
+            <div class="eb-pad-bar"><span>mit Finger oder Stift</span><button type="button" class="eb-pad-clear" onclick="ebPads.kunde.clear()">L&ouml;schen</button></div>
+            <div class="np-field" style="margin-top:8px"><label class="np-label">Name in Druckbuchstaben <span class="req">*</span></label><input class="np-input" id="eb-signer" type="text"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="eb-actions">
+        <button class="btn btn-primary" id="eb-submit" onclick="ebSubmit()">&#x270D; Bericht abschlie&szlig;en &amp; in OpenProject speichern</button>
+        <button class="btn btn-csv" id="eb-download" style="display:none" onclick="ebDownload()">&#x2B07; PDF herunterladen</button>
+        <button class="btn btn-csv" id="eb-new" style="display:none" onclick="ebReset()">&#x2795; Neuer Bericht</button>
+      </div>
+    </div>
+  </div>
+
   <div class="tab-panel" id="tab-neu">
 
     <!-- Modus-Toggle -->
@@ -722,7 +820,7 @@ var projFiltersInitialized = false, wbFiltersInitialized = false;
 var lagerStatusOptions = [];
 var raw = {proj:null, wp:null};
 var EXCL_PROJ = ['demo project','supportfälle','supportfaelle','test portl','draexlmaier main','wisag main','test portal','globales lager','warenbestand'];
-var EXCL_WP_TYPES = ['phase','meilenstein','epic'];
+var EXCL_WP_TYPES = ['phase','meilenstein','epic','einsatzbericht'];
 var WAREN_TYPES = ['hardware'];
 
 var PAKET_OPT = {S:'/api/v3/custom_options/4',M:'/api/v3/custom_options/5',L:'/api/v3/custom_options/6'};
@@ -1976,16 +2074,19 @@ function updateExistingProject(projId) {
     }
     collectExpected(structure);
 
-    return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[
-      {href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},
-      {href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}
-    ]}})}).catch(function(){}).then(function(){
+    return ebResolveType().catch(function(){}).then(function(){
+      return apiFetch('/projects/'+projId,{method:'PATCH',body:JSON.stringify({_links:{types:[
+        {href:'/api/v3/types/'+TYPE_TASK},{href:'/api/v3/types/'+TYPE_HW},
+        {href:'/api/v3/types/'+TYPE_PHASE},{href:'/api/v3/types/'+TYPE_EPIC}
+      ].concat(ebTypeLinks())}})});
+    }).catch(function(){}).then(function(){
 
       var delChain=Promise.resolve();
       existingWPs.forEach(function(wp){
         var typeHref=getLink(wp,'type','href')||'';
         var typeId=parseInt(typeHref.split('/').pop());
         if(typeId===TYPE_PHASE||typeId===TYPE_EPIC) return;
+        if(isEinsatzWP(wp)) return; // Einsatzberichte nie per Sync loeschen
         if(!expectedKeys[wp.subject+'||'+typeId]){
           delChain=delChain.then(function(){
             return apiFetch('/work_packages/'+wp.id,{method:'DELETE'})
@@ -2340,6 +2441,377 @@ function exportWBCSV(){var rows=wbTableData(),h=Object.keys(rows[0]);var csv=[h.
 function exportWBPDF(){var jsPDF=window.jspdf.jsPDF;var doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});addLogoToPDF(doc,function(){doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(0,51,102);doc.text('WELCOME - Warenbestand',14,14);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(130);doc.text('Erstellt: '+new Date().toLocaleDateString('de-DE'),14,20);var cols=['Artikel','Artikelnummer','Menge','Mindestbestand','Lieferant','Lagerort','Status'];doc.autoTable({startY:24,head:[cols],body:wbTableData().map(function(r){return cols.map(function(c){return r[c]!==undefined?r[c]:'-';})}),styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[244,246,249]}});doc.save('welcome_warenbestand.pdf');});}
 
 document.getElementById('wb-modal').addEventListener('click',function(e){if(e.target===document.getElementById('wb-modal'))document.getElementById('wb-modal').style.display='none';});
+
+/* ────────────────────────────────────────────────────────
+   EINSATZBERICHT
+   - neues AP vom Typ "Einsatzbericht" pro Einsatz (Typ wird per Name ermittelt)
+   - PDF (jsPDF) inkl. Unterschriften als Anhang am AP, SHA-256 in der Beschreibung
+──────────────────────────────────────────────────────── */
+var EB_TYPE_NAME = 'Einsatzbericht';
+var EB = {typeId:null, projId:null, projName:'', hw:[], wpId:null, signedAt:null, done:false, pdfBlob:null, pdfName:''};
+var ebPads = {};
+var EB_SIGN_TEXT = 'Mit meiner Unterschrift best\u00e4tige ich die Durchf\u00fchrung der oben aufgef\u00fchrten Arbeiten sowie die Richtigkeit der angegebenen Arbeitszeiten.';
+
+function isEinsatzWP(wp) {
+  var t = (getLink(wp,'type')||'').toLowerCase();
+  var id = parseInt((getLink(wp,'type','href')||'').split('/').pop());
+  return t === EB_TYPE_NAME.toLowerCase() || (!!EB.typeId && id === EB.typeId);
+}
+function ebTypeLinks() { return EB.typeId ? [{href:'/api/v3/types/'+EB.typeId}] : []; }
+function ebResolveType() {
+  if (EB.typeId) return Promise.resolve(EB.typeId);
+  return apiFetch('/types').then(function(d){
+    var els = (d._embedded && d._embedded.elements) || [];
+    var t = els.filter(function(x){ return (x.name||'').toLowerCase() === EB_TYPE_NAME.toLowerCase(); })[0];
+    if (!t) throw new Error('Arbeitspaket-Typ \u201e'+EB_TYPE_NAME+'\u201c existiert in OpenProject nicht (Administration \u203a Arbeitspakete \u203a Typen).');
+    EB.typeId = t.id; return t.id;
+  });
+}
+
+function ebEsc(s) { return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function ebCfText(v) { return v==null ? '' : (typeof v==='object' ? (v.raw||'') : String(v)); }
+function ebVal(id) { var el=document.getElementById(id); return el ? String(el.value||'').trim() : ''; }
+function ebMsg(html, type) {
+  var el=document.getElementById('eb-result');
+  el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none';
+  if (html) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function ebDateDE(iso) { if(!iso) return ''; var p=iso.split('-'); return p[2]+'.'+p[1]+'.'+p[0]; }
+function ebToday() { var d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+
+/* ── Zeiten ── */
+function ebMinutes() {
+  var s=ebVal('eb-start'), e=ebVal('eb-end');
+  if (!s || !e) return null;
+  var a=s.split(':'), b=e.split(':');
+  var m=(+b[0]*60 + +b[1]) - (+a[0]*60 + +a[1]) - (parseInt(ebVal('eb-pause'))||0);
+  return m;
+}
+function ebFmtMin(m) { var h=Math.floor(m/60), r=m%60; return h+':'+(r<10?'0':'')+r+' h'; }
+function ebUpdateSum() {
+  var m=ebMinutes(), el=document.getElementById('eb-sum'), anf=parseInt(ebVal('eb-anfahrt'))||0;
+  if (m===null) { el.textContent=''; return; }
+  if (m<=0) { el.innerHTML='<span style="color:var(--error-c)">Arbeitsende liegt vor Arbeitsbeginn (bzw. Pause zu lang).</span>'; return; }
+  el.textContent='Arbeitszeit netto: '+ebFmtMin(m)+(anf?'  |  Anfahrt: '+ebFmtMin(anf):'');
+}
+
+/* ── Unterschrift-Pad ── */
+function ebInitPad(id) {
+  var c=document.getElementById(id), ctx=c.getContext('2d'), drawing=false, last=null;
+  var pad={canvas:c, empty:true, w:0, h:0};
+  function paintBg(){ ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,pad.w,pad.h); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#0a1f44'; }
+  pad.resize=function(){
+    var r=c.getBoundingClientRect(); if(!r.width) return;
+    if (Math.round(r.width)===pad.w && Math.round(r.height)===pad.h) return;
+    var keep = pad.empty ? null : c.toDataURL('image/png');
+    var dpr=window.devicePixelRatio||1;
+    pad.w=Math.round(r.width); pad.h=Math.round(r.height);
+    c.width=pad.w*dpr; c.height=pad.h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); paintBg();
+    if (keep) { var img=new Image(); img.onload=function(){ ctx.drawImage(img,0,0,pad.w,pad.h); }; img.src=keep; }
+  };
+  pad.clear=function(){ if(EB.done) return; pad.empty=true; paintBg(); };
+  function pos(e){ var r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; }
+  c.addEventListener('pointerdown',function(e){
+    if (EB.done) return; e.preventDefault();
+    try{ c.setPointerCapture(e.pointerId); }catch(x){}
+    drawing=true; last=pos(e);
+    ctx.beginPath(); ctx.arc(last.x,last.y,1.1,0,Math.PI*2); ctx.fillStyle='#0a1f44'; ctx.fill();
+    pad.empty=false;
+  });
+  c.addEventListener('pointermove',function(e){
+    if (!drawing) return; e.preventDefault();
+    var p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){ c.addEventListener(ev,function(){ drawing=false; }); });
+  window.addEventListener('resize', pad.resize);
+  return pad;
+}
+
+/* ── Tab öffnen / Projekt laden ── */
+function ebOnOpen() {
+  if (!ebPads.kunde) { ebPads.tech=ebInitPad('eb-pad-tech'); ebPads.kunde=ebInitPad('eb-pad-kunde'); }
+  setTimeout(function(){ ebPads.tech.resize(); ebPads.kunde.resize(); }, 30);
+  if (!ebVal('eb-date')) document.getElementById('eb-date').value=ebToday();
+  document.getElementById('eb-sign-text').textContent=EB_SIGN_TEXT;
+
+  var sel=document.getElementById('eb-proj'), cur=sel.value;
+  var list=(projectData||[]).filter(function(p){return p._id;}).slice().sort(function(a,b){return a.name.localeCompare(b.name,'de');});
+  sel.innerHTML='<option value="">\u2013 Projekt w\u00e4hlen \u2013</option>'+list.map(function(p){
+    return '<option value="'+p._id+'">'+ebEsc(p.name)+'</option>';
+  }).join('');
+  if (cur) sel.value=cur;
+
+  if (!ebVal('eb-tech')) {
+    apiFetch('/users/me').then(function(u){ if(!ebVal('eb-tech')) document.getElementById('eb-tech').value=u.name||''; }).catch(function(){});
+  }
+  ebResolveType().catch(function(err){ ebMsg('&#x26A0; '+ebEsc(err.message),'error'); });
+}
+
+function ebLoadProject(id) {
+  EB.projId=id||null; EB.hw=[];
+  var list=document.getElementById('eb-hw-list');
+  if (!id) { list.innerHTML='<div class="eb-hint">Bitte zuerst ein Projekt w\u00e4hlen.</div>'; return; }
+  list.innerHTML='<div class="eb-hint">Lade Hardware...</div>';
+  var f=encodeURIComponent(JSON.stringify([{"status":{"operator":"*","values":[]}},{"type":{"operator":"=","values":[String(TYPE_HW)]}}]));
+  Promise.all([
+    apiFetch('/projects/'+id),
+    apiFetch('/projects/'+id+'/work_packages?pageSize=200&filters='+f)
+  ]).then(function(res){
+    var p=res[0];
+    EB.projName=p.name||'';
+    document.getElementById('eb-kunde').value=ebCfText(p.customField11)||p.name||'';
+    document.getElementById('eb-standort').value=ebCfText(p.customField12);
+    var ap=ebCfText(p.customField24).split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);
+    document.getElementById('eb-ap').value=ap.join(', ');
+    if (!ebVal('eb-signer') && ap[0]) document.getElementById('eb-signer').value=ap[0];
+
+    EB.hw=((res[1]._embedded&&res[1]._embedded.elements)||[]).map(function(wp){
+      return {id:wp.id, name:wp.subject||'', menge:wp.customField40||1};
+    });
+    if (!EB.hw.length) { list.innerHTML='<div class="eb-hint">Keine Hardware-Arbeitspakete in diesem Projekt.</div>'; return; }
+    list.innerHTML=EB.hw.map(function(h,i){
+      return '<label class="eb-hw-item"><input type="checkbox" id="eb-hw-'+i+'"><span>'+ebEsc(h.name)+'</span>'
+        +'<input class="np-input" type="number" min="1" id="eb-hwq-'+i+'" value="'+(parseInt(h.menge)||1)+'" title="Menge"></label>';
+    }).join('');
+  }).catch(function(err){
+    list.innerHTML='<div class="eb-hint" style="color:var(--error-c)">Fehler: '+ebEsc(err.message)+'</div>';
+  });
+}
+
+/* ── Daten sammeln / prüfen ── */
+function ebCollect() {
+  var hw=EB.hw.map(function(h,i){
+    var cb=document.getElementById('eb-hw-'+i), q=document.getElementById('eb-hwq-'+i);
+    return cb&&cb.checked ? {name:h.name, menge:parseInt(q&&q.value)||1} : null;
+  }).filter(Boolean);
+  return {
+    projId:EB.projId, projName:EB.projName,
+    kunde:ebVal('eb-kunde'), standort:ebVal('eb-standort'), ap:ebVal('eb-ap'),
+    date:ebVal('eb-date'), art:ebVal('eb-art'), tech:ebVal('eb-tech'),
+    start:ebVal('eb-start'), end:ebVal('eb-end'),
+    pause:parseInt(ebVal('eb-pause'))||0, anfahrt:parseInt(ebVal('eb-anfahrt'))||0, netto:ebMinutes(),
+    taetigkeit:ebVal('eb-taetigkeit'), hw:hw, material:ebVal('eb-material'),
+    offen:ebVal('eb-offen'), abnahme:ebVal('eb-abnahme'),
+    signer:ebVal('eb-signer'),
+    sigTech:ebPads.tech&&!ebPads.tech.empty ? ebPads.tech.canvas.toDataURL('image/png') : null,
+    sigKunde:ebPads.kunde&&!ebPads.kunde.empty ? ebPads.kunde.canvas.toDataURL('image/png') : null,
+    ratioTech:ebPads.tech ? ebPads.tech.w/ebPads.tech.h : 2.5,
+    ratioKunde:ebPads.kunde ? ebPads.kunde.w/ebPads.kunde.h : 2.5
+  };
+}
+function ebCheck(d) {
+  var e=[];
+  if (!d.projId) e.push('Projekt');
+  if (!d.date) e.push('Datum');
+  if (!d.tech) e.push('Techniker');
+  if (!d.start||!d.end) e.push('Arbeitsbeginn/-ende');
+  else if (!(d.netto>0)) e.push('g\u00fcltige Arbeitszeit');
+  if (!d.taetigkeit) e.push('T\u00e4tigkeiten');
+  if (!d.signer) e.push('Name des Unterzeichners');
+  if (!d.sigKunde) e.push('Unterschrift Kunde');
+  return e;
+}
+
+/* ── PDF ── */
+function ebPdfText(s) {
+  return String(s==null?'':s)
+    .replace(/[\u2013\u2014]/g,'-').replace(/[\u201C\u201D\u201E]/g,'"').replace(/[\u2018\u2019\u201A]/g,"'")
+    .replace(/\u2026/g,'...').replace(/[\u2022\u25CF]/g,'-').replace(/\u20AC/g,'EUR')
+    .replace(/[^\n\r\t\x20-\x7E\xA0-\xFF]/g,'');
+}
+function ebBuildPDF(d, reportNo) {
+  return new Promise(function(resolve){
+    var jsPDF=window.jspdf.jsPDF, doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), M=14, y=0;
+    var T=ebPdfText, signedStr=EB.signedAt.toLocaleDateString('de-DE')+' '+EB.signedAt.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+
+    function need(h){ if (y+h > H-18) { doc.addPage(); y=18; } }
+    function heading(t){ need(12); doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(0,51,102); doc.text(T(t),M,y); y+=2; doc.setDrawColor(0,83,155); doc.setLineWidth(.3); doc.line(M,y,W-M,y); y+=5; }
+    function para(t){
+      doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(40);
+      doc.splitTextToSize(T(t),W-2*M).forEach(function(line){ need(5); doc.text(line,M,y); y+=4.6; });
+      y+=3;
+    }
+
+    addLogoToPDF(doc,function(){
+      doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(0,51,102); doc.text('Einsatzbericht',M,15);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(110);
+      doc.text(T('Bericht-Nr. '+reportNo+'  |  EnterSmart GmbH  |  WELCOME Besuchermanagement'),M,21);
+      y=28;
+
+      var rows=[
+        ['Kunde',d.kunde||d.projName],['Projekt',d.projName],['Standort',d.standort||'-'],['Ansprechpartner',d.ap||'-'],
+        ['Datum',ebDateDE(d.date)],['Einsatzart',d.art],['Techniker',d.tech],
+        ['Arbeitszeit',d.start+' - '+d.end+' Uhr'+(d.pause?' (Pause '+d.pause+' Min.)':'')+'  =  '+ebFmtMin(d.netto)+' netto']
+      ];
+      if (d.anfahrt) rows.push(['Anfahrt',ebFmtMin(d.anfahrt)]);
+      doc.autoTable({startY:y,body:rows.map(function(r){return [T(r[0]),T(r[1])];}),theme:'grid',
+        styles:{fontSize:9,cellPadding:2.2,textColor:40,lineColor:[208,215,222]},
+        columnStyles:{0:{cellWidth:40,fontStyle:'bold',fillColor:[238,241,245],textColor:[0,51,102]}},margin:{left:M,right:M}});
+      y=doc.lastAutoTable.finalY+8;
+
+      heading('Durchgef\u00fchrte T\u00e4tigkeiten'); para(d.taetigkeit);
+
+      if (d.hw.length || d.material) {
+        heading('Verbaute / gelieferte Hardware');
+        if (d.hw.length) {
+          doc.autoTable({startY:y,head:[['Artikel','Menge']],body:d.hw.map(function(h){return [T(h.name),String(h.menge)];}),
+            styles:{fontSize:9,cellPadding:2},headStyles:{fillColor:[0,51,102],textColor:255,fontStyle:'bold'},
+            columnStyles:{1:{cellWidth:22,halign:'center'}},margin:{left:M,right:M}});
+          y=doc.lastAutoTable.finalY+5;
+        }
+        if (d.material) para('Weiteres Material: '+d.material);
+      }
+
+      if (d.offen) { heading('Offene Punkte / Bemerkungen'); para(d.offen); }
+
+      heading('Abnahme');
+      para((d.abnahme==='vorbehalt'?'Die Arbeiten wurden mit Vorbehalt abgenommen (siehe offene Punkte). ':'Die Arbeiten wurden ohne M\u00e4ngel abgenommen. ')+EB_SIGN_TEXT);
+
+      // Unterschriften
+      need(52);
+      var bw=(W-2*M-10)/2, bh=26, xs=[M, M+bw+10];
+      [[d.sigTech,d.ratioTech,'Techniker',d.tech],[d.sigKunde,d.ratioKunde,'Kunde',d.signer]].forEach(function(s,i){
+        var x=xs[i];
+        if (s[0]) { var iw=Math.min(bw, bh*s[1]), ih=iw/s[1]; doc.addImage(s[0],'PNG',x,y+(bh-ih),iw,ih); }
+        doc.setDrawColor(120); doc.setLineWidth(.3); doc.line(x,y+bh+1,x+bw,y+bh+1);
+        doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(0,51,102); doc.text(T('Unterschrift '+s[2]),x,y+bh+5.5);
+        doc.setFont('helvetica','normal'); doc.setTextColor(70); doc.text(T(s[3]||''),x,y+bh+10);
+        doc.text(T((d.standort?d.standort+', ':'')+signedStr),x,y+bh+14.5);
+      });
+      y+=bh+18;
+
+      var n=doc.internal.getNumberOfPages();
+      for (var i=1;i<=n;i++){
+        doc.setPage(i); doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(140);
+        doc.text(T('Einsatzbericht '+reportNo+'  |  '+(d.kunde||d.projName)+'  |  '+ebDateDE(d.date)),M,H-8);
+        doc.text('Seite '+i+' von '+n,W-M,H-8,{align:'right'});
+      }
+      resolve(doc);
+    });
+  });
+}
+
+function ebSha256Hex(buf) {
+  return crypto.subtle.digest('SHA-256',buf).then(function(h){
+    return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+  });
+}
+
+function ebMarkdown(d, reportNo, hash) {
+  var L=['**Einsatzbericht '+reportNo+'**','',
+    '| | |','|---|---|',
+    '| Datum | '+ebDateDE(d.date)+' |','| Einsatzart | '+d.art+' |','| Techniker | '+d.tech+' |',
+    '| Arbeitszeit | '+d.start+' - '+d.end+' Uhr, '+ebFmtMin(d.netto)+' netto |',
+    '| Unterzeichnet von | '+d.signer+' |','| Abnahme | '+(d.abnahme==='vorbehalt'?'mit Vorbehalt':'ohne M\u00e4ngel')+' |',
+    '','**T\u00e4tigkeiten**','',d.taetigkeit];
+  if (d.offen) L.push('','**Offene Punkte**','',d.offen);
+  if (hash) L.push('','---','PDF-Pr\u00fcfsumme (SHA-256): `'+hash+'`');
+  return L.join('\n');
+}
+
+/* ── Abschließen ── */
+function ebSubmit() {
+  if (EB.done) return;
+  var d=ebCollect(), missing=ebCheck(d);
+  if (missing.length) { ebMsg('Bitte erg\u00e4nzen: '+missing.map(ebEsc).join(', '),'error'); return; }
+  if (!confirm('Bericht abschlie\u00dfen und in OpenProject speichern? Danach sind keine \u00c4nderungen mehr m\u00f6glich.')) return;
+
+  var btn=document.getElementById('eb-submit');
+  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Wird gespeichert...';
+  document.getElementById('eb-proj').disabled=true;
+  if (!EB.signedAt) EB.signedAt=new Date();
+  var reportNo, hash, fileName;
+
+  ebResolveType().then(function(typeId){
+    if (EB.wpId) return {id:EB.wpId};                       // Wiederholung nach Upload-Fehler
+    return apiFetch('/projects/'+d.projId+'/types').then(function(t){
+      var ids=((t._embedded&&t._embedded.elements)||[]).map(function(x){return x.id;});
+      if (ids.indexOf(typeId)>=0) return;
+      return apiFetch('/projects/'+d.projId,{method:'PATCH',body:JSON.stringify({_links:{types:
+        ids.concat([typeId]).map(function(id){return {href:'/api/v3/types/'+id};})}})});
+    }).then(function(){
+      return apiFetch('/work_packages',{method:'POST',body:JSON.stringify({
+        subject:'Einsatzbericht '+ebDateDE(d.date)+' - '+d.art,
+        description:{format:'markdown',raw:ebMarkdown(d,'(wird erstellt)',null)},
+        startDate:d.date, dueDate:d.date,
+        _links:{project:{href:'/api/v3/projects/'+d.projId},type:{href:'/api/v3/types/'+typeId}}
+      })});
+    });
+  }).then(function(wp){
+    EB.wpId=wp.id;
+    reportNo='EB-'+d.date.replace(/-/g,'')+'-'+wp.id;
+    return ebBuildPDF(d,reportNo);
+  }).then(function(doc){
+    var buf=doc.output('arraybuffer');
+    EB.pdfBlob=new Blob([buf],{type:'application/pdf'});
+    fileName=EB.pdfName='Einsatzbericht '+(d.kunde||d.projName).replace(/[\\\/:*?"<>|]/g,'')+' '+ebDateDE(d.date)+'.pdf';
+    return ebSha256Hex(buf).then(function(h){
+      hash=h;
+      return fetch('/upload-attachment',{method:'POST',headers:apiHdrs(),body:JSON.stringify({
+        wpId:EB.wpId, fileName:fileName, contentType:'application/pdf',
+        base64:doc.output('datauristring').split(',')[1],
+        description:'Unterschrieben von '+d.signer+' am '+EB.signedAt.toLocaleString('de-DE')+' | SHA-256 '+hash
+      })});
+    });
+  }).then(function(res){
+    return res.text().then(function(txt){
+      var data={}; try{ data=txt?JSON.parse(txt):{}; }catch(e){}
+      if (!res.ok) throw new Error('Upload fehlgeschlagen: '+(data.message||data.error||('HTTP '+res.status)));
+    });
+  }).then(function(){
+    return apiFetch('/work_packages/'+EB.wpId).then(function(wp){
+      return apiFetch('/work_packages/'+EB.wpId,{method:'PATCH',body:JSON.stringify({
+        lockVersion:wp.lockVersion, description:{format:'markdown',raw:ebMarkdown(d,reportNo,hash)}})});
+    }).catch(function(){ /* Beschreibung ist optional, PDF liegt bereits */ });
+  }).then(function(){
+    EB.done=true;
+    document.querySelectorAll('#tab-einsatz input, #tab-einsatz select, #tab-einsatz textarea, #tab-einsatz .eb-pad-clear').forEach(function(el){el.disabled=true;});
+    document.querySelectorAll('#tab-einsatz .eb-pad').forEach(function(c){c.classList.add('locked');});
+    btn.style.display='none';
+    document.getElementById('eb-download').style.display='';
+    document.getElementById('eb-new').style.display='';
+    ebMsg('&#x2705; Einsatzbericht <b>'+ebEsc(reportNo)+'</b> gespeichert. <a href="'+ebEsc(OP_URL)+'/work_packages/'+EB.wpId+'" target="_blank" rel="noopener">In OpenProject \u00f6ffnen</a>','success');
+  }).catch(function(err){
+    btn.disabled=false;
+    btn.innerHTML=EB.wpId?'&#x21BB; Upload erneut versuchen':'&#x270D; Bericht abschlie&szlig;en &amp; in OpenProject speichern';
+    if (!EB.wpId) document.getElementById('eb-proj').disabled=false;
+    ebMsg('Fehler: '+ebEsc(err.message)+(EB.wpId?'<br><small>Das Arbeitspaket #'+EB.wpId+' wurde bereits angelegt; ein erneuter Versuch l\u00e4dt nur das PDF hoch.</small>':''),'error');
+  });
+}
+
+function ebDownload() {
+  if (!EB.pdfBlob) return;
+  var a=document.createElement('a'); a.href=URL.createObjectURL(EB.pdfBlob); a.download=EB.pdfName; a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+}
+
+function ebReset() {
+  if (EB.wpId && !EB.done && !confirm('Der aktuelle Bericht ist noch nicht vollst\u00e4ndig gespeichert. Trotzdem verwerfen?')) return;
+  var keepTech=ebVal('eb-tech');
+  EB.wpId=null; EB.signedAt=null; EB.done=false; EB.pdfBlob=null; EB.pdfName='';
+  document.querySelectorAll('#tab-einsatz input, #tab-einsatz select, #tab-einsatz textarea, #tab-einsatz .eb-pad-clear').forEach(function(el){
+    el.disabled=false;
+    if (el.tagName==='TEXTAREA' || (el.tagName==='INPUT' && el.type!=='checkbox' && el.type!=='number')) el.value='';
+  });
+  document.getElementById('eb-pause').value=0; document.getElementById('eb-anfahrt').value=0;
+  document.getElementById('eb-proj').value=''; document.getElementById('eb-art').selectedIndex=0; document.getElementById('eb-abnahme').selectedIndex=0;
+  document.getElementById('eb-date').value=ebToday(); document.getElementById('eb-tech').value=keepTech;
+  document.querySelectorAll('#tab-einsatz .eb-pad').forEach(function(c){c.classList.remove('locked');});
+  ebPads.tech.clear(); ebPads.kunde.clear();
+  ebLoadProject(''); ebUpdateSum(); ebMsg('','');
+  var btn=document.getElementById('eb-submit'); btn.style.display=''; btn.disabled=false;
+  btn.innerHTML='&#x270D; Bericht abschlie&szlig;en &amp; in OpenProject speichern';
+  document.getElementById('eb-download').style.display='none'; document.getElementById('eb-new').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+(function(){
+  var tb=document.querySelector('.tab-btn[data-tab="einsatz"]');
+  if (tb) tb.addEventListener('click',ebOnOpen);
+  document.getElementById('eb-proj').addEventListener('change',function(){ ebLoadProject(this.value); });
+  document.querySelectorAll('#tab-einsatz .eb-time').forEach(function(el){ el.addEventListener('input',ebUpdateSum); });
+})();
 
 initHardware();initRadios();updateWPPreview();bsUpdatePreview();
 </script>
