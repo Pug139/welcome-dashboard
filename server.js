@@ -215,6 +215,41 @@ app.post('/upload-attachment', async (req, res) => {
   }
 });
 
+// ────────────────────────────────────────────────────────
+// InvenTree-Proxy: /inv/<pfad>  ->  <INVENTREE_URL>/api/<pfad>
+// Ziel-URL ist fest (Env INVENTREE_URL), der Token kommt pro Anfrage im Header X-INV-TOKEN.
+// ────────────────────────────────────────────────────────
+const INVENTREE_URL = (process.env.INVENTREE_URL || 'https://inventree.welcomeyou.net').replace(/\/$/, '');
+
+app.all('/inv/*', async (req, res) => {
+  const token = req.headers['x-inv-token'];
+  if (!token) return res.status(400).json({ error: 'Missing X-INV-TOKEN header' });
+  const targetUrl = INVENTREE_URL + req.url.replace(/^\/inv/, '/api');
+  try {
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'User-Agent': BROWSER_UA
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body || {}) : undefined
+    });
+    const text  = await response.text();
+    const ctype = response.headers.get('content-type') || '-';
+    if (!text) return res.status(response.status).end();
+    try {
+      return res.status(response.status).json(JSON.parse(text));
+    } catch (parseErr) {
+      console.error('[inv] Kein JSON von InvenTree:', response.status, ctype, text.slice(0, 200).replace(/\s+/g, ' '));
+      return res.status(502).json({ error: 'InvenTree lieferte kein JSON', invStatus: response.status, contentType: ctype, preview: text.slice(0, 300) });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3000;
