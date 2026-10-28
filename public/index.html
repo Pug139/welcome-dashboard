@@ -322,7 +322,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   .export-bar,.wb-export-bar{flex-direction:column}
 }
 /* ── Einsatzbericht ── */
-.eb-pad{width:100%;height:170px;background:#fff;border:1.5px dashed var(--input-border);border-radius:8px;touch-action:none;cursor:crosshair;display:block}
+.eb-pad{width:100%;height:120px;background:#fff;border:1.5px dashed var(--input-border);border-radius:8px;cursor:pointer;display:block}
 .eb-pad.locked{cursor:default;opacity:.85}
 .eb-pad-bar{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--text-muted);margin-top:4px}
 .eb-pad-clear{background:none;border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:.72rem;color:var(--text-muted);cursor:pointer}
@@ -630,7 +630,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div>
             <label class="np-label">Unterschrift Kunde <span class="req">*</span></label>
             <canvas class="eb-pad" id="eb-pad-kunde"></canvas>
-            <div class="eb-pad-bar"><span>mit Finger oder Stift</span><button type="button" class="eb-pad-clear" onclick="ebPads.kunde.clear()">L&ouml;schen</button></div>
+            <div class="eb-pad-bar"><span>antippen zum Unterschreiben</span><button type="button" class="eb-pad-clear" onclick="ebPads.kunde.clear()">L&ouml;schen</button></div>
             <div class="np-field" style="margin-top:8px"><label class="np-label">Name in Druckbuchstaben <span class="req">*</span></label><input class="np-input" id="eb-signer" type="text"></div>
           </div>
         </div>
@@ -896,6 +896,18 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   </div>
 </div>
 
+<div id="eb-sign-overlay" style="display:none;position:fixed;inset:0;z-index:2000;background:#0d1117;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;color:#e6edf3">
+    <strong id="eb-sign-title" style="font-size:1rem"></strong>
+    <span id="eb-sign-rotate" style="display:none;font-size:.8rem;color:#f0883e">&#x1F504; F&uuml;r mehr Platz das Handy quer drehen</span>
+  </div>
+  <canvas id="eb-sign-canvas" style="flex:1;width:100%;min-height:0;background:#fff;touch-action:none;cursor:crosshair;display:block"></canvas>
+  <div style="display:flex;gap:8px;padding:10px 12px">
+    <button class="btn btn-csv" onclick="ebSignClear()" style="flex:1;justify-content:center;padding:14px">L&ouml;schen</button>
+    <button class="btn btn-csv" onclick="ebSignClose()" style="flex:1;justify-content:center;padding:14px">Abbrechen</button>
+    <button class="btn btn-excel" onclick="ebSignAccept()" style="flex:2;justify-content:center;padding:14px">&#x2705; &Uuml;bernehmen</button>
+  </div>
+</div>
 <script>
 /*
  * OP Custom Fields - Projekte:
@@ -2685,40 +2697,130 @@ function ebUpdateSum() {
 }
 
 /* ── Unterschrift-Pad ── */
-function ebInitPad(id) {
-  var c=document.getElementById(id), ctx=c.getContext('2d'), drawing=false, last=null;
-  var pad={canvas:c, empty:true, w:0, h:0};
-  function paintBg(){ ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,pad.w,pad.h); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#0a1f44'; }
+function ebInitPad(id, title) {
+  var c=document.getElementById(id), ctx=c.getContext('2d');
+  var pad={canvas:c, empty:true, w:0, h:0, dataUrl:null, ratio:3, title:title||'Unterschrift'};
+  function paint(){
+    var dpr=window.devicePixelRatio||1;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,pad.w,pad.h);
+    if(pad.empty || !pad.dataUrl){
+      ctx.fillStyle='#8b949e'; ctx.font='15px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(EB.done?'\u2013':'\u270D  Zum Unterschreiben tippen', pad.w/2, pad.h/2);
+      return;
+    }
+    var img=new Image(); img.onload=function(){
+      var m=10, bw=pad.w-2*m, bh=pad.h-2*m, s=Math.min(bw/img.width, bh/img.height);
+      var w=img.width*s, h=img.height*s;
+      ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,pad.w,pad.h);
+      ctx.drawImage(img,(pad.w-w)/2,(pad.h-h)/2,w,h);
+    }; img.src=pad.dataUrl;
+  }
   pad.resize=function(){
     var r=c.getBoundingClientRect(); if(!r.width) return;
-    if (Math.round(r.width)===pad.w && Math.round(r.height)===pad.h) return;
-    var keep = pad.empty ? null : c.toDataURL('image/png');
     var dpr=window.devicePixelRatio||1;
     pad.w=Math.round(r.width); pad.h=Math.round(r.height);
-    c.width=pad.w*dpr; c.height=pad.h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); paintBg();
-    if (keep) { var img=new Image(); img.onload=function(){ ctx.drawImage(img,0,0,pad.w,pad.h); }; img.src=keep; }
+    c.width=pad.w*dpr; c.height=pad.h*dpr; paint();
   };
-  pad.clear=function(){ if(EB.done) return; pad.empty=true; paintBg(); };
-  function pos(e){ var r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; }
-  c.addEventListener('pointerdown',function(e){
-    if (EB.done) return; e.preventDefault();
-    try{ c.setPointerCapture(e.pointerId); }catch(x){}
-    drawing=true; last=pos(e);
-    ctx.beginPath(); ctx.arc(last.x,last.y,1.1,0,Math.PI*2); ctx.fillStyle='#0a1f44'; ctx.fill();
-    pad.empty=false;
-  });
-  c.addEventListener('pointermove',function(e){
-    if (!drawing) return; e.preventDefault();
-    var p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p;
-  });
-  ['pointerup','pointercancel'].forEach(function(ev){ c.addEventListener(ev,function(){ drawing=false; }); });
+  pad.set=function(dataUrl, ratio){ pad.dataUrl=dataUrl; pad.ratio=ratio||3; pad.empty=!dataUrl; paint(); };
+  pad.clear=function(){ if(EB.done) return; pad.set(null); };
+  c.addEventListener('click',function(){ if(!EB.done) ebOpenSign(pad); });
   window.addEventListener('resize', pad.resize);
   return pad;
 }
 
+/* ── Vollbild-Unterschrift ── */
+var EB_SIGN = {pad:null, ctx:null, drawing:false, last:null, ink:false, fs:false};
+
+function ebOpenSign(pad) {
+  EB_SIGN.pad=pad; EB_SIGN.ink=false;
+  document.getElementById('eb-sign-title').textContent=pad.title;
+  var ov=document.getElementById('eb-sign-overlay'); ov.style.display='flex';
+  document.body.style.overflow='hidden';
+  // Vollbild + Querformat (Android); iOS/Desktop ignorieren das still
+  var el=document.documentElement;
+  var go=el.requestFullscreen ? el.requestFullscreen({navigationUI:'hide'}) : null;
+  Promise.resolve(go).then(function(){
+    EB_SIGN.fs=!!document.fullscreenElement;
+    if(screen.orientation && screen.orientation.lock) return screen.orientation.lock('landscape');
+  }).catch(function(){}).then(function(){ setTimeout(ebSignResize,250); });
+  setTimeout(ebSignResize,50);
+}
+
+function ebSignResize() {
+  var c=document.getElementById('eb-sign-canvas'); if(!c || document.getElementById('eb-sign-overlay').style.display==='none') return;
+  var keep=EB_SIGN.ink ? c.toDataURL('image/png') : null, oldW=c.width, oldH=c.height;
+  var r=c.getBoundingClientRect(), dpr=window.devicePixelRatio||1;
+  c.width=Math.round(r.width*dpr); c.height=Math.round(r.height*dpr);
+  var ctx=c.getContext('2d'); EB_SIGN.ctx=ctx;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ebSignBg(r.width, r.height);
+  if(keep){ var img=new Image(); img.onload=function(){ ctx.setTransform(1,0,0,1,0,0); ctx.drawImage(img,0,0,oldW,oldH,0,0,c.width,c.height); ctx.setTransform(dpr,0,0,dpr,0,0); ebSignStyle(); }; img.src=keep; }
+  var portrait=window.innerHeight>window.innerWidth;
+  document.getElementById('eb-sign-rotate').style.display=portrait?'block':'none';
+}
+function ebSignStyle(){ var x=EB_SIGN.ctx; x.lineWidth=3; x.lineCap='round'; x.lineJoin='round'; x.strokeStyle='#0a1f44'; x.fillStyle='#0a1f44'; }
+function ebSignBg(w,h){
+  var x=EB_SIGN.ctx; x.fillStyle='#ffffff'; x.fillRect(0,0,w,h);
+  x.strokeStyle='#c9d1d9'; x.lineWidth=1.5; x.beginPath(); x.moveTo(w*0.06,h*0.78); x.lineTo(w*0.94,h*0.78); x.stroke();
+  x.fillStyle='#8b949e'; x.font='22px sans-serif'; x.textBaseline='alphabetic'; x.fillText('\u00d7', w*0.06, h*0.78-8);
+  ebSignStyle();
+}
+function ebSignClear(){ var c=document.getElementById('eb-sign-canvas'), r=c.getBoundingClientRect(); EB_SIGN.ink=false; ebSignBg(r.width,r.height); }
+
+function ebSignClose() {
+  document.getElementById('eb-sign-overlay').style.display='none';
+  document.body.style.overflow='';
+  try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function(){});
+  setTimeout(function(){ if(ebPads.tech) ebPads.tech.resize(); if(ebPads.kunde) ebPads.kunde.resize(); },300);
+}
+
+/* Tintenbereich ermitteln und zuschneiden (fuer PDF und Vorschau) */
+function ebSignTrim(c) {
+  var x=c.getContext('2d'), w=c.width, h=c.height, d=x.getImageData(0,0,w,h).data;
+  var minX=w, minY=h, maxX=-1, maxY=-1;
+  for(var y=0;y<h;y+=2){ for(var i=0;i<w;i+=2){ var p=(y*w+i)*4; if(d[p]<90 && d[p+1]<90 && d[p+2]<140){ if(i<minX)minX=i; if(i>maxX)maxX=i; if(y<minY)minY=y; if(y>maxY)maxY=y; } } }
+  if(maxX<0) return null;
+  var pad=Math.round(Math.max(w,h)*0.02); minX=Math.max(0,minX-pad); minY=Math.max(0,minY-pad); maxX=Math.min(w,maxX+pad); maxY=Math.min(h,maxY+pad);
+  var o=document.createElement('canvas'); o.width=maxX-minX; o.height=maxY-minY;
+  var ox=o.getContext('2d'); ox.fillStyle='#fff'; ox.fillRect(0,0,o.width,o.height);
+  // nur die Tinte uebernehmen (Hilfslinie/Kreuz sind hellgrau und fallen weg)
+  var src=x.getImageData(minX,minY,o.width,o.height), sd=src.data;
+  for(var k=0;k<sd.length;k+=4){ if(!(sd[k]<90 && sd[k+1]<90 && sd[k+2]<140)){ sd[k]=255; sd[k+1]=255; sd[k+2]=255; } }
+  ox.putImageData(src,0,0);
+  return {dataUrl:o.toDataURL('image/png'), ratio:o.width/o.height};
+}
+
+function ebSignAccept() {
+  var c=document.getElementById('eb-sign-canvas');
+  if(!EB_SIGN.ink){ alert('Bitte zuerst unterschreiben.'); return; }
+  var t=ebSignTrim(c);
+  if(!t){ alert('Bitte zuerst unterschreiben.'); return; }
+  EB_SIGN.pad.set(t.dataUrl, t.ratio);
+  ebSignClose();
+}
+
+(function(){
+  var c=document.getElementById('eb-sign-canvas');
+  function pos(e){ var r=c.getBoundingClientRect(); return {x:e.clientX-r.left, y:e.clientY-r.top}; }
+  c.addEventListener('pointerdown',function(e){
+    e.preventDefault(); try{ c.setPointerCapture(e.pointerId); }catch(x){}
+    EB_SIGN.drawing=true; EB_SIGN.last=pos(e); EB_SIGN.ink=true;
+    var x=EB_SIGN.ctx; x.beginPath(); x.arc(EB_SIGN.last.x,EB_SIGN.last.y,1.5,0,Math.PI*2); x.fill();
+  });
+  c.addEventListener('pointermove',function(e){
+    if(!EB_SIGN.drawing) return; e.preventDefault();
+    var evs=e.getCoalescedEvents?e.getCoalescedEvents():[e], x=EB_SIGN.ctx;
+    evs.forEach(function(ev){ var p=pos(ev); x.beginPath(); x.moveTo(EB_SIGN.last.x,EB_SIGN.last.y); x.lineTo(p.x,p.y); x.stroke(); EB_SIGN.last=p; });
+  });
+  ['pointerup','pointercancel'].forEach(function(ev){ c.addEventListener(ev,function(){ EB_SIGN.drawing=false; }); });
+  window.addEventListener('resize', function(){ setTimeout(ebSignResize,100); });
+})();
+
 /* ── Tab öffnen / Projekt laden ── */
 function ebOnOpen() {
-  if (!ebPads.kunde) { ebPads.tech=ebInitPad('eb-pad-tech'); ebPads.kunde=ebInitPad('eb-pad-kunde'); }
+  if (!ebPads.kunde) { ebPads.tech=ebInitPad('eb-pad-tech','Unterschrift EnterSmart Mitarbeiter'); ebPads.kunde=ebInitPad('eb-pad-kunde','Unterschrift Kunde'); }
   setTimeout(function(){ ebPads.tech.resize(); ebPads.kunde.resize(); }, 30);
   if (!ebVal('eb-date')) document.getElementById('eb-date').value=ebToday();
   document.getElementById('eb-sign-text').textContent=EB_SIGN_TEXT;
@@ -2822,10 +2924,10 @@ function ebCollect() {
     taetigkeit:ebVal('eb-taetigkeit'), hw:hw, material:ebVal('eb-material'),
     offen:ebVal('eb-offen'), abnahme:ebVal('eb-abnahme'),
     signer:ebVal('eb-signer'),
-    sigTech:ebPads.tech&&!ebPads.tech.empty ? ebPads.tech.canvas.toDataURL('image/png') : null,
-    sigKunde:ebPads.kunde&&!ebPads.kunde.empty ? ebPads.kunde.canvas.toDataURL('image/png') : null,
-    ratioTech:ebPads.tech ? ebPads.tech.w/ebPads.tech.h : 2.5,
-    ratioKunde:ebPads.kunde ? ebPads.kunde.w/ebPads.kunde.h : 2.5
+    sigTech:ebPads.tech&&!ebPads.tech.empty ? ebPads.tech.dataUrl : null,
+    sigKunde:ebPads.kunde&&!ebPads.kunde.empty ? ebPads.kunde.dataUrl : null,
+    ratioTech:ebPads.tech ? ebPads.tech.ratio : 3,
+    ratioKunde:ebPads.kunde ? ebPads.kunde.ratio : 3
   };
 }
 function ebCheck(d) {
