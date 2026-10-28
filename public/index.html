@@ -10,6 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 <script src="/vendor/html5-qrcode.min.js"></script>
 <script src="/vendor/zxing-reader.iife.js"></script>
+<script src="/vendor/pdf.min.js"></script>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#003366">
 <meta name="mobile-web-app-capable" content="yes">
@@ -540,7 +541,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <strong style="color:var(--brand-light)">Lieferschein einlesen</strong>
           <button class="eb-pad-clear" onclick="dsClose()">&#x2715;</button>
         </div>
-        <div class="eb-hint" style="margin-bottom:8px">PDF des Lieferanten w&auml;hlen (bevorzugt) oder Foto/Screenshot. Die Positionen werden ausgelesen, zur Pr&uuml;fung angezeigt und dann als Einkaufsbestellung mit Seriennummern ins Lager gebucht.</div>
+        <div class="eb-hint" style="margin-bottom:8px">Original-PDF des Lieferanten w&auml;hlen (wird lokal im Browser ausgelesen, derzeit Ingram Micro). Die Positionen werden ausgelesen, zur Pr&uuml;fung angezeigt und dann als Einkaufsbestellung mit Seriennummern ins Lager gebucht.</div>
         <input type="file" id="ds-file" accept="application/pdf,image/*" class="np-input" onchange="dsFileChosen(this.files[0])">
         <div class="np-result" id="ds-status" style="margin-top:8px"></div>
         <div id="ds-result" style="margin-top:8px"></div>
@@ -3804,6 +3805,75 @@ function dsOpen() {
 }
 function dsClose(){ document.getElementById('ds-modal').style.display='none'; }
 
+
+/* ── Lieferschein lokal im Browser auslesen (pdf.js, ohne externen Dienst) ── */
+/* Ingram-Micro-Lieferschein: Zeilen -> Struktur (laeuft identisch im Browser) */
+function dsPdfLinesFromItems(pages) {
+  // pages: [[{str, x, y}]] -> Zeilen (oben nach unten), Teile mit Abstand verbunden
+  var lines=[];
+  pages.forEach(function(items){
+    var rows=[];
+    items.filter(function(it){return it.str && it.str.trim();}).forEach(function(it){
+      var r=rows.filter(function(r){return Math.abs(r.y-it.y)<3;})[0];
+      if(!r){ r={y:it.y, parts:[]}; rows.push(r); }
+      r.parts.push(it);
+    });
+    rows.sort(function(a,b){return b.y-a.y;});
+    rows.forEach(function(r){ r.parts.sort(function(a,b){return a.x-b.x;}); lines.push(r.parts.map(function(p){return p.str.trim();}).join(' ').replace(/\s+/g,' ').trim()); });
+  });
+  return lines;
+}
+function dsParseIngram(lines) {
+  var text=lines.join('\n');
+  if(!/INGRAM MICRO/i.test(text)) return null;
+  var out={lieferant:'INGRAM MICRO DISTRIBUTION GMBH', lieferschein_nr:'', datum:'', auftrag_nr:'', bestell_nr:'', positionen:[]};
+  var m;
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i];
+    if(!out.lieferschein_nr && /^\d{10}\b/.test(l) && /Sendungsnummer|shipment no/i.test((lines[i-1]||'')+(lines[i-2]||''))) out.lieferschein_nr=l.match(/^\d{10}/)[0];
+    if(!out.datum && (m=l.match(/\b(\d{2})\.(\d{2})\.(\d{4})\b/)) && /Datum|date/i.test((lines[i-1]||'')+(lines[i-2]||''))) out.datum=m[3]+'-'+m[2]+'-'+m[1];
+    if(!out.auftrag_nr && (m=l.match(/^([A-Z]{2}-\d{2}-\d+-\d+-\d+)\s*(.*)$/))){ out.auftrag_nr=m[1]; out.bestell_nr=(m[2]||'').replace(/\s*--\s*$/,'').trim(); }
+  }
+  if(!out.lieferschein_nr && (m=text.match(/\b(00\d{8})\b/))) out.lieferschein_nr=m[1];
+  // Positionen
+  var cur=null, inSn=false;
+  for(var j=0;j<lines.length;j++){
+    var L=lines[j];
+    if((m=L.match(/^(\d{1,3})\s+(\d+)\s+(\d+)\s+([A-Z0-9]{5,})\s+(.+)$/)) && !/^\d{10}/.test(L)){
+      cur={pos:m[1], menge_bestellt:+m[2], menge_geliefert:+m[3], artikel_nr:m[4], beschreibung:m[5].trim(), hersteller_nr:'', ean:'', seriennummern:[], karton:''};
+      out.positionen.push(cur); inSn=false; continue;
+    }
+    if(!cur) continue;
+    if(/^Serial-Nr\.?/i.test(L)){ inSn=true; L=L.replace(/^Serial-Nr\.?\s*/i,''); }
+    if(/^serial-no\.?/i.test(L)){ inSn=true; L=L.replace(/^serial-no\.?\s*/i,''); }
+    if((m=L.match(/^EAN\/UPC\s+(\d{8,14})/i))){ cur.ean=m[1]; inSn=false; var k=L.match(/box-no\.?\s*(\d+)/i); if(k) cur.karton=k[1]; continue; }
+    if((m=L.match(/enthalten in Karton-Nr.*?box-no\.?\s*(\d+)/i))){ cur.karton=m[1]; inSn=false; continue; }
+    if(inSn){
+      var sns=L.match(/SN:\s*([A-Z0-9][A-Z0-9\-\/]*)/gi)||[];
+      // auch Seriennummern am Zeilenanfang ohne "SN:" (Umbruch direkt nach "SN:")
+      var lead=L.match(/^([A-Z0-9]{6,})(?=,|\s|$)/);
+      if(lead && !/^SN:/i.test(L)) cur.seriennummern.push(lead[1]);
+      sns.forEach(function(s){ cur.seriennummern.push(s.replace(/^SN:\s*/i,'')); });
+      continue;
+    }
+    // Hersteller-Nr.: erste Zeile nach der Beschreibung im Format Buchstabe+Ziffern ohne Leerzeichen
+    if(!cur.hersteller_nr && /^[A-Z]{1,3}\d{4,}[A-Z0-9\-]*$/.test(L)){ cur.hersteller_nr=L; continue; }
+    if(!cur.hersteller_nr && !/SPECIAL BID|^Q-\d/.test(L) && L.length<60) cur.beschreibung+=' '+L;
+  }
+  return out;
+}
+
+async function dsLocalPdf(b64) {
+  if(typeof pdfjsLib==='undefined') throw new Error('PDF-Bibliothek nicht geladen');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='/vendor/pdf.worker.min.js';
+  var bin=atob(b64), bytes=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+  var doc=await pdfjsLib.getDocument({data:bytes}).promise, pages=[];
+  for(var p=1;p<=doc.numPages;p++){ var pg=await doc.getPage(p), tc=await pg.getTextContent(); pages.push(tc.items.map(function(it){return {str:it.str, x:it.transform[4], y:it.transform[5]};})); }
+  var lines=dsPdfLinesFromItems(pages);
+  if(lines.length<5) return {scanned:true};
+  return {data:dsParseIngram(lines)};
+}
+
 function dsReadB64(file){ return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){ res(String(r.result).split(',')[1]); }; r.onerror=function(){ rej(new Error('Datei konnte nicht gelesen werden')); }; r.readAsDataURL(file); }); }
 
 async function dsFileChosen(file) {
@@ -3814,9 +3884,23 @@ async function dsFileChosen(file) {
   document.getElementById('ds-result').innerHTML=''; document.getElementById('ds-go').style.display='none';
   try{
     DS.b64=await dsReadB64(file);
-    var r=await fetch('/extract-delivery',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:DS.b64, mediaType:DS.mime})});
-    var j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
-    DS.data=j.data||{};
+    DS.data=null;
+    if(DS.mime==='application/pdf'){
+      var loc=await dsLocalPdf(DS.b64);
+      if(loc.data && (loc.data.positionen||[]).length){ DS.data=loc.data; invLog('Lieferschein lokal ausgelesen (Ingram Micro)'); }
+      else invLog(loc.scanned?'PDF enth\u00e4lt keinen Text (Scan) \u2013 versuche KI-Auswertung':'Unbekanntes Lieferschein-Format \u2013 versuche KI-Auswertung');
+    }
+    if(!DS.data){
+      var r=await fetch('/extract-delivery',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:DS.b64, mediaType:DS.mime})});
+      var j=await r.json();
+      if(!r.ok){
+        if(/ANTHROPIC_API_KEY/.test(j.error||'')) throw new Error(DS.mime==='application/pdf'
+          ? 'Dieses Lieferschein-Format wird lokal noch nicht unterst\u00fctzt (bisher: Ingram Micro, Text-PDF). Bitte ein Beispiel-PDF f\u00fcr einen neuen Leser bereitstellen.'
+          : 'Screenshots/Fotos ben\u00f6tigen die KI-Auswertung (API-Schl\u00fcssel nicht eingerichtet). Bitte das Original-PDF verwenden.');
+        throw new Error(j.error||('HTTP '+r.status));
+      }
+      DS.data=j.data||{};
+    }
     invLog('Lieferschein '+(DS.data.lieferschein_nr||'?')+': '+((DS.data.positionen||[]).length)+' Position(en) ausgelesen');
     await dsAnalyze();
   }catch(e){ dsMsg('Fehler: '+ebEsc(e.message),'error'); }
