@@ -3120,7 +3120,9 @@ function invShipsForAP(all, wpId) {
 /* Ist eine versendete Sendung inzwischen zurueckgebucht? (alle Geraete wieder im Lager / nicht mehr beim Kunden) */
 async function invShipmentReturned(ship) {
   var allocs=await invList('/order/so-allocation/?shipment='+ship.pk+'&limit=100');
-  if(!allocs.length) return false;
+  // Keine Zuweisungen mehr an einer versendeten Sendung: Das Geraet wurde zurueckgebucht und
+  // mit dem Lagerbestand zusammengefuehrt (InvenTree loescht dabei den Lagerartikel samt Zuweisung).
+  if(!allocs.length) return true;
   for(var i=0;i<allocs.length;i++){
     try{
       var it=await invFetch('/stock/'+allocs[i].item+'/');
