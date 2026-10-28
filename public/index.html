@@ -8,6 +8,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script src="/vendor/html5-qrcode.min.js"></script>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#003366">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WELCOME">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
 <style>
 :root{
   --brand:#0055a5;--brand-dark:#003366;--brand-light:#4a90d9;
@@ -484,7 +492,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
   <div class="tab-panel" id="tab-inventree">
     <div class="np-card">
       <h2>InvenTree &ndash; Testlauf</h2>
-      <p class="np-sub">Hardware eines OP-Projekts in InvenTree reservieren und bei Entnahme ausbuchen. Der Token wird nur in diesem Browserfenster gehalten.</p>
+      <p class="np-sub">Hardware eines OP-Projekts in InvenTree reservieren und bei Entnahme per Scan ausbuchen. Der Token wird nur in diesem Browserfenster gehalten.</p>
       <div class="np-result" id="inv-result"></div>
 
       <div class="np-section">
@@ -514,6 +522,22 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <div class="np-section">
         <div class="np-sec-title">Protokoll</div>
         <div id="inv-log" style="font-family:monospace;font-size:.75rem;color:var(--text-sub);background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap"></div>
+      </div>
+    </div>
+    <div id="inv-scan-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:12px">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:520px;width:100%;padding:16px;max-height:94vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+          <strong id="inv-scan-title" style="color:var(--brand-light)"></strong>
+          <button class="eb-pad-clear" onclick="invCloseScan()">&#x2715;</button>
+        </div>
+        <div class="eb-hint" id="inv-scan-hint" style="margin-bottom:8px"></div>
+        <div id="inv-scan-reader" style="width:100%;border-radius:8px;overflow:hidden;background:#000;min-height:220px"></div>
+        <div class="np-result" id="inv-scan-status" style="margin-top:8px"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input class="np-input" id="inv-scan-manual" type="text" placeholder="Seriennummer eintippen" autocomplete="off" autocapitalize="characters" style="flex:1">
+          <button class="btn btn-primary" onclick="invManualSubmit()">OK</button>
+        </div>
+        <button class="btn btn-csv" id="inv-scan-noscan" onclick="invShipNoScan()" style="width:100%;justify-content:center;margin-top:8px">Ohne Scan buchen</button>
       </div>
     </div>
   </div>
@@ -3005,13 +3029,14 @@ function ebReset() {
 /* ────────────────────────────────────────────────────────
    INVENTREE (TEST)
    - Auftrag je OP-Projekt (customer_reference "OP-<projId>"), Kunde = Firma
-   - je Hardware-AP eine Sendung "AP-<wpId>" mit Reservierung (Zuweisung)
-   - "Entnahme buchen" = Sendung versenden (Bestand raus) + OP-Status Lagernd
+   - je Hardware-AP eine Sendung "AP-<wpId>" (bei erneuter Reservierung "AP-<wpId>-2" usw.)
+   - "Entnahme buchen" = Gerät scannen -> ggf. Zuweisung tauschen -> Sendung versenden
+     -> OP: Status Lagernd, Seriennummer, Auftragsnummer, Artikelnummer
 ──────────────────────────────────────────────────────── */
 var INV = {token:'', projId:null, proj:null, order:null, rows:[], parts:{}};
 var INV_LOCATION_ID = 1;          // InvenTree-Lagerort "Lager"
 var OP_STATUS_LAGERND = 18;
-var CF_HW_ZUB = 'customField46';
+var CF_HW_ZUB = 'customField46', CF_SERIAL = 'customField27', CF_ORDERNO = 'customField32', CF_ARTNO = 'customField41';
 // Zuordnung OP-AP-Betreff -> InvenTree-IPN (nur Testartikel)
 var INV_MAP = [
   {match:/^ELO 22"/i,          ipn:'HW-TERM-001'},
@@ -3026,7 +3051,7 @@ function invLog(msg) {
   var el=document.getElementById('inv-log'), t=new Date().toLocaleTimeString('de-DE');
   el.textContent += '['+t+'] '+msg+'\n'; el.scrollTop=el.scrollHeight;
 }
-function invMsg(html,type){ var el=document.getElementById('inv-result'); el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none'; }
+function invMsg(html,type){ var el=document.getElementById('inv-result'); el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none'; if(html) el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 
 async function invFetch(path, opts) {
   opts=opts||{};
@@ -3037,7 +3062,7 @@ async function invFetch(path, opts) {
   try{ data=txt?JSON.parse(txt):null; }catch(e){ data={raw:txt.slice(0,200)}; }
   if(!res.ok){
     var m=data&&(data.detail||data.error||data.non_field_errors) ? (data.detail||data.error||data.non_field_errors) : JSON.stringify(data).slice(0,300);
-    throw new Error('InvenTree '+res.status+': '+(Array.isArray(m)?m.join(' '):m));
+    var err=new Error('InvenTree '+res.status+': '+(Array.isArray(m)?m.join(' '):m)); err.status=res.status; err.data=data; throw err;
   }
   return data;
 }
@@ -3072,7 +3097,7 @@ function invFillProjects() {
 function invNeedsForAP(wp) {
   var needs=[], subj=wp.subject||'';
   var m=INV_MAP.filter(function(x){return x.match.test(subj);})[0];
-  if(m) needs.push({ipn:m.ipn, qty:1});
+  if(m) needs.push({ipn:m.ipn, qty:1, main:true});
   var zub=wp[CF_HW_ZUB]; zub=zub&&typeof zub==='object'?(zub.raw||''):(zub||'');
   INV_PAPER_MAP.forEach(function(p){
     if(p.match.test(zub)){ var q=(zub.match(/Menge \(Rollen\):\s*(\d+)/)||[])[1]; needs.push({ipn:p.ipn, qty:parseInt(q)||1}); }
@@ -3085,6 +3110,24 @@ async function invPart(ipn) {
   var p=hits.filter(function(x){return (x.IPN||'')===ipn;})[0];
   if(!p) throw new Error('Artikel mit IPN '+ipn+' nicht gefunden');
   INV.parts[ipn]=p; return p;
+}
+
+/* Sendungen eines APs: "AP-<id>" und "AP-<id>-<n>", neueste zuerst */
+function invShipsForAP(all, wpId) {
+  var re=new RegExp('^AP-'+wpId+'(-\\d+)?$');
+  return all.filter(function(s){return re.test(s.reference||'');}).sort(function(a,b){return b.pk-a.pk;});
+}
+/* Ist eine versendete Sendung inzwischen zurueckgebucht? (alle Geraete wieder im Lager / nicht mehr beim Kunden) */
+async function invShipmentReturned(ship) {
+  var allocs=await invList('/order/so-allocation/?shipment='+ship.pk+'&limit=100');
+  if(!allocs.length) return false;
+  for(var i=0;i<allocs.length;i++){
+    try{
+      var it=await invFetch('/stock/'+allocs[i].item+'/');
+      if(it.customer) return false;
+    }catch(e){ if(e.status!==404) throw e; /* zusammengefuehrt/geloescht = wieder im Lager */ }
+  }
+  return true;
 }
 
 /* ── Projekt laden ── */
@@ -3101,14 +3144,16 @@ async function invLoadProject() {
 
     var orders=await invList('/order/so/?search='+encodeURIComponent('OP-'+id)+'&limit=50');
     INV.order=orders.filter(function(o){return o.customer_reference==='OP-'+id;})[0]||null;
-    var ships={};
-    if(INV.order){ (await invList('/order/so/shipment/?order='+INV.order.pk+'&limit=200')).forEach(function(s){ships[s.reference]=s;}); }
+    var allShips=INV.order ? await invList('/order/so/shipment/?order='+INV.order.pk+'&limit=200') : [];
 
     for(var i=0;i<wps.length;i++){
-      var wp=wps[i], needs=invNeedsForAP(wp), s=ships['AP-'+wp.id];
+      var wp=wps[i], needs=invNeedsForAP(wp), ships=invShipsForAP(allShips, wp.id), s=ships[0]||null, state;
       for(var n=0;n<needs.length;n++){ try{ needs[n].part=await invPart(needs[n].ipn); }catch(e){ needs[n].err=e.message; } }
-      INV.rows.push({wp:wp, needs:needs, ship:s||null,
-        state: !needs.length ? 'unmapped' : (!s ? 'open' : (s.shipment_date ? 'shipped' : 'reserved'))});
+      if(!needs.length) state='unmapped';
+      else if(!s) state='open';
+      else if(!s.shipment_date) state='reserved';
+      else state=(await invShipmentReturned(s)) ? 'returned' : 'shipped';
+      INV.rows.push({wp:wp, needs:needs, ship:s, shipCount:ships.length, state:state});
     }
     invRender();
     invLog('Projekt '+INV.proj.name+': '+wps.length+' Hardware-AP(s)'+(INV.order?', Auftrag '+INV.order.reference:', noch kein Auftrag'));
@@ -3118,19 +3163,20 @@ async function invLoadProject() {
 function invRender() {
   var box=document.getElementById('inv-table');
   if(!INV.rows.length){ box.innerHTML='<div class="eb-hint">Keine Hardware-Arbeitspakete in diesem Projekt.</div>'; return; }
-  var label={unmapped:'kein Artikel zugeordnet',open:'nicht reserviert',reserved:'reserviert',shipped:'ausgebucht'};
-  var color={unmapped:'var(--text-muted)',open:'var(--at-risk-c)',reserved:'var(--brand-light)',shipped:'var(--on-track-c)'};
+  var label={unmapped:'kein Artikel zugeordnet',open:'nicht reserviert',reserved:'reserviert',shipped:'ausgebucht',returned:'zur\u00fcckgebucht'};
+  var color={unmapped:'var(--text-muted)',open:'var(--at-risk-c)',reserved:'var(--brand-light)',shipped:'var(--on-track-c)',returned:'var(--at-risk-c)'};
   var html='<div class="wb-table-wrap" style="overflow-x:auto"><table class="wb-table"><thead><tr><th>Arbeitspaket</th><th>Artikel</th><th>Verf\u00fcgbar</th><th>OP-Status</th><th>InvenTree</th><th></th></tr></thead><tbody>';
   INV.rows.forEach(function(r,i){
-    var arts=r.needs.map(function(n){return n.err?'<span style="color:var(--error-c)">'+ebEsc(n.err)+'</span>':ebEsc(n.qty+'\u00d7 '+n.ipn);}).join('<br>')||'\u2013';
+    var arts=r.needs.map(function(n){return n.err?'<span style="color:var(--error-c)">'+ebEsc(n.err)+'</span>':ebEsc(n.qty+'\u00d7 '+n.ipn)+(n.part&&n.part.trackable?' <span class="eb-hint">(SN)</span>':'');}).join('<br>')||'\u2013';
     var avail=r.needs.map(function(n){return n.part?(n.part.unallocated_stock!=null?n.part.unallocated_stock:'?')+' / '+(n.part.in_stock!=null?n.part.in_stock:'?'):'\u2013';}).join('<br>')||'\u2013';
-    var btn=r.state==='reserved'?'<button class="btn btn-excel" style="padding:5px 10px;font-size:.75rem" onclick="invShip('+i+')">Entnahme buchen</button>':'';
-    html+='<tr><td>'+ebEsc(r.wp.subject)+' <span class="eb-hint">#'+r.wp.id+'</span></td><td>'+arts+'</td><td>'+avail+'</td><td>'+ebEsc(getLink(r.wp,'status'))+'</td>'
-      +'<td style="color:'+color[r.state]+';font-weight:600">'+label[r.state]+'</td><td>'+btn+'</td></tr>';
+    var sn=r.wp[CF_SERIAL]?'<br><span class="eb-hint">SN '+ebEsc(r.wp[CF_SERIAL])+'</span>':'';
+    var btn=r.state==='reserved'?'<button class="btn btn-excel" style="padding:6px 10px;font-size:.78rem" onclick="invOpenScan('+i+')">&#x1F4F7; Entnahme buchen</button>':'';
+    html+='<tr><td>'+ebEsc(r.wp.subject)+' <span class="eb-hint">#'+r.wp.id+'</span>'+sn+'</td><td>'+arts+'</td><td>'+avail+'</td><td>'+ebEsc(getLink(r.wp,'status'))+'</td>'
+      +'<td style="color:'+color[r.state]+';font-weight:600">'+label[r.state]+(r.ship?'<br><span class="eb-hint">'+ebEsc(r.ship.reference)+'</span>':'')+'</td><td>'+btn+'</td></tr>';
   });
-  html+='</tbody></table></div><div class="eb-hint" style="margin-top:6px">Verf\u00fcgbar = frei / physisch im Lager</div>';
+  html+='</tbody></table></div><div class="eb-hint" style="margin-top:6px">Verf\u00fcgbar = frei / physisch im Lager \u00b7 (SN) = mit Seriennummer</div>';
   box.innerHTML=html;
-  document.getElementById('inv-reserve').disabled=!INV.rows.some(function(r){return r.state==='open';});
+  document.getElementById('inv-reserve').disabled=!INV.rows.some(function(r){return r.state==='open'||r.state==='returned';});
 }
 
 /* ── Kunde / Auftrag / Verantwortlicher ── */
@@ -3139,7 +3185,7 @@ async function invEnsureCompany(name) {
   var c=hits.filter(function(x){return (x.name||'').toLowerCase()===name.toLowerCase();})[0];
   if(c) return c;
   invLog('Lege Kunde an: '+name);
-  return await invFetch('/company/',{method:'POST',body:{name:name,is_customer:true,is_supplier:false,is_manufacturer:false,description:'aus OpenProject'}});
+  return await invFetch('/company/',{method:'POST',body:{name:name,is_customer:true,is_supplier:false,is_manufacturer:false,currency:'EUR',description:'aus OpenProject'}});
 }
 async function invResponsibleOwner() {
   try{
@@ -3161,7 +3207,7 @@ async function invEnsureOrder() {
   var company=await invEnsureCompany(kunde);
   var owner=await invResponsibleOwner();
   var body={customer:company.pk, customer_reference:'OP-'+p.id, description:p.name+' (OpenProject #'+p.id+')',
-            link:OP_URL+'/projects/'+(p.identifier||p.id)};
+            link:OP_URL+'/projects/'+(p.identifier||p.id), order_currency:'EUR'};
   if(owner) body.responsible=owner;
   INV.order=await invFetch('/order/so/',{method:'POST',body:body});
   invLog('Auftrag angelegt: '+INV.order.reference+(owner?' (Verantwortlicher gesetzt)':''));
@@ -3171,9 +3217,19 @@ async function invEnsureOrder() {
 }
 
 /* ── Reservieren ── */
+function invFreeStock(stock, need, items, lineId, exclude) {
+  var rest=need;
+  stock.forEach(function(s){
+    if(rest<=0 || (exclude && exclude[s.pk])) return;
+    var free=parseFloat(s.quantity)-parseFloat(s.allocated||0);
+    if(free<=0) return;
+    var q=Math.min(free,rest); items.push({line_item:lineId, stock_item:s.pk, quantity:q}); rest-=q;
+  });
+  return rest;
+}
 async function invReserveRow(r, lines) {
-  var order=INV.order;
-  var ship=await invFetch('/order/so/shipment/',{method:'POST',body:{order:order.pk, reference:'AP-'+r.wp.id}});
+  var order=INV.order, ref='AP-'+r.wp.id+(r.shipCount>0?'-'+(r.shipCount+1):'');
+  var ship=await invFetch('/order/so/shipment/',{method:'POST',body:{order:order.pk, reference:ref, link:OP_URL+'/work_packages/'+r.wp.id}});
   var items=[];
   for(var n=0;n<r.needs.length;n++){
     var need=r.needs[n]; if(!need.part) throw new Error(need.err||'Artikel fehlt');
@@ -3182,22 +3238,16 @@ async function invReserveRow(r, lines) {
     else { line=await invFetch('/order/so-line/',{method:'POST',body:{order:order.pk, part:need.part.pk, quantity:need.qty}}); }
     lines[need.part.pk]=line;
     var stock=await invList('/stock/?part='+need.part.pk+'&location='+INV_LOCATION_ID+'&in_stock=true&limit=100');
-    var rest=need.qty;
-    stock.forEach(function(s){
-      if(rest<=0) return;
-      var free=parseFloat(s.quantity)-parseFloat(s.allocated||0);
-      if(free<=0) return;
-      var q=Math.min(free,rest); items.push({line_item:line.pk, stock_item:s.pk, quantity:q}); rest-=q;
-    });
+    var rest=invFreeStock(stock, need.qty, items, line.pk);
     if(rest>0) throw new Error('Nicht genug freier Bestand f\u00fcr '+need.ipn+' (fehlen '+rest+')');
   }
   await invFetch('/order/so/'+order.pk+'/allocate/',{method:'POST',body:{items:items, shipment:ship.pk}});
-  invLog('Reserviert: '+r.wp.subject+' \u2192 Sendung AP-'+r.wp.id);
+  invLog('Reserviert: '+r.wp.subject+' \u2192 Sendung '+ref);
 }
 
 async function invReserveAll() {
   var btn=document.getElementById('inv-reserve'); btn.disabled=true;
-  var open=INV.rows.filter(function(r){return r.state==='open';}), ok=0, errs=[];
+  var open=INV.rows.filter(function(r){return r.state==='open'||r.state==='returned';}), ok=0, errs=[];
   try{
     await invEnsureOrder();
     var lines={}; (await invList('/order/so-line/?order='+INV.order.pk+'&limit=200')).forEach(function(l){lines[l.part]=l;});
@@ -3210,20 +3260,115 @@ async function invReserveAll() {
   await invLoadProject();
 }
 
-/* ── Entnahme ── */
-async function invShip(i) {
+/* ── Scanner ── */
+var INV_SCAN = {row:null, idx:null, qr:null, busy:false};
+
+function invOpenScan(i) {
   var r=INV.rows[i]; if(!r||!r.ship) return;
-  if(!confirm('Entnahme f\u00fcr \u201e'+r.wp.subject+'\u201c buchen? Der Bestand wird in InvenTree ausgebucht und das AP in OP auf \u201eLagernd\u201c gesetzt.')) return;
+  var main=r.needs.filter(function(n){return n.main;})[0];
+  INV_SCAN.row=r; INV_SCAN.idx=i; INV_SCAN.busy=false;
+  document.getElementById('inv-scan-title').textContent='Entnahme: '+r.wp.subject+' (#'+r.wp.id+')';
+  document.getElementById('inv-scan-hint').textContent = main&&main.part&&main.part.trackable
+    ? 'InvenTree-Etikett oder Seriennummer-Barcode des Ger\u00e4ts scannen \u2013 oder Seriennummer eintippen.'
+    : 'Artikel ohne Seriennummer: Etikett scannen (optional) oder direkt \u201eOhne Scan buchen\u201c.';
+  document.getElementById('inv-scan-manual').value='';
+  document.getElementById('inv-scan-noscan').style.display = main&&main.part&&main.part.trackable ? 'none' : '';
+  invScanStatus('','');
+  document.getElementById('inv-scan-modal').style.display='flex';
+  invStartCamera();
+}
+function invScanStatus(html,type){ var el=document.getElementById('inv-scan-status'); el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none'; }
+
+function invStartCamera() {
+  if(typeof Html5Qrcode==='undefined'){ invScanStatus('Scanner-Bibliothek nicht geladen \u2013 bitte Seriennummer eintippen.','warning'); return; }
   try{
-    var today=ebToday();
-    await invFetch('/order/so/shipment/'+r.ship.pk+'/ship/',{method:'POST',body:{shipment_date:today}});
-    invLog('Ausgebucht: '+r.wp.subject);
-    var wp=await apiFetch('/work_packages/'+r.wp.id);
-    await apiFetch('/work_packages/'+r.wp.id,{method:'PATCH',body:JSON.stringify({lockVersion:wp.lockVersion,_links:{status:{href:'/api/v3/statuses/'+OP_STATUS_LAGERND}}})});
-    invLog('OP-Status \u2192 Lagernd: #'+r.wp.id);
-    invMsg('&#x2705; Entnahme gebucht: '+ebEsc(r.wp.subject),'success');
-  }catch(e){ invMsg('Fehler: '+ebEsc(e.message),'error'); invLog('Fehler Entnahme: '+e.message); }
+    var F=Html5QrcodeSupportedFormats;
+    INV_SCAN.qr=new Html5Qrcode('inv-scan-reader',{formatsToSupport:[F.QR_CODE,F.DATA_MATRIX,F.CODE_128,F.CODE_39,F.EAN_13,F.EAN_8,F.UPC_A],verbose:false});
+    INV_SCAN.qr.start({facingMode:'environment'},{fps:10,qrbox:function(w,h){var s=Math.floor(Math.min(w,h)*0.8);return {width:s,height:Math.floor(s*0.6)};}},
+      function(text){ invHandleCode(text); }, function(){})
+    .catch(function(e){ invScanStatus('Kamera nicht verf\u00fcgbar ('+ebEsc(String(e))+') \u2013 bitte Seriennummer eintippen.','warning'); });
+  }catch(e){ invScanStatus('Kamera-Fehler: '+ebEsc(e.message),'warning'); }
+}
+function invStopCamera() {
+  var q=INV_SCAN.qr; INV_SCAN.qr=null;
+  if(q){ try{ q.stop().then(function(){ try{q.clear();}catch(e){} }).catch(function(){}); }catch(e){} }
+}
+function invCloseScan() { invStopCamera(); document.getElementById('inv-scan-modal').style.display='none'; }
+function invManualSubmit() { var v=ebVal('inv-scan-manual'); if(v) invHandleCode(v); }
+
+/* Code -> Lagerartikel: erst InvenTree-Barcode, dann Seriennummer des Artikels */
+async function invResolveCode(code, part) {
+  try{
+    var b=await invFetch('/barcode/',{method:'POST',body:{barcode:code}});
+    if(b && b.stockitem && b.stockitem.pk) return await invFetch('/stock/'+b.stockitem.pk+'/');
+    if(b && (b.part||b.stocklocation)) throw new Error('Das ist kein Lagerartikel-Etikett (Teil oder Lagerort gescannt).');
+  }catch(e){ if(e.status && e.status!==400 && e.status!==404) throw e; if(!e.status) throw e; }
+  if(part){
+    var hits=await invList('/stock/?part='+part.pk+'&serial='+encodeURIComponent(code)+'&limit=5');
+    if(hits[0]) return hits[0];
+  }
+  return null;
+}
+
+async function invHandleCode(code) {
+  if(INV_SCAN.busy) return; INV_SCAN.busy=true;
+  code=String(code||'').trim();
+  var r=INV_SCAN.row, main=r.needs.filter(function(n){return n.main;})[0];
+  invScanStatus('Pr\u00fcfe \u201e'+ebEsc(code)+'\u201c...','warning');
+  try{
+    var item=await invResolveCode(code, main&&main.part);
+    if(!item) throw new Error('Kein passendes Ger\u00e4t f\u00fcr \u201e'+code+'\u201c gefunden (weder Etikett noch Seriennummer von '+(main?main.ipn:'?')+').');
+    if(!main || item.part!==main.part.pk) throw new Error('Gescannt wurde ein anderer Artikel (Lagerartikel #'+item.pk+'), erwartet '+(main?main.ipn:'?')+'.');
+    if(item.customer) throw new Error('Dieses Ger\u00e4t ist bereits an einen Kunden ausgebucht.');
+    if(!item.in_stock && item.in_stock!==undefined) throw new Error('Dieses Ger\u00e4t ist nicht auf Lager.');
+    invStopCamera();
+    await invShipWithItem(r, item);
+    document.getElementById('inv-scan-modal').style.display='none';
+  }catch(e){
+    invScanStatus('&#x274C; '+ebEsc(e.message)+'<br><small>Bitte erneut scannen.</small>','error');
+    invLog('Scan abgelehnt: '+e.message);
+    setTimeout(function(){
+      INV_SCAN.busy=false;
+      if(!INV_SCAN.qr && document.getElementById('inv-scan-modal').style.display!=='none') invStartCamera();
+    }, 1500);
+  }
+}
+
+/* Zuweisung ggf. auf das gescannte Geraet umstellen, dann versenden */
+async function invShipWithItem(r, item) {
+  var main=r.needs.filter(function(n){return n.main;})[0];
+  if(item){
+    var allocs=await invList('/order/so-allocation/?shipment='+r.ship.pk+'&limit=100');
+    var mine=allocs.filter(function(a){return a.part===main.part.pk;});
+    var already=mine.some(function(a){return a.item===item.pk;});
+    if(!already){
+      if(parseFloat(item.allocated||0)>0 && parseFloat(item.quantity)-parseFloat(item.allocated||0)<1)
+        throw new Error('Dieses Ger\u00e4t ist bereits f\u00fcr einen anderen Auftrag reserviert.');
+      var lineId=mine[0]?mine[0].line:null;
+      if(!lineId) throw new Error('Keine Reservierung f\u00fcr '+main.ipn+' in dieser Sendung gefunden.');
+      for(var i=0;i<mine.length;i++) await invFetch('/order/so-allocation/'+mine[i].pk+'/',{method:'DELETE'});
+      await invFetch('/order/so/'+INV.order.pk+'/allocate/',{method:'POST',body:{shipment:r.ship.pk,items:[{line_item:lineId, stock_item:item.pk, quantity:1}]}});
+      invLog('Reservierung getauscht auf Lagerartikel #'+item.pk+(item.serial?' (SN '+item.serial+')':''));
+    }
+  }
+  await invFetch('/order/so/shipment/'+r.ship.pk+'/ship/',{method:'POST',body:{shipment_date:ebToday(), link:OP_URL+'/work_packages/'+r.wp.id}});
+  invLog('Ausgebucht: '+r.wp.subject+(item&&item.serial?' (SN '+item.serial+')':''));
+
+  var wp=await apiFetch('/work_packages/'+r.wp.id);
+  var body={lockVersion:wp.lockVersion, _links:{status:{href:'/api/v3/statuses/'+OP_STATUS_LAGERND}}};
+  body[CF_ORDERNO]=INV.order.reference;
+  body[CF_ARTNO]=main.ipn;
+  if(item && item.serial) body[CF_SERIAL]=item.serial;
+  await apiFetch('/work_packages/'+r.wp.id,{method:'PATCH',body:JSON.stringify(body)});
+  invLog('OP aktualisiert: #'+r.wp.id+' \u2192 Lagernd'+(item&&item.serial?', SN '+item.serial:'')+', '+INV.order.reference);
+  invMsg('&#x2705; Entnahme gebucht: '+ebEsc(r.wp.subject)+(item&&item.serial?' \u2013 SN <b>'+ebEsc(item.serial)+'</b>':''),'success');
   await invLoadProject();
+}
+
+async function invShipNoScan() {
+  var r=INV_SCAN.row; invStopCamera();
+  try{ await invShipWithItem(r, null); document.getElementById('inv-scan-modal').style.display='none'; }
+  catch(e){ invScanStatus('&#x274C; '+ebEsc(e.message),'error'); }
 }
 
 (function(){
@@ -3231,9 +3376,15 @@ async function invShip(i) {
   if(tb) tb.addEventListener('click',function(){ if(INV.token) invFillProjects(); });
   document.getElementById('inv-proj').addEventListener('change',invLoadProject);
   document.getElementById('inv-proj-search').addEventListener('input',invFillProjects);
+  document.getElementById('inv-scan-manual').addEventListener('keydown',function(e){ if(e.key==='Enter') invManualSubmit(); });
 })();
 
 initHardware();initRadios();updateWPPreview();bsUpdatePreview();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('/sw.js').catch(function(e){ console.warn('[PWA] Service Worker:', e); }); });
+}
 </script>
 </body>
 </html>
