@@ -503,6 +503,7 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field" style="justify-content:flex-end"><button class="btn btn-primary" id="inv-connect" onclick="invConnect()">Verbinden</button></div>
         </div>
         <div class="eb-hint" id="inv-conn-state" style="margin-top:6px"></div>
+        <button class="btn btn-csv" onclick="invOpenIntake()" style="width:100%;justify-content:center;margin-top:10px">&#x1F4E6; Wareneingang per Etikett-Scan</button>
       </div>
 
       <div class="np-section">
@@ -545,13 +546,13 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           </div>
           <div style="display:flex;gap:8px;margin-top:8px">
             <button class="btn btn-csv" onclick="invSwapMacs()" style="flex:1;justify-content:center">&#x21C4; MACs tauschen</button>
-            <button class="btn btn-excel" onclick="invConfirmLabel()" style="flex:2;justify-content:center">&#x2705; Pr&uuml;fen &amp; buchen</button>
+            <button class="btn btn-excel" id="inv-confirm-btn" onclick="invConfirmAny()" style="flex:2;justify-content:center">&#x2705; Pr&uuml;fen &amp; buchen</button>
           </div>
         </div>
-        <div class="eb-hint" style="margin-bottom:4px">oder Live-Scan (InvenTree-Etikett / Seriennummer):</div>
+        <div class="eb-hint" id="inv-live-hint" style="margin-bottom:4px">oder Live-Scan (InvenTree-Etikett / Seriennummer):</div>
         <div id="inv-scan-reader" style="width:100%;border-radius:8px;overflow:hidden;background:#000;min-height:220px"></div>
         <div class="np-result" id="inv-scan-status" style="margin-top:8px"></div>
-        <div style="display:flex;gap:8px;margin-top:10px">
+        <div id="inv-manual-row" style="display:flex;gap:8px;margin-top:10px">
           <input class="np-input" id="inv-scan-manual" type="text" placeholder="Seriennummer eintippen" autocomplete="off" autocapitalize="characters" style="flex:1">
           <button class="btn btn-primary" onclick="invManualSubmit()">OK</button>
         </div>
@@ -3286,7 +3287,10 @@ var INV_SCAN = {row:null, idx:null, qr:null, busy:false};
 function invOpenScan(i) {
   var r=INV.rows[i]; if(!r||!r.ship) return;
   var main=r.needs.filter(function(n){return n.main;})[0];
-  INV_SCAN.row=r; INV_SCAN.idx=i; INV_SCAN.busy=false; INV_SCAN.target=null; INV_LABEL=null;
+  INV_SCAN.mode='out'; INV_SCAN.row=r; INV_SCAN.idx=i; INV_SCAN.busy=false; INV_SCAN.target=null; INV_LABEL=null;
+  document.getElementById('inv-manual-row').style.display='flex';
+  document.getElementById('inv-confirm-btn').innerHTML='&#x2705; Pr&uuml;fen &amp; buchen';
+  invSetLive(true);
   document.getElementById('inv-label-result').style.display='none';
   document.getElementById('inv-scan-title').textContent='Entnahme: '+r.wp.subject+' (#'+r.wp.id+')';
   document.getElementById('inv-scan-hint').textContent = main&&main.part&&main.part.trackable
@@ -3296,7 +3300,7 @@ function invOpenScan(i) {
   document.getElementById('inv-scan-noscan').style.display = main&&main.part&&main.part.trackable ? 'none' : '';
   invScanStatus('','');
   document.getElementById('inv-scan-modal').style.display='flex';
-  invStartCamera();
+  setTimeout(function(){ invStartCamera(); },150);
 }
 function invScanStatus(html,type){ var el=document.getElementById('inv-scan-status'); el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none'; }
 
@@ -3339,7 +3343,7 @@ async function invHandleCode(code) {
     if((f==='eth'||f==='wlan') && !invIsMac(v)){ invScanStatus('Das ist keine MAC-Adresse („'+ebEsc(v)+'“) – bitte erneut.','error'); return; }
     if(f==='sn' && invIsMac(v)){ invScanStatus('Das ist eine MAC-Adresse, keine Seriennummer – bitte erneut.','error'); return; }
     document.getElementById('inv-label-'+f).value = (f==='sn') ? v : invNormMac(v);
-    INV_SCAN.target=null; invStopCamera(); invScanStatus('&#x2705; übernommen: '+ebEsc(v),'success');
+    INV_SCAN.target=null; invSetLive(false); invScanStatus('&#x2705; übernommen: '+ebEsc(v),'success');
     if(!INV_LABEL) document.getElementById('inv-label-result').style.display='block';
     return;
   }
@@ -3441,15 +3445,22 @@ async function invPhotoChosen(file) {
   try{
     var url=URL.createObjectURL(file);
     var img=await new Promise(function(res,rej){ var i=new Image(); i.onload=function(){res(i);}; i.onerror=function(){rej(new Error('Foto konnte nicht geladen werden'));}; i.src=url; });
-    var max=2600, s=Math.min(1, max/Math.max(img.naturalWidth,img.naturalHeight));
+    var max=4096, s=Math.min(1, max/Math.max(img.naturalWidth,img.naturalHeight));
     var c=document.createElement('canvas'); c.width=Math.round(img.naturalWidth*s); c.height=Math.round(img.naturalHeight*s);
     c.getContext('2d').drawImage(img,0,0,c.width,c.height);
     var zx=await invZx();
-    var res=await zx.readBarcodes(c.getContext('2d').getImageData(0,0,c.width,c.height),{tryHarder:true,maxNumberOfSymbols:20});
+    var data=c.getContext('2d').getImageData(0,0,c.width,c.height);
+    var res=await zx.readBarcodes(data,{tryHarder:true,maxNumberOfSymbols:20});
+    // weitere Durchlaeufe mit anderer Schwellwert-Methode, falls Codes fehlen (typisch 5 auf Geraete-Etiketten)
+    var bins=['GlobalHistogram','FixedThreshold'];
+    for(var bi=0; bi<bins.length && res.length<5; bi++){
+      var more=await zx.readBarcodes(data,{tryHarder:true,maxNumberOfSymbols:20,binarizer:bins[bi]});
+      more.forEach(function(m){ if(!res.some(function(x){return x.text===m.text;})) res.push(m); });
+    }
     var codes=res.filter(function(r){return r.isValid!==false && r.text;}).map(function(r){
       var p=r.position; return {text:r.text, format:r.format, x:(p.topLeft.x+p.bottomRight.x)/2, y:(p.topLeft.y+p.bottomRight.y)/2, pos:p};
     });
-    invLog('Foto: '+codes.length+' Barcode(s) erkannt: '+codes.map(function(c){return c.text;}).join(', '));
+    invLog('Foto ('+c.width+'x'+c.height+'): '+codes.length+' Barcode(s) erkannt: '+codes.map(function(c){return c.text;}).join(', '));
     await invAnalyzeLabel(codes, c);
   }catch(e){ invScanStatus('&#x274C; '+ebEsc(e.message),'error'); invLog('Foto-Fehler: '+e.message); }
   document.getElementById('inv-photo-input').value='';
@@ -3471,8 +3482,12 @@ async function invModelForCode(code) {
   return null;
 }
 
+async function invMainForScan(modelPk) {
+  if(INV_SCAN.mode==='in'){ if(!modelPk) return null; var m=await invPartInfo(modelPk); return {part:m.part, ipn:m.ipn}; }
+  return INV_SCAN.row.needs.filter(function(n){return n.main;})[0];
+}
 async function invAnalyzeLabel(codes, canvas) {
-  var r=INV_SCAN.row, main=r.needs.filter(function(n){return n.main;})[0];
+  var main=null;
   var L={codes:codes, canvas:canvas, modelPk:null, modelSrc:'', item:null, sn:'', eth:'', wlan:''};
   var macs=[], rest=[];
   codes.forEach(function(c){ if(invIsMac(c.text)) { c.role='mac'; macs.push(c); } else rest.push(c); });
@@ -3481,8 +3496,10 @@ async function invAnalyzeLabel(codes, canvas) {
     if(m && m.partPk){ c.role='model'; L.modelPk=L.modelPk||m.partPk; L.modelSrc=L.modelSrc||m.source; }
     else if(m && m.stockPk){ c.role='label'; L.item=await invFetch('/stock/'+m.stockPk+'/'); L.sn=L.item.serial||''; }
   }
+  main=await invMainForScan(L.modelPk);
   // Seriennummer: verbleibender Code, der als Geraet dieses Artikels existiert (sonst erster verbleibender)
   var cand=rest.filter(function(c){return !c.role;});
+  if(!L.sn && INV_SCAN.mode==='in' && cand[0]){ cand[0].role='sn'; L.sn=cand[0].text; }
   if(!L.sn && main && main.part){
     for(var j=0;j<cand.length;j++){
       var hit=await invList('/stock/?part='+main.part.pk+'&serial='+encodeURIComponent(cand[j].text)+'&limit=2');
@@ -3495,13 +3512,15 @@ async function invAnalyzeLabel(codes, canvas) {
   var order=(main&&INV_MAC_ORDER[main.ipn])||['eth','wlan'];
   if(macs.length>=2){ L[order[0]]=invNormMac(macs[0].text); macs[0].role=order[0]; L[order[1]]=invNormMac(macs[1].text); macs[1].role=order[1]; }
   else if(macs.length===1){ macs[0].role='mac?'; }
+  L.main=main;
   INV_LABEL=L;
   invRenderLabel();
 }
 
 function invRenderLabel() {
-  var L=INV_LABEL, r=INV_SCAN.row, main=r.needs.filter(function(n){return n.main;})[0];
+  var L=INV_LABEL, main=L.main;
   var box=document.getElementById('inv-label-result'); box.style.display='block';
+  invSetLive(false);
   // Vorschau mit beschrifteten Rahmen
   var cv=document.getElementById('inv-label-canvas'), src=L.canvas, w=Math.min(480, box.clientWidth||480), s=w/src.width;
   cv.width=Math.round(src.width*s); cv.height=Math.round(src.height*s);
@@ -3515,7 +3534,7 @@ function invRenderLabel() {
     var t=names[c.role]||'?'; g.font='bold 13px sans-serif'; var tw=g.measureText(t).width+8;
     g.fillStyle=col; g.fillRect(p.topLeft.x*s, Math.max(0,p.topLeft.y*s-18), tw, 17); g.fillStyle='#000'; g.fillText(t, p.topLeft.x*s+4, Math.max(12,p.topLeft.y*s-5));
   });
-  var modelOk = L.modelPk ? (main && L.modelPk===main.part.pk) : null;
+  var modelOk = L.modelPk ? (INV_SCAN.mode==='in' || (main && L.modelPk===main.part.pk)) : null;
   document.getElementById('inv-label-model').innerHTML = L.modelPk
     ? (modelOk ? '&#x2705; '+ebEsc(main.ipn)+' <span class="eb-hint">('+ebEsc(L.modelSrc)+')</span>' : '&#x274C; anderer Artikel als erwartet ('+ebEsc(main?main.ipn:'?')+')')
     : '<span class="eb-hint">nicht erkannt \u2013 Pr\u00fcfung \u00fcber die Seriennummer</span>';
@@ -3532,8 +3551,9 @@ function invRenderLabel() {
 function invSwapMacs(){ var a=document.getElementById('inv-label-eth'), b=document.getElementById('inv-label-wlan'), t=a.value; a.value=b.value; b.value=t; }
 
 /* Einzelnes Feld gezielt scannen (schmaler Sucher) */
-function invScanField(field){ INV_SCAN.target=field; invStopCamera(); setTimeout(function(){ invStartCamera(true); },250); invScanStatus('Nur den Barcode f\u00fcr \u201e'+({sn:'Seriennummer',eth:'MAC Ethernet',wlan:'MAC WLAN'})[field]+'\u201c in den Streifen halten.','warning'); }
+function invScanField(field){ INV_SCAN.target=field; invStopCamera(); invSetLive(true); setTimeout(function(){ invStartCamera(true); },250); invScanStatus('Nur den Barcode f\u00fcr \u201e'+({sn:'Seriennummer',eth:'MAC Ethernet',wlan:'MAC WLAN'})[field]+'\u201c in den Streifen halten.','warning'); }
 
+function invConfirmAny(){ return INV_SCAN.mode==='in' ? invConfirmIntake() : invConfirmLabel(); }
 async function invConfirmLabel() {
   var r=INV_SCAN.row, main=r.needs.filter(function(n){return n.main;})[0], L=INV_LABEL||{};
   var sn=ebVal('inv-label-sn'), eth=invNormMac(ebVal('inv-label-eth')), wlan=invNormMac(ebVal('inv-label-wlan'));
@@ -3585,6 +3605,60 @@ async function invReadMacs(item, main) {
     res.forEach(function(t){ Object.keys(tpl).forEach(function(k){ if(t.template===tpl[k] && t.value) out[k]=invNormMac(t.value); }); });
   }catch(e){ invLog('Hinweis MACs lesen: '+e.message); }
   return out;
+}
+
+/* ── Wareneingang per Etikett ── */
+function invOpenIntake() {
+  if(!INV.token){ invMsg('Bitte zuerst mit InvenTree verbinden.','error'); return; }
+  INV_SCAN.mode='in'; INV_SCAN.row=null; INV_SCAN.busy=false; INV_SCAN.target=null; INV_LABEL=null;
+  document.getElementById('inv-scan-title').textContent='Wareneingang: Ger\u00e4t mit Seriennummer einlagern';
+  document.getElementById('inv-scan-hint').textContent='Etikett fotografieren. Modell, Seriennummer und MACs werden erkannt und das Ger\u00e4t im Lager angelegt.';
+  document.getElementById('inv-label-result').style.display='none';
+  document.getElementById('inv-scan-noscan').style.display='none';
+  document.getElementById('inv-manual-row').style.display='none';
+  document.getElementById('inv-confirm-btn').innerHTML='&#x1F4E6; Einlagern';
+  invSetLive(false);
+  invScanStatus('','');
+  document.getElementById('inv-scan-modal').style.display='flex';
+}
+
+async function invPartInfo(pk) {
+  var cached=Object.keys(INV.parts).map(function(k){return INV.parts[k];}).filter(function(p){return p.pk===pk;})[0];
+  if(cached) return {part:cached, ipn:cached.IPN};
+  var p=await invFetch('/part/'+pk+'/'); INV.parts[p.IPN||('#'+p.pk)]=p; return {part:p, ipn:p.IPN||p.name};
+}
+
+async function invConfirmIntake() {
+  var L=INV_LABEL||{};
+  var sn=ebVal('inv-label-sn'), eth=invNormMac(ebVal('inv-label-eth')), wlan=invNormMac(ebVal('inv-label-wlan'));
+  try{
+    if(!L.modelPk) throw new Error('Modell nicht erkannt \u2013 UPC oder Hersteller-Nr. m\u00fcssen in InvenTree am Artikel hinterlegt sein.');
+    var m=await invPartInfo(L.modelPk);
+    if(!m.part.trackable) throw new Error(m.ipn+' ist nicht als \u201eNachverfolgbar\u201c markiert \u2013 Einlagern mit Seriennummer nicht m\u00f6glich.');
+    if(!sn) throw new Error('Keine Seriennummer.');
+    if(ebVal('inv-label-eth') && !eth) throw new Error('MAC Ethernet ist ung\u00fcltig.');
+    if(ebVal('inv-label-wlan') && !wlan) throw new Error('MAC WLAN ist ung\u00fcltig.');
+    if(eth && wlan && eth===wlan) throw new Error('Ethernet- und WLAN-MAC sind identisch.');
+    var dup=await invList('/stock/?part='+L.modelPk+'&serial='+encodeURIComponent(sn)+'&limit=2');
+    if(dup[0]) throw new Error('SN '+sn+' ist f\u00fcr '+m.ipn+' bereits in InvenTree vorhanden (#'+dup[0].pk+').');
+    invScanStatus('Lege Ger\u00e4t an...','warning');
+    await invFetch('/stock/',{method:'POST',body:{part:L.modelPk, location:INV_LOCATION_ID, quantity:1, serial_numbers:sn}});
+    var item=(await invList('/stock/?part='+L.modelPk+'&serial='+encodeURIComponent(sn)+'&limit=2'))[0];
+    if(!item) throw new Error('Ger\u00e4t wurde nicht gefunden \u2013 bitte in InvenTree pr\u00fcfen.');
+    await invWriteMacs(item, {part:m.part, ipn:m.ipn}, {eth:eth, wlan:wlan});
+    invLog('Wareneingang: '+m.ipn+' SN '+sn+' \u2192 Lager (#'+item.pk+')'+(eth?', ETH '+eth:'')+(wlan?', WLAN '+wlan:''));
+    INV.parts={};
+    document.getElementById('inv-label-result').style.display='none';
+    INV_LABEL=null;
+    invScanStatus('&#x2705; Eingelagert: '+ebEsc(m.ipn)+' \u2013 SN <b>'+ebEsc(sn)+'</b>. N\u00e4chstes Etikett fotografieren oder schlie\u00dfen.','success');
+    if(INV.projId) invLoadProject();
+  }catch(e){ invScanStatus('&#x274C; '+ebEsc(e.message),'error'); invLog('Wareneingang Fehler: '+e.message); }
+}
+
+function invSetLive(on) {
+  document.getElementById('inv-scan-reader').style.display=on?'':'none';
+  document.getElementById('inv-live-hint').style.display=on?'':'none';
+  if(!on) invStopCamera();
 }
 
 (function(){
