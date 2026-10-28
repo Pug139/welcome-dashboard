@@ -259,6 +259,110 @@ app.all('/inv/*', async (req, res) => {
   }
 });
 
+// ────────────────────────────────────────────────────────
+// Lieferschein auslesen (PDF oder Bild) -> strukturierte Positionen
+// Body: { base64, mediaType }   (application/pdf | image/png | image/jpeg | image/webp)
+// ────────────────────────────────────────────────────────
+app.post('/extract-delivery', async (req, res) => {
+  const { base64, mediaType } = req.body || {};
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'ANTHROPIC_API_KEY nicht gesetzt.' });
+  if (!base64) return res.status(400).json({ error: 'Keine Datei übergeben.' });
+  const isPdf = (mediaType || 'application/pdf') === 'application/pdf';
+  const fileBlock = isPdf
+    ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } }
+    : { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } };
+
+  const prompt = `Du bekommst einen Lieferschein eines Hardware-Lieferanten.
+Extrahiere alle Positionen und antworte NUR mit einem validen JSON-Objekt – kein Text davor oder danach, keine Markdown-Backticks.
+
+{
+  "lieferant": "Name des Absenders/Lieferanten, z.B. INGRAM MICRO DISTRIBUTION GMBH",
+  "lieferschein_nr": "Sendungs-/Lieferscheinnummer",
+  "datum": "Datum im Format YYYY-MM-DD",
+  "auftrag_nr": "Auftragsnummer des Lieferanten",
+  "bestell_nr": "Kunden-Bestellnummer / Dealer PO",
+  "positionen": [
+    {
+      "pos": "Positionsnummer",
+      "artikel_nr": "Artikelnummer des Lieferanten (item no)",
+      "beschreibung": "Artikelbeschreibung, erste aussagekräftige Zeile(n)",
+      "hersteller_nr": "Hersteller-Teilenummer (VPN/MPN), z.B. E431802",
+      "ean": "EAN/UPC-Code, nur Ziffern",
+      "menge_bestellt": 0,
+      "menge_geliefert": 0,
+      "seriennummern": ["nur die Seriennummern selbst, ohne 'SN:'-Präfix, exakt wie gedruckt"],
+      "karton": "Karton-Nr / box no."
+    }
+  ]
+}
+
+Regeln:
+- Alle Positionen auf allen Seiten erfassen.
+- Seriennummern Zeichen für Zeichen exakt übernehmen, nichts ergänzen oder korrigieren. Zeilenumbrüche innerhalb der Liste ignorieren.
+- Mengen als Zahlen. Fehlende Werte als leerer String bzw. leere Liste.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 6000,
+        messages: [{ role: 'user', content: [fileBlock, { type: 'text', text: prompt }] }]
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error?.message || 'Claude API Fehler ' + response.status);
+    const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n');
+    const cleaned = raw.replace(/```json\n?|```\n?/g, '').trim();
+    res.json({ success: true, data: JSON.parse(cleaned) });
+  } catch (err) {
+    console.error('extract-delivery error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ────────────────────────────────────────────────────────
+// Datei als Anhang an ein InvenTree-Objekt hochladen (multipart)
+// Header: X-INV-TOKEN   Body: { model_type, model_id, fileName, base64, contentType?, comment? }
+// ────────────────────────────────────────────────────────
+app.post('/inv-attach', async (req, res) => {
+  const token = req.headers['x-inv-token'];
+  const { model_type, model_id, fileName, base64, contentType, comment } = req.body || {};
+  if (!token) return res.status(400).json({ error: 'Missing X-INV-TOKEN header' });
+  if (!model_type || !/^\d+$/.test(String(model_id || '')) || !fileName || !base64) {
+    return res.status(400).json({ error: 'model_type, model_id, fileName und base64 sind erforderlich' });
+  }
+  const boundary = '----welcomeINV' + Date.now().toString(16) + Math.random().toString(16).slice(2);
+  const asciiName = String(fileName).replace(/[^\x20-\x7E]/g, '_').replace(/"/g, '');
+  const field = (name, value) => `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`;
+  const body = Buffer.concat([
+    Buffer.from(field('model_type', model_type) + field('model_id', String(model_id)) + field('comment', comment || ''), 'utf8'),
+    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="attachment"; filename="${asciiName}"\r\nContent-Type: ${contentType || 'application/pdf'}\r\n\r\n`, 'utf8'),
+    Buffer.from(base64, 'base64'),
+    Buffer.from(`\r\n--${boundary}--\r\n`, 'utf8')
+  ]);
+  try {
+    const response = await fetch(INVENTREE_URL + '/api/attachment/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Token ' + token,
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': String(body.length),
+        'Accept': 'application/json',
+        'User-Agent': BROWSER_UA
+      },
+      body
+    });
+    const text = await response.text();
+    try { return res.status(response.status).json(text ? JSON.parse(text) : {}); }
+    catch (e) { return res.status(502).json({ error: 'InvenTree lieferte kein JSON', invStatus: response.status, preview: text.slice(0, 300) }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/health', (_, res) => res.json({ status: 'ok' }));
 
 const PORT = process.env.PORT || 3000;
