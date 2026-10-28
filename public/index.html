@@ -508,7 +508,10 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
           <div class="np-field" style="justify-content:flex-end"><button class="btn btn-primary" id="inv-connect" onclick="invConnect()">Verbinden</button></div>
         </div>
         <div class="eb-hint" id="inv-conn-state" style="margin-top:6px"></div>
-        <button class="btn btn-csv" onclick="invOpenIntake()" style="width:100%;justify-content:center;margin-top:10px">&#x1F4E6; Wareneingang per Etikett-Scan</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn btn-csv" onclick="invOpenIntake()" style="flex:1;min-width:200px;justify-content:center">&#x1F4E6; Wareneingang per Etikett-Scan</button>
+          <button class="btn btn-csv" onclick="dsOpen()" style="flex:1;min-width:200px;justify-content:center">&#x1F4C4; Lieferschein einlesen</button>
+        </div>
       </div>
 
       <div class="np-section">
@@ -529,6 +532,19 @@ footer{text-align:center;font-size:.7rem;color:var(--text-muted);padding:20px 0 
       <div class="np-section">
         <div class="np-sec-title">Protokoll</div>
         <div id="inv-log" style="font-family:monospace;font-size:.75rem;color:var(--text-sub);background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;max-height:220px;overflow:auto;white-space:pre-wrap"></div>
+      </div>
+    </div>
+    <div id="ds-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:12px">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:760px;width:100%;padding:16px;max-height:94vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+          <strong style="color:var(--brand-light)">Lieferschein einlesen</strong>
+          <button class="eb-pad-clear" onclick="dsClose()">&#x2715;</button>
+        </div>
+        <div class="eb-hint" style="margin-bottom:8px">PDF des Lieferanten w&auml;hlen (bevorzugt) oder Foto/Screenshot. Die Positionen werden ausgelesen, zur Pr&uuml;fung angezeigt und dann als Einkaufsbestellung mit Seriennummern ins Lager gebucht.</div>
+        <input type="file" id="ds-file" accept="application/pdf,image/*" class="np-input" onchange="dsFileChosen(this.files[0])">
+        <div class="np-result" id="ds-status" style="margin-top:8px"></div>
+        <div id="ds-result" style="margin-top:8px"></div>
+        <button class="btn btn-excel" id="ds-go" onclick="dsRun()" style="display:none;width:100%;justify-content:center;margin-top:8px">&#x1F4E6; Einbuchen</button>
       </div>
     </div>
     <div id="inv-scan-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:12px">
@@ -3772,6 +3788,226 @@ function invSetLive(on) {
   document.getElementById('inv-scan-reader').style.display=on?'':'none';
   document.getElementById('inv-live-hint').style.display=on?'':'none';
   if(!on) invStopCamera();
+}
+
+/* ────────────────────────────────────────────────────────
+   LIEFERSCHEIN-IMPORT -> InvenTree (Einkaufsbestellung + Wareneingang mit SN)
+──────────────────────────────────────────────────────── */
+var DS = {file:null, b64:'', mime:'', data:null, rows:[], parts:[], manus:[]};
+
+function dsMsg(html,type){ var el=document.getElementById('ds-status'); el.innerHTML=html; el.className='np-result '+type; el.style.display=html?'block':'none'; }
+function dsOpen() {
+  if(!INV.token){ invMsg('Bitte zuerst mit InvenTree verbinden.','error'); return; }
+  DS.data=null; DS.rows=[]; document.getElementById('ds-file').value='';
+  document.getElementById('ds-result').innerHTML=''; document.getElementById('ds-go').style.display='none'; dsMsg('','');
+  document.getElementById('ds-modal').style.display='flex';
+}
+function dsClose(){ document.getElementById('ds-modal').style.display='none'; }
+
+function dsReadB64(file){ return new Promise(function(res,rej){ var r=new FileReader(); r.onload=function(){ res(String(r.result).split(',')[1]); }; r.onerror=function(){ rej(new Error('Datei konnte nicht gelesen werden')); }; r.readAsDataURL(file); }); }
+
+async function dsFileChosen(file) {
+  if(!file) return;
+  DS.file=file; DS.mime=file.type||'application/pdf';
+  if(!/^(application\/pdf|image\/(png|jpeg|webp|gif))$/.test(DS.mime)){ dsMsg('Bitte ein PDF oder ein Bild (PNG/JPG) w\u00e4hlen.','error'); return; }
+  dsMsg('<span class="spinner"></span> Lieferschein wird ausgelesen \u2013 das dauert einige Sekunden...','warning');
+  document.getElementById('ds-result').innerHTML=''; document.getElementById('ds-go').style.display='none';
+  try{
+    DS.b64=await dsReadB64(file);
+    var r=await fetch('/extract-delivery',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:DS.b64, mediaType:DS.mime})});
+    var j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
+    DS.data=j.data||{};
+    invLog('Lieferschein '+(DS.data.lieferschein_nr||'?')+': '+((DS.data.positionen||[]).length)+' Position(en) ausgelesen');
+    await dsAnalyze();
+  }catch(e){ dsMsg('Fehler: '+ebEsc(e.message),'error'); }
+}
+
+async function dsPartByMpnOrEan(mpn, ean) {
+  if(mpn){
+    var mp=(await invList('/company/part/manufacturer/?MPN='+encodeURIComponent(mpn)+'&limit=5')).filter(function(m){return (m.MPN||'').toUpperCase()===mpn.toUpperCase();});
+    if(mp[0]) return {partPk:mp[0].part, mpPk:mp[0].pk, via:'Hersteller-Nr.'};
+  }
+  if(ean){
+    var cands=[ean]; if(/^0\d{12}$/.test(ean)) cands.unshift(ean.slice(1)); if(/^\d{12}$/.test(ean)) cands.push('0'+ean);
+    for(var i=0;i<cands.length;i++){
+      try{ var b=await invFetch('/barcode/',{method:'POST',body:{barcode:cands[i]}}); if(b&&b.part&&b.part.pk) return {partPk:b.part.pk, via:'EAN/UPC'}; }
+      catch(e){ if(!e.status||(e.status!==400&&e.status!==404)) throw e; }
+    }
+  }
+  return null;
+}
+
+async function dsAnalyze() {
+  var d=DS.data, pos=d.positionen||[];
+  DS.parts=await invList('/part/?active=true&limit=500');
+  DS.manus=await invList('/company/?is_manufacturer=true&limit=200');
+  DS.rows=[];
+  for(var i=0;i<pos.length;i++){
+    var p=pos[i], sns=(p.seriennummern||[]).map(function(s){return String(s).replace(/^SN:\s*/i,'').trim();}).filter(Boolean);
+    var qty=parseInt(p.menge_geliefert)||0, m=await dsPartByMpnOrEan(String(p.hersteller_nr||'').trim(), String(p.ean||'').replace(/\D/g,''));
+    var row={p:p, sns:sns, qty:qty, partPk:m?m.partPk:null, mpPk:m?m.mpPk:null, via:m?m.via:'', dup:[], warn:[]};
+    if(row.partPk){
+      var ex=await invList('/stock/?part='+row.partPk+'&serialized=true&limit=1000');
+      var have={}; ex.forEach(function(s){ if(s.serial) have[s.serial]=s.pk; });
+      row.dup=sns.filter(function(s){return have[s];});
+    }
+    if(sns.length && sns.length!==qty) row.warn.push(sns.length+' Seriennummern, aber Menge '+qty);
+    if(new Set(sns).size!==sns.length) row.warn.push('doppelte Seriennummer im Lieferschein');
+    DS.rows.push(row);
+  }
+  dsRender();
+}
+
+function dsPartOptions(sel) {
+  return '<option value="">\u2013 Artikel w\u00e4hlen \u2013</option><option value="new">\u2795 Neuen Artikel anlegen</option>'+
+    DS.parts.slice().sort(function(a,b){return (a.IPN||a.name).localeCompare(b.IPN||b.name,'de');}).map(function(p){
+      return '<option value="'+p.pk+'"'+(String(sel)===String(p.pk)?' selected':'')+'>'+ebEsc((p.IPN?p.IPN+' \u2013 ':'')+p.name)+'</option>';
+    }).join('');
+}
+
+function dsRender() {
+  var d=DS.data, box=document.getElementById('ds-result');
+  var head='<div style="font-size:.82rem;line-height:1.6;margin-bottom:10px;color:var(--text-sub)">'
+    +'<b>'+ebEsc(d.lieferant||'?')+'</b> \u00b7 Lieferschein <b>'+ebEsc(d.lieferschein_nr||'?')+'</b> vom '+ebEsc(ebDateDE(d.datum||'')||'?')
+    +'<br>Auftrag '+ebEsc(d.auftrag_nr||'\u2013')+' \u00b7 Bestellung '+ebEsc(d.bestell_nr||'\u2013')+'</div>';
+  var cards=DS.rows.map(function(r,i){
+    var p=r.p, part=DS.parts.filter(function(x){return x.pk===r.partPk;})[0];
+    var newSns=r.sns.filter(function(s){return r.dup.indexOf(s)<0;});
+    var warn=r.warn.slice(); if(r.dup.length) warn.push(r.dup.length+' SN bereits in InvenTree \u2013 werden \u00fcbersprungen: '+r.dup.join(', '));
+    return '<div class="np-section" style="border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:10px">'
+      +'<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start">'
+      +'<div><b>Pos. '+ebEsc(p.pos)+'</b> \u00b7 '+ebEsc(p.beschreibung||'')+'<div class="eb-hint">Lief.-Nr. '+ebEsc(p.artikel_nr||'\u2013')+' \u00b7 MPN '+ebEsc(p.hersteller_nr||'\u2013')+' \u00b7 EAN '+ebEsc(p.ean||'\u2013')+' \u00b7 Karton '+ebEsc(p.karton||'\u2013')+'</div></div>'
+      +'<label style="white-space:nowrap;font-size:.8rem"><input type="checkbox" id="ds-on-'+i+'" '+((newSns.length||!r.sns.length)&&r.qty?'checked':'')+'> einbuchen</label></div>'
+      +'<div style="margin-top:8px;font-size:.82rem">Menge <b>'+r.qty+'</b>'+(r.sns.length?' \u00b7 <b>'+newSns.length+'</b> neue SN':' \u00b7 ohne Seriennummern')+'</div>'
+      +(r.sns.length?'<details style="margin-top:4px"><summary class="eb-hint" style="cursor:pointer">Seriennummern pr\u00fcfen/bearbeiten</summary><textarea class="np-textarea" id="ds-sn-'+i+'" rows="3" style="font-family:monospace;font-size:.78rem">'+ebEsc(newSns.join(', '))+'</textarea></details>':'')
+      +'<div style="margin-top:8px">'+(part
+        ? '&#x2705; <b>'+ebEsc(part.IPN||'')+'</b> '+ebEsc(part.name)+' <span class="eb-hint">(erkannt \u00fcber '+ebEsc(r.via)+')</span>'+(part.trackable||!r.sns.length?'':' <span style="color:var(--at-risk-c)">\u2013 Artikel ist nicht \u201enachverfolgbar\u201c, SN werden nicht gespeichert</span>')
+        : '<span style="color:var(--at-risk-c)">&#x26A0; Artikel unbekannt</span><select class="np-select" id="ds-part-'+i+'" style="margin-top:4px" onchange="dsPartSel('+i+')">'+dsPartOptions('')+'</select>'
+          +'<div id="ds-new-'+i+'" style="display:none;margin-top:6px" class="np-grid">'
+          +'<div class="np-field"><label class="np-label">Name</label><input class="np-input" id="ds-nname-'+i+'" value="'+ebEsc(p.beschreibung||'')+'"></div>'
+          +'<div class="np-field"><label class="np-label">IPN *</label><input class="np-input" id="ds-nipn-'+i+'" placeholder="z.B. HW-TERM-002"></div>'
+          +'<div class="np-field"><label class="np-label">Hersteller</label><input class="np-input" id="ds-nmanu-'+i+'" list="ds-manu-list" value="'+ebEsc(dsGuessManu(p))+'"></div>'
+          +'<div class="np-field"><label class="np-label">Optionen</label><label style="font-size:.8rem"><input type="checkbox" id="ds-ntrack-'+i+'" '+(r.sns.length?'checked':'')+'> mit Seriennummern</label><label style="font-size:.8rem"><input type="checkbox" id="ds-nmac-'+i+'"> MAC-Adressen erfassen</label></div>'
+          +'</div>')
+      +'</div>'
+      +(warn.length?'<div style="margin-top:6px;font-size:.78rem;color:var(--at-risk-c)">&#x26A0; '+warn.map(ebEsc).join('<br>&#x26A0; ')+'</div>':'')
+      +'</div>';
+  }).join('');
+  box.innerHTML=head+cards+'<datalist id="ds-manu-list">'+DS.manus.map(function(m){return '<option value="'+ebEsc(m.name)+'">';}).join('')+'</datalist>';
+  document.getElementById('ds-go').style.display='';
+  dsMsg('Bitte pr\u00fcfen und dann einbuchen. Unbekannte Artikel zuordnen oder neu anlegen.','warning');
+}
+function dsGuessManu(p){ var t=((p.beschreibung||'')+' '+(p.hersteller_nr||'')).toUpperCase(); var m=DS.manus.filter(function(x){ return t.indexOf(String(x.name).split(' ')[0].toUpperCase())>=0; })[0]; return m?m.name:''; }
+function dsPartSel(i){ document.getElementById('ds-new-'+i).style.display = document.getElementById('ds-part-'+i).value==='new' ? '' : 'none'; }
+
+async function dsEnsureCompany(name, flag) {
+  var hits=await invList('/company/?search='+encodeURIComponent(name)+'&limit=50');
+  var c=hits.filter(function(x){return (x.name||'').toLowerCase()===name.toLowerCase();})[0];
+  if(c){ if(!c[flag]) await invFetch('/company/'+c.pk+'/',{method:'PATCH',body:(function(){var b={};b[flag]=true;return b;})()}); return c; }
+  var body={name:name, currency:'EUR', is_customer:false, is_supplier:false, is_manufacturer:false}; body[flag]=true;
+  invLog('Lege Firma an: '+name); return await invFetch('/company/',{method:'POST',body:body});
+}
+async function dsEnsureMacTemplates(partPk) {
+  await invFetch('/part/'+partPk+'/',{method:'PATCH',body:{testable:true}});
+  var t=await invList('/part/test-template/?part='+partPk+'&limit=50');
+  for(var k in INV_TEST_NAMES){
+    if(!t.some(function(x){return (x.test_name||'').toLowerCase()===INV_TEST_NAMES[k].toLowerCase();}))
+      await invFetch('/part/test-template/',{method:'POST',body:{part:partPk, test_name:INV_TEST_NAMES[k], description:'MAC-Adresse f\u00fcr Barcode Scan', required:false, requires_value:true, enabled:true}});
+  }
+}
+
+async function dsRun() {
+  var d=DS.data, btn=document.getElementById('ds-go'); btn.disabled=true;
+  try{
+    // 1) Positionen einsammeln und pruefen
+    var jobs=[];
+    for(var i=0;i<DS.rows.length;i++){
+      var r=DS.rows[i]; if(!document.getElementById('ds-on-'+i).checked) continue;
+      var snEl=document.getElementById('ds-sn-'+i);
+      var sns=snEl ? snEl.value.split(/[\s,;]+/).map(function(s){return s.trim();}).filter(Boolean) : [];
+      var partPk=r.partPk, create=null;
+      if(!partPk){
+        var v=ebVal('ds-part-'+i);
+        if(!v) throw new Error('Pos. '+r.p.pos+': Artikel zuordnen oder neu anlegen.');
+        if(v==='new'){
+          create={name:ebVal('ds-nname-'+i), ipn:ebVal('ds-nipn-'+i), manu:ebVal('ds-nmanu-'+i), track:document.getElementById('ds-ntrack-'+i).checked, mac:document.getElementById('ds-nmac-'+i).checked};
+          if(!create.name||!create.ipn) throw new Error('Pos. '+r.p.pos+': Name und IPN f\u00fcr den neuen Artikel angeben.');
+          if(DS.parts.some(function(p){return (p.IPN||'').toLowerCase()===create.ipn.toLowerCase();})) throw new Error('IPN '+create.ipn+' existiert bereits.');
+        } else partPk=parseInt(v);
+      }
+      var qty = sns.length || r.qty;
+      if(!qty) continue;
+      jobs.push({r:r, partPk:partPk, create:create, sns:sns, qty:qty});
+    }
+    if(!jobs.length) throw new Error('Keine Position zum Einbuchen ausgew\u00e4hlt.');
+    if(!confirm(jobs.length+' Position(en) mit insgesamt '+jobs.reduce(function(a,j){return a+j.qty;},0)+' St\u00fcck einbuchen?')) { btn.disabled=false; return; }
+
+    dsMsg('<span class="spinner"></span> Lege Artikel und Bestellung an...','warning');
+    var supplier=await dsEnsureCompany(d.lieferant||'Unbekannter Lieferant','is_supplier');
+
+    // 2) Artikel anlegen bzw. ergaenzen (Hersteller-Teil, EAN-Verknuepfung, Lieferanten-Teil)
+    for(var k=0;k<jobs.length;k++){
+      var j=jobs[k], p=j.r.p, mpn=String(p.hersteller_nr||'').trim(), ean=String(p.ean||'').replace(/\D/g,'');
+      if(j.create){
+        var np=await invFetch('/part/',{method:'POST',body:{name:j.create.name, IPN:j.create.ipn, description:j.create.name, trackable:j.create.track, purchaseable:true, salable:true, component:true, active:true, default_location:INV_LOCATION_ID}});
+        j.partPk=np.pk; invLog('Artikel angelegt: '+j.create.ipn+' ('+j.create.name+')');
+        if(j.create.mac) await dsEnsureMacTemplates(j.partPk);
+      }
+      var part=await invFetch('/part/'+j.partPk+'/'); j.part=part;
+      if(j.sns.length && !part.trackable){ invLog('Hinweis: '+(part.IPN||part.name)+' ist nicht nachverfolgbar \u2013 SN werden nicht gespeichert'); j.sns=[]; }
+      var mpPk=j.r.mpPk||null;
+      if(mpn && !mpPk){
+        var existing=(await invList('/company/part/manufacturer/?part='+j.partPk+'&limit=50')).filter(function(m){return (m.MPN||'').toUpperCase()===mpn.toUpperCase();})[0];
+        if(existing) mpPk=existing.pk;
+        else {
+          var manuName=(j.create&&j.create.manu)||'';
+          if(!manuName){ var guess=dsGuessManu(p); manuName=guess; }
+          if(manuName){ var manu=await dsEnsureCompany(manuName,'is_manufacturer'); mpPk=(await invFetch('/company/part/manufacturer/',{method:'POST',body:{part:j.partPk, manufacturer:manu.pk, MPN:mpn}})).pk; invLog('Hersteller-Teil '+mpn+' angelegt'); }
+        }
+      }
+      if(ean && /^\d{12,13}$/.test(ean)){
+        var e12=/^0\d{12}$/.test(ean)?ean.slice(1):ean;
+        try{ await invFetch('/barcode/link/',{method:'POST',body:{barcode:e12, part:j.partPk}}); invLog('EAN/UPC '+e12+' mit '+(part.IPN||part.name)+' verkn\u00fcpft'); }catch(e){ /* bereits verknuepft */ }
+      }
+      var sku=String(p.artikel_nr||'').trim()||mpn||('POS-'+p.pos);
+      var sp=(await invList('/company/part/?part='+j.partPk+'&supplier='+supplier.pk+'&limit=50')).filter(function(s){return (s.SKU||'')===sku;})[0];
+      if(!sp){ var spb={part:j.partPk, supplier:supplier.pk, SKU:sku, description:p.beschreibung||''}; if(mpPk) spb.manufacturer_part=mpPk; sp=await invFetch('/company/part/',{method:'POST',body:spb}); }
+      j.spPk=sp.pk;
+    }
+
+    // 3) Einkaufsbestellung anlegen, Positionen, freigeben
+    var po=await invFetch('/order/po/',{method:'POST',body:{supplier:supplier.pk, supplier_reference:d.auftrag_nr||d.lieferschein_nr||'', description:'Lieferschein '+(d.lieferschein_nr||'?')+(d.bestell_nr?' / '+d.bestell_nr:''), order_currency:'EUR'}});
+    invLog('Einkaufsbestellung angelegt: '+po.reference);
+    for(var m=0;m<jobs.length;m++){
+      var line=await invFetch('/order/po-line/',{method:'POST',body:{order:po.pk, part:jobs[m].spPk, quantity:jobs[m].qty, reference:'Pos. '+jobs[m].r.p.pos}});
+      jobs[m].lineId=line.pk;
+    }
+    try{ await invFetch('/order/po/'+po.pk+'/issue/',{method:'POST',body:{}}); }catch(e){ invLog('Hinweis Freigabe: '+e.message); }
+
+    // 4) Wareneingang mit Seriennummern
+    dsMsg('<span class="spinner"></span> Buche Wareneingang...','warning');
+    var items=jobs.map(function(j){
+      var it={line_item:j.lineId, quantity:j.qty, location:INV_LOCATION_ID, status:10};
+      if(j.sns.length) it.serial_numbers=j.sns.join(',');
+      if(j.r.p.karton) it.packaging='Karton '+j.r.p.karton;
+      return it;
+    });
+    await invFetch('/order/po/'+po.pk+'/receive/',{method:'POST',body:{location:INV_LOCATION_ID, items:items}});
+    invLog('Wareneingang gebucht: '+jobs.reduce(function(a,j){return a+j.qty;},0)+' St\u00fcck');
+
+    // 5) Lieferschein anhaengen, Bestellung abschliessen
+    try{
+      var ext=DS.mime==='application/pdf'?'pdf':(DS.mime.split('/')[1]||'png');
+      var ar=await fetch('/inv-attach',{method:'POST',headers:{'Content-Type':'application/json','X-INV-TOKEN':INV.token},body:JSON.stringify({model_type:'purchaseorder', model_id:po.pk, fileName:'Lieferschein '+(d.lieferschein_nr||'')+'.'+ext, base64:DS.b64, contentType:DS.mime, comment:'Lieferschein '+(d.lieferant||'')})});
+      if(!ar.ok) throw new Error('HTTP '+ar.status); invLog('Lieferschein an '+po.reference+' angeh\u00e4ngt');
+    }catch(e){ invLog('Hinweis Anhang: '+e.message); }
+    try{ await invFetch('/order/po/'+po.pk+'/complete/',{method:'POST',body:{accept_incomplete:true}}); }catch(e){ invLog('Hinweis Abschluss: '+e.message); }
+
+    dsMsg('&#x2705; Eingebucht: <b>'+jobs.reduce(function(a,j){return a+j.qty;},0)+'</b> St\u00fcck in Bestellung <b>'+ebEsc(po.reference)+'</b>. <a href="https://inventree.welcomeyou.net/web/purchasing/purchase-order/'+po.pk+'" target="_blank" rel="noopener">In InvenTree \u00f6ffnen</a>','success');
+    document.getElementById('ds-go').style.display='none';
+    INV.parts={}; if(INV.projId) invLoadProject();
+  }catch(e){ dsMsg('Fehler: '+ebEsc(e.message),'error'); invLog('Lieferschein Fehler: '+e.message); }
+  btn.disabled=false;
 }
 
 (function(){
