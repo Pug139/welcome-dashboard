@@ -20,7 +20,16 @@ app.use((req, res, next) => {
 });
 
 // Serve dashboard HTML
-app.use(express.static(path.join(__dirname, 'public')));
+// HTML, Skripte und Manifest nie ungeprueft aus dem Cache verwenden:
+// Browser und installierte Web-App fragen bei jedem Start nach, ob es eine neue Version gibt
+// (bei unveraenderter Datei antwortet der Server kurz mit 304, es wird nichts neu geladen).
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, filePath) => {
+    if (/\.(html|js|json|webmanifest)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+  }
+}));
 
 // Proxy endpoint for OpenProject API (GET + POST)
 app.all('/proxy/*', async (req, res) => {
